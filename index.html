@@ -3,84 +3,141 @@
 <head>
   <meta charset="UTF-8" />
   <title>chillead</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- favicon -->
-  <link rel="icon" href="https://telegifter.ru/wp-content/themes/gifts/assets/img/gifts/sakuraflower/Meower.webp">
+  <link rel="icon" href="https://telegifter.ru/wp-content/themes/gifts/assets/img/gifts/sakuraflower/Meower.webp" />
 
-  <!-- security -->
-  <meta http-equiv="X-Content-Type-Options" content="nosniff">
-  <meta http-equiv="Referrer-Policy" content="strict-origin">
-  <meta http-equiv="X-Frame-Options" content="DENY">
-  <meta http-equiv="Content-Security-Policy"
-        content="
-          default-src 'self';
-          img-src 'self' https: data:;
-          script-src 'self';
-          style-src 'self' https://fonts.googleapis.com;
-          font-src https://fonts.gstatic.com;
-          connect-src 'self';
-        ">
+  <!-- security headers -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta http-equiv="Referrer-Policy" content="strict-origin" />
+  <meta http-equiv="X-Frame-Options" content="DENY" />
 
-  <!-- font -->
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <!-- CSP: максимально жёсткая, но разрешаем tenor и шрифты -->
+  <meta
+    http-equiv="Content-Security-Policy"
+    content="
+      default-src 'self';
+      script-src 'self' https://tenor.com;
+      style-src 'self' https://fonts.googleapis.com;
+      font-src https://fonts.gstatic.com;
+      img-src 'self' https: data:;
+      connect-src 'self';
+      frame-src https://tenor.com;
+      object-src 'none';
+      base-uri 'none';
+      frame-ancestors 'none';
+    "
+  />
 
-  <link rel="stylesheet" href="style.css">
+  <!-- IBM Plex Mono -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-<main class="page">
+  <main class="page">
+    <!-- header + gif -->
+    <header class="hero">
+      <div class="hero-main">
+        <h1># alex</h1>
+        <p class="subtitle">## sleep deprived developer</p>
+      </div>
+      <div class="hero-gif">
+        <div
+          class="tenor-gif-embed"
+          data-postid="11880612084971354203"
+          data-share-method="host"
+          data-aspect-ratio="1"
+          data-width="80px"
+        >
+          <a href="https://tenor.com/view/anime-cat-girl-dancing-cat-gif-11880612084971354203">
+            Anime Cat Girl Sticker
+          </a>
+          from
+          <a href="https://tenor.com/search/anime-stickers">Anime Stickers</a>
+        </div>
+      </div>
+    </header>
 
-  <header class="hero">
-    <h1># alex</h1>
-    <p class="subtitle">## sleep deprived developer</p>
-  </header>
+    <section class="block">
+      <h2># personal metadata</h2>
+      <ul class="meta">
+        <li><span>name:</span> alex</li>
+        <li><span>nickname:</span> chillead</li>
+        <li><span>alive for:</span> <span id="alive"></span> (15y)</li>
+        <li><span>languages:</span> EN, RU</li>
+        <li><span>location:</span> Ekaterinburg, RU (<span id="time"></span>)</li>
+        <li><span>occupation:</span> websites, bots, parsers</li>
+      </ul>
+      <p class="muted">
+        i don't have much to say about myself honestly sooo...
+      </p>
+    </section>
 
-  <section class="block">
-    <h2># personal metadata</h2>
-    <ul class="meta">
-      <li><span>name:</span> alex</li>
-      <li><span>nickname:</span> chillead</li>
-      <li><span>alive for:</span> <span id="alive"></span> (15y)</li>
-      <li><span>languages:</span> EN, RU</li>
-      <li><span>location:</span> Ekaterinburg, RU (<span id="time"></span>)</li>
-      <li><span>occupation:</span> websites, bots, parsers</li>
-    </ul>
-    <p class="muted">
-      i don't have much to say about myself honestly sooo...
-    </p>
-  </section>
+    <section class="block">
+      <h2># hobbies & interests</h2>
 
-  <section class="block">
-    <h2># hobbies & interests</h2>
+      <p class="topic">programming</p>
+      <p class="desc">
+        i started my journey as a software developer in 2021 when i was only 11 years old,
+        my first programming language was c++.
+      </p>
 
-    <p class="topic">programming</p>
-    <p class="desc">
-      i started my journey as a software developer in 2021 when i was only 11 years old,
-      my first programming language was c++.
-    </p>
+      <p class="topic">creating tools</p>
+      <p class="desc">
+        i like building things that simplify life and save time — bots, scripts, websites.
+      </p>
+    </section>
 
-    <p class="topic">creating tools</p>
-    <p class="desc">
-      i like building things that simplify life and save time — bots, scripts, websites.
-    </p>
-  </section>
+    <section class="block">
+      <h2># currently playing</h2>
+      <div id="player" class="spotify muted">
+        loading track…
+      </div>
+    </section>
 
-  <section class="block">
-    <h2># currently playing</h2>
-    <div id="player" class="spotify muted">
-      loading track…
-    </div>
-  </section>
+    <!-- GitHub widget -->
+    <section class="block">
+      <h2># github</h2>
+      <a
+        class="github-card"
+        href="https://github.com/chillead-dev"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <div class="github-left">
+          <div class="github-icon-circle">
+            <span class="github-icon">🐱</span>
+          </div>
+          <div class="github-text">
+            <div class="github-title">chillead-dev</div>
+            <div class="github-sub">personal projects & experiments</div>
+          </div>
+        </div>
+        <div class="github-right">
+          <span class="github-badge">github</span>
+        </div>
+      </a>
+    </section>
 
-  <footer class="footer">
-    <a href="https://github.com/chillead-dev" target="_blank" rel="noopener noreferrer">github</a>
-    <span>·</span>
-    <a href="https://t.me/rizzdev" target="_blank" rel="noopener noreferrer">telegram</a>
-  </footer>
+    <footer class="footer">
+      <a href="https://github.com/chillead-dev" target="_blank" rel="noopener noreferrer">
+        github
+      </a>
+      <span>·</span>
+      <a href="https://t.me/rizzdev" target="_blank" rel="noopener noreferrer">
+        telegram
+      </a>
+    </footer>
+  </main>
 
-</main>
-
-<script src="script.js" defer></script>
+  <!-- единственный внешний скрипт: tenor (для гифки) -->
+  <script src="https://tenor.com/embed.js" async></script>
+  <script src="script.js" defer></script>
 </body>
 </html>
