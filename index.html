@@ -8,53 +8,80 @@
 </head>
 <body>
 
-<main class="container">
+<main class="page">
 
-<pre class="md">
+  <section class="section">
+    <h1># welcome!</h1>
 
-# welcome!
+    <p>
+      hello! my name is <strong>alex</strong>.  
+      i'm a developer who enjoys building things that simplify life,
+      save time and feel clean to use.
+    </p>
 
-hello! my name is <b>alex</b>.
-i mostly do programming-related things and build
-projects that simplify life and save time.
+    <p>
+      i mainly work with websites, backend logic and telegram bots,
+      but i often experiment with other areas just for fun.
+    </p>
+  </section>
 
-## about
+  <section class="section">
+    <h2>## about</h2>
 
-- name: alex
-- alive for: <span id="alive"></span>
-- languages: EN, RU
-- location: Ekaterinburg, RU (<span id="time"></span>)
-- occupation:
-  creating game cheats, websites,
-  telegram bots, parsers / checkers
+    <ul class="list">
+      <li><span>name:</span> alex</li>
+      <li><span>alive for:</span> <span id="alive"></span></li>
+      <li><span>languages:</span> EN, RU</li>
+      <li>
+        <span>location:</span>
+        Ekaterinburg, RU (<span id="time"></span>)
+      </li>
+      <li class="multiline">
+        <span>occupation:</span>
+        creating game cheats, websites,<br>
+        telegram bots, parsers and checkers
+      </li>
+    </ul>
+  </section>
 
-## background
+  <section class="section">
+    <h2>## background</h2>
 
-started programming in 2021 at the age of 11.
-first programming language was <b>c++</b>.
+    <p>
+      i started programming in 2021 when i was only 11 years old.
+      my first programming language was <strong>c++</strong>,
+      which taught me how things actually work under the hood.
+    </p>
+  </section>
 
-## skills (and not only)
+  <section class="section">
+    <h2>## skills</h2>
 
-- programming
-- c++, javascript, typescript
-- backend & websites
-- telegram bots
-- cats 🐈
+    <ul class="list compact">
+      <li>programming</li>
+      <li>c++, javascript, typescript</li>
+      <li>backend & websites</li>
+      <li>telegram bots</li>
+      <li>cats 🐈</li>
+    </ul>
+  </section>
 
-## currently playing
+  <section class="section">
+    <h2>## currently playing</h2>
 
-below lies the track that i'm currently listening to on spotify.
-or simply nothing, if i'm not listening to anything atm :p
+    <p class="muted">
+      this shows what i'm listening to on spotify right now.
+      if nothing is playing, it will say so.
+    </p>
 
-</pre>
+    <div class="spotify-card" id="player">
+      loading track data...
+    </div>
 
-<div class="spotify-card" id="player">
-  loading track data...
-</div>
-
-<p class="note">
-this data is approximate and may be delayed by a few seconds.
-</p>
+    <p class="footnote">
+      data may be delayed by a few seconds.
+    </p>
+  </section>
 
 </main>
 
@@ -90,8 +117,8 @@ function updateTime() {
 updateTime();
 setInterval(updateTime, 1000);
 
-/* ===== spotify now playing ===== */
-const box = document.getElementById("player");
+/* ===== spotify ===== */
+const player = document.getElementById("player");
 
 async function loadNowPlaying() {
   try {
@@ -99,30 +126,32 @@ async function loadNowPlaying() {
     const data = await res.json();
 
     if (!data || !data.playing) {
-      box.textContent = "nothing is currently playing.";
+      player.textContent = "nothing is currently playing.";
       return;
     }
 
-    const percent = Math.min(
-      100,
-      Math.max(2, (data.progress / data.duration) * 100)
-    );
+    const progress =
+      Math.min(100, (data.progress / data.duration) * 100);
 
-    box.innerHTML = `
-<div class="spotify-head">
-  <span class="spotify-icon"></span>
-  <span class="spotify-text">listening on spotify</span>
-</div>
+    player.innerHTML = `
+      <div class="spotify-header">
+        <img 
+          src="https://upload.wikimedia.org/wikipedia/commons/8/84/Spotify_icon.svg"
+          alt="Spotify"
+          class="spotify-icon"
+        >
+        <span>listening on spotify</span>
+      </div>
 
-<div class="track-title">${data.title}</div>
-<div class="track-artist">${data.artist}</div>
+      <div class="track-title">${data.title}</div>
+      <div class="track-artist">${data.artist}</div>
 
-<div class="progress">
-  <div class="progress-fill" style="width:${percent}%"></div>
-</div>
-`;
+      <div class="progress">
+        <div class="progress-fill" style="width:${progress}%"></div>
+      </div>
+    `;
   } catch {
-    box.textContent = "failed to load track data.";
+    player.textContent = "failed to load track data.";
   }
 }
 
