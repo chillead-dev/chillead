@@ -2,90 +2,55 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>home</title>
+  <title>alex</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="style.css" />
+
+  <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
 
-<main class="page">
+  <main class="card">
 
-  <section class="md">
-    <h1># welcome!</h1>
-    <p>
-      hello! this is a placeholder text.<br>
-      you will replace it with your own content later.
-    </p>
-  </section>
+    <section class="block">
+      <div class="label">name</div>
+      <div class="value">alex</div>
+    </section>
 
-  <section class="md">
-    <h2>## what do i do?</h2>
-    <ul>
-      <li><span class="tag">project_one</span> — description goes here</li>
-      <li><span class="tag">project_two</span> — description goes here</li>
-    </ul>
-  </section>
+    <section class="block">
+      <div class="label">alive for</div>
+      <div class="value mono" id="alive">loading…</div>
+    </section>
 
-  <section class="md">
-    <h2>## skills</h2>
-    <ul>
-      <li>typescript</li>
-      <li>postgresql</li>
-      <li>redis</li>
-      <li>cats 🐈</li>
-    </ul>
-  </section>
-
-  <section class="md">
-    <h2>## currently playing</h2>
-    <p class="muted">
-      below lies the track that i'm currently listening to on spotify…
-    </p>
-
-    <!-- NOW PLAYING -->
-    <div id="player" class="player">
-      loading…
-    </div>
-  </section>
-
-</main>
-
-<script>
-async function loadNowPlaying() {
-  const el = document.getElementById("player");
-
-  try {
-    const r = await fetch("/api/now-playing");
-    const d = await r.json();
-
-    if (!d.playing) {
-      el.innerHTML = `<div class="offline">nothing is playing right now</div>`;
-      return;
-    }
-
-    const percent = Math.floor((d.progress / d.duration) * 100);
-
-    el.innerHTML = `
-      <div class="np">
-        <img src="${d.cover}" class="cover">
-        <div class="np-info">
-          <div class="np-title">${d.title}</div>
-          <div class="np-artist">${d.artist}</div>
-        </div>
-        <a href="${d.url}" class="np-spotify" target="_blank">spotify</a>
+    <section class="block">
+      <div class="label">location</div>
+      <div class="value">
+        Ekaterinburg, RU  
+        <span class="sub mono" id="time">--:--:--</span>
       </div>
-      <div class="np-bar">
-        <div class="np-progress" style="width:${percent}%"></div>
+    </section>
+
+    <section class="block">
+      <div class="label">languages</div>
+      <div class="value">EN, RU</div>
+    </section>
+
+    <section class="block">
+      <div class="label">occupation</div>
+      <div class="value small">
+        game cheats · websites · telegram bots · parsers
       </div>
-    `;
-  } catch {
-    el.textContent = "failed to load spotify status";
-  }
-}
+    </section>
 
-loadNowPlaying();
-setInterval(loadNowPlaying, 15000);
-</script>
+    <section class="block">
+      <div class="label">background</div>
+      <div class="value small">
+        started coding in 2021 (c++)
+      </div>
+    </section>
 
+  </main>
+
+  <script src="assets/js/alive.js"></script>
+  <script src="assets/js/time.js"></script>
 </body>
 </html>
