@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>chillead>.<</title>
+  <meta charset="UTF-8" />
+  <title>chillead</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- favicon -->
@@ -23,66 +23,60 @@
         ">
 
   <!-- font -->
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 <main class="page">
 
-  <!-- header -->
-  <section class="block">
-    <h1>alex</h1>
-    <p class="muted">developer</p>
-  </section>
+  <header class="hero">
+    <h1># alex</h1>
+    <p class="subtitle">## sleep deprived developer</p>
+  </header>
 
-  <!-- about -->
   <section class="block">
-    <h2>about</h2>
-    <p>
-      my name is alex. i started programming in 2021 when i was 11 years old.
-      i enjoy building things that save time and make life simpler.
+    <h2># personal metadata</h2>
+    <ul class="meta">
+      <li><span>name:</span> alex</li>
+      <li><span>nickname:</span> chillead</li>
+      <li><span>alive for:</span> <span id="alive"></span> (15y)</li>
+      <li><span>languages:</span> EN, RU</li>
+      <li><span>location:</span> Ekaterinburg, RU (<span id="time"></span>)</li>
+      <li><span>occupation:</span> websites, bots, parsers</li>
+    </ul>
+    <p class="muted">
+      i don't have much to say about myself honestly sooo...
     </p>
   </section>
 
-  <!-- info -->
   <section class="block">
-    <h2>info</h2>
-    <ul class="list">
-      <li><span>alive for:</span> <span id="alive"></span></li>
-      <li><span>languages:</span> EN, RU</li>
-      <li><span>location:</span> Ekaterinburg, RU (<span id="time"></span>)</li>
-      <li><span>occupation:</span> websites · bots · parsers</li>
-    </ul>
+    <h2># hobbies & interests</h2>
+
+    <p class="topic">programming</p>
+    <p class="desc">
+      i started my journey as a software developer in 2021 when i was only 11 years old,
+      my first programming language was c++.
+    </p>
+
+    <p class="topic">creating tools</p>
+    <p class="desc">
+      i like building things that simplify life and save time — bots, scripts, websites.
+    </p>
   </section>
 
-  <!-- skills -->
   <section class="block">
-    <h2>skills</h2>
-    <ul class="list">
-      <li>c++, javascript</li>
-      <li>telegram bots</li>
-      <li>backend & web</li>
-    </ul>
-  </section>
-
-  <!-- spotify -->
-  <section class="block">
-    <h2>currently playing</h2>
+    <h2># currently playing</h2>
     <div id="player" class="spotify muted">
       loading track…
     </div>
   </section>
 
-  <!-- footer -->
   <footer class="footer">
-    <a href="https://github.com/chillead-dev" target="_blank" rel="noopener noreferrer">
-      github
-    </a>
+    <a href="https://github.com/chillead-dev" target="_blank" rel="noopener noreferrer">github</a>
     <span>·</span>
-    <a href="https://t.me/rizzdev" target="_blank" rel="noopener noreferrer">
-      telegram
-    </a>
+    <a href="https://t.me/rizzdev" target="_blank" rel="noopener noreferrer">telegram</a>
   </footer>
 
 </main>
