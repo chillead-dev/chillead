@@ -14,12 +14,12 @@
   <meta http-equiv="X-Frame-Options" content="DENY">
   <meta http-equiv="Content-Security-Policy"
         content="
-        default-src 'self';
-        img-src 'self' https: data:;
-        script-src 'self';
-        style-src 'self' https://fonts.googleapis.com;
-        font-src https://fonts.gstatic.com;
-        connect-src 'self';
+          default-src 'self';
+          img-src 'self' https: data:;
+          script-src 'self';
+          style-src 'self' https://fonts.googleapis.com;
+          font-src https://fonts.gstatic.com;
+          connect-src 'self';
         ">
 
   <!-- font -->
@@ -30,17 +30,60 @@
 <body>
 <main class="page">
 
-  <h1>alex</h1>
-  <p class="muted">developer</p>
+  <!-- header -->
+  <section class="block">
+    <h1>alex</h1>
+    <p class="muted">developer</p>
+  </section>
 
-  <div id="player" class="spotify muted">
-    loading track…
-  </div>
+  <!-- about -->
+  <section class="block">
+    <h2>about</h2>
+    <p>
+      my name is alex. i started programming in 2021 when i was 11 years old.
+      i enjoy building things that save time and make life simpler.
+    </p>
+  </section>
 
-  <div class="links">
-    <a href="https://github.com/chillead-dev" target="_blank" rel="noopener noreferrer">github</a>
-    <a href="https://t.me/rizzdev" target="_blank" rel="noopener noreferrer">telegram</a>
-  </div>
+  <!-- info -->
+  <section class="block">
+    <h2>info</h2>
+    <ul class="list">
+      <li><span>alive for:</span> <span id="alive"></span></li>
+      <li><span>languages:</span> EN, RU</li>
+      <li><span>location:</span> Ekaterinburg, RU (<span id="time"></span>)</li>
+      <li><span>occupation:</span> websites · bots · parsers</li>
+    </ul>
+  </section>
+
+  <!-- skills -->
+  <section class="block">
+    <h2>skills</h2>
+    <ul class="list">
+      <li>c++, javascript</li>
+      <li>telegram bots</li>
+      <li>backend & web</li>
+    </ul>
+  </section>
+
+  <!-- spotify -->
+  <section class="block">
+    <h2>currently playing</h2>
+    <div id="player" class="spotify muted">
+      loading track…
+    </div>
+  </section>
+
+  <!-- footer -->
+  <footer class="footer">
+    <a href="https://github.com/chillead-dev" target="_blank" rel="noopener noreferrer">
+      github
+    </a>
+    <span>·</span>
+    <a href="https://t.me/rizzdev" target="_blank" rel="noopener noreferrer">
+      telegram
+    </a>
+  </footer>
 
 </main>
 
