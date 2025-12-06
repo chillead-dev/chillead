@@ -2,11 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>alex</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>chillead>.<</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- favicon -->
-  <link rel="icon" href="https://telegifter.ru/wp-content/themes/gifts/assets/img/gifts/sakuraflower/Meower.webp" />
+  <link rel="icon" href="https://telegifter.ru/wp-content/themes/gifts/assets/img/gifts/sakuraflower/Meower.webp">
+
+  <!-- font -->
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 
   <style>
     body {
@@ -21,7 +24,7 @@
     .page {
       max-width: 820px;
       margin: auto;
-      padding: 36px 20px 64px;
+      padding: 36px 18px 64px;
     }
 
     h1 {
@@ -34,9 +37,12 @@
       margin: 30px 0 12px;
     }
 
-    .lead {
-      font-size: 20px;
-      color: #ddd;
+    p {
+      margin: 10px 0;
+    }
+
+    .muted {
+      color: #9a9a9a;
     }
 
     /* spotify */
@@ -44,18 +50,19 @@
     .spotify {
       margin-top: 14px;
       background: #0e0e0e;
-      border: 1px solid #1f1f1f;
       border-radius: 16px;
       padding: 14px;
       display: flex;
       gap: 14px;
       align-items: center;
+      border: 1px solid #1f1f1f;
     }
 
     .cover {
-      width: 70px;
-      height: 70px;
+      width: 68px;
+      height: 68px;
       border-radius: 10px;
+      object-fit: cover;
     }
 
     .title {
@@ -71,26 +78,27 @@
       margin-top: 6px;
       height: 4px;
       background: #222;
-      border-radius: 10px;
+      border-radius: 999px;
       overflow: hidden;
     }
 
     .fill {
       height: 100%;
       background: #1db954;
+      transition: width .4s ease;
     }
 
     /* widgets */
 
     .widgets {
-      margin-top: 30px;
       display: flex;
       gap: 12px;
+      margin-top: 32px;
       flex-wrap: wrap;
     }
 
     .widget {
-      flex: 1 1 260px;
+      flex: 1 1 250px;
       background: #0e0e0e;
       border-radius: 16px;
       padding: 14px;
@@ -109,6 +117,7 @@
       background: #111;
       display: grid;
       place-items: center;
+      font-size: 18px;
     }
 
     footer {
@@ -121,19 +130,26 @@
       color: #e6e6e6;
       text-decoration: underline;
     }
+
+    @media (max-width: 520px) {
+      body {
+        font-size: 19px;
+      }
+    }
   </style>
 </head>
 
 <body>
-  <div class="page">
-    <h1># welcome!</h1>
+  <main class="page">
 
-    <p class="lead">
+    <h1># welcome!</h1>
+    <p>
       hello! my name is <b>alex</b>.  
       i create websites, telegram bots and small tools.
     </p>
 
     <h2>## currently playing</h2>
+
     <div class="spotify" id="player">
       loading track data...
     </div>
@@ -142,7 +158,7 @@
       <a class="widget" href="https://github.com/chillead-dev" target="_blank">
         <div class="circle">🐱</div>
         <div>
-          <b>github</b><br />
+          <b>github</b><br>
           this is where i post
         </div>
       </a>
@@ -150,7 +166,7 @@
       <a class="widget" href="https://t.me/rizzdev" target="_blank">
         <div class="circle">✉️</div>
         <div>
-          <b>links</b><br />
+          <b>links</b><br>
           telegram & contacts
         </div>
       </a>
@@ -159,38 +175,45 @@
     <footer>
       dm me telegram — <a href="https://t.me/rizzdev">@rizzdev</a>
     </footer>
-  </div>
+
+  </main>
 
   <script>
-    async function load() {
+    async function loadTrack() {
       try {
         const r = await fetch("/api/now-playing", { cache: "no-store" });
         const d = await r.json();
-
         const el = document.getElementById("player");
 
-        if (!d.playing) {
+        if (!d || !d.playing) {
           el.textContent = "nothing is playing right now.";
           return;
         }
 
+        const percent = Math.min(
+          100,
+          Math.max(2, (d.progress / d.duration) * 100)
+        );
+
         el.innerHTML = `
-          <img class="cover" src="${d.cover}">
+          <img class="cover" src="${d.cover}" alt="cover">
           <div>
             <div class="title">${d.title}</div>
             <div class="artist">${d.artist}</div>
             <div class="progress">
-              <div class="fill" style="width:${(d.progress / d.duration) * 100}%"></div>
+              <div class="fill" style="width:${percent}%"></div>
             </div>
           </div>
         `;
       } catch {
-        document.getElementById("player").textContent = "failed to load track.";
+        document.getElementById("player").textContent =
+          "failed to load track.";
       }
     }
 
-    load();
-    setInterval(load, 15000);
+    loadTrack();
+    setInterval(loadTrack, 15000);
   </script>
+
 </body>
 </html>
