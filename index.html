@@ -1,0 +1,32 @@
+<div id="now-playing">загружаю…</div>
+
+<script>
+  async function loadNow() {
+    const el = document.getElementById("now-playing");
+
+    try {
+      const r = await fetch("/api/now-playing");
+      const d = await r.json();
+
+      if (!d.playing) {
+        el.innerHTML = "я сейчас ничего не слушаю";
+        return;
+      }
+
+      const percent = Math.round((d.progress / d.duration) * 100);
+
+      el.innerHTML = `
+        <strong>${d.title}</strong><br>
+        <span>${d.artist}</span>
+        <div style="margin-top:6px;height:4px;background:#333;border-radius:4px">
+          <div style="width:${percent}%;height:100%;background:#1db954"></div>
+        </div>
+      `;
+    } catch {
+      el.innerHTML = "ошибка загрузки";
+    }
+  }
+
+  loadNow();
+  setInterval(loadNow, 15000);
+</script>
