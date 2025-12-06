@@ -1,98 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>alex</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="assets/css/style.css" />
-</head>
-<body>
-
-<main class="container">
-
-<pre class="md">
-
-# welcome!
-
-hello! my name is <b>alex</b>.
-i am 15 years old and interested in programming.
-
-i mostly create websites, telegram bots, parsers and other tools
-that simplify life and save time.
-
-## about me
-
-- name: alex
-- alive for: <span id="alive"></span>
-- languages: EN, RU
-- location: Ekaterinburg, RU (<span id="time"></span>)
-- occupation:
-  creating game cheats, websites, telegram bots, parsers / checkers
-
-## background
-
-i started my journey as a software developer in 2021,
-when i was only 11 years old.
-my first programming language was <b>c++</b>.
-
-## skills (and not only)
-
-- programming
-- c++, javascript, typescript
-- websites & backend
-- telegram bots
-- cats 🐈
-
-## currently playing
-
-below lies the track that i'm currently listening to on spotify...
-or, simply nothing if i'm not listening to anything atm :p
-
-</pre>
-
-<div class="player" id="player">
-  loading track data...
-</div>
-
-<p class="note">
-this data is approximate and may be delayed by a few seconds.
-</p>
-
-</main>
-
-<script src="assets/js/now-playing.js"></script>
 <script>
-/* alive counter */
-const birth = new Date("2010-08-05T00:00:00Z");
-function updateAlive() {
-  let diff = Math.floor((Date.now() - birth) / 1000);
-  const y = Math.floor(diff / 31557600);
-  diff -= y * 31557600;
-  const d = Math.floor(diff / 86400);
-  diff -= d * 86400;
-  const h = Math.floor(diff / 3600);
-  diff -= h * 3600;
-  const m = Math.floor(diff / 60);
-  const s = diff % 60;
-  document.getElementById("alive").textContent =
-    `${d + y * 365}d, ${h}h, ${m}m, ${s}s (${y}y)`;
-}
-setInterval(updateAlive, 1000);
-updateAlive();
+const playerBox = document.getElementById("player");
 
-/* ekaterinburg time */
-function updateTime() {
-  document.getElementById("time").textContent =
-    new Intl.DateTimeFormat("en-GB", {
-      timeZone: "Asia/Yekaterinburg",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit"
-    }).format(new Date());
+async function loadNowPlaying() {
+  playerBox.textContent = "loading track data...";
+
+  try {
+    const res = await fetch("/api/now-playing", {
+      cache: "no-store",
+    });
+
+    if (!res.ok) {
+      playerBox.textContent = "failed to load track data.";
+      return;
+    }
+
+    const data = await res.json();
+
+    if (!data || !data.playing) {
+      playerBox.textContent = "nothing is currently playing.";
+      return;
+    }
+
+    const percent = Math.min(
+      100,
+      Math.max(2, (data.progress / data.duration) * 100)
+    );
+
+    playerBox.innerHTML = `
+      <b>${data.title}</b>
+      <div class="muted">${data.artist}</div>
+      <div class="bar">
+        <div class="fill" style="width:${percent}%"></div>
+      </div>
+    `;
+  } catch (e) {
+    console.error(e);
+    playerBox.textContent = "error loading track data.";
+  }
 }
-setInterval(updateTime, 1000);
-updateTime();
+
+loadNowPlaying();
+setInterval(loadNowPlaying, 15000);
 </script>
-
-</body>
-</html>
