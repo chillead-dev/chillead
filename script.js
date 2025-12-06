@@ -1,40 +1,67 @@
 "use strict";
 
+/* alive counter */
+const born = new Date("2010-08-05T00:00:00Z");
+const aliveEl = document.getElementById("alive");
+
+function updateAlive() {
+  let diff = Math.floor((Date.now() - born) / 1000);
+  const d = Math.floor(diff / 86400);
+  diff -= d * 86400;
+  const h = Math.floor(diff / 3600);
+  diff -= h * 3600;
+  const m = Math.floor(diff / 60);
+  const s = diff % 60;
+
+  aliveEl.textContent = `${d}d ${h}h ${m}m ${s}s`;
+}
+updateAlive();
+setInterval(updateAlive, 1000);
+
+/* local time */
+const timeEl = document.getElementById("time");
+
+function updateTime() {
+  timeEl.textContent = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Yekaterinburg",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit"
+  }).format(new Date());
+}
+updateTime();
+setInterval(updateTime, 1000);
+
+/* spotify */
 const player = document.getElementById("player");
 
-function setText(text) {
-  player.textContent = text;
+function setText(t) {
+  player.textContent = t;
 }
 
-function renderTrack(data) {
+function renderTrack(d) {
   player.innerHTML = "";
 
   const img = document.createElement("img");
-  img.src = data.cover;
+  img.src = d.cover;
   img.className = "cover";
-  img.alt = "cover";
 
   const box = document.createElement("div");
 
   const title = document.createElement("div");
   title.className = "title";
-  title.textContent = data.title;
+  title.textContent = d.title;
 
   const artist = document.createElement("div");
   artist.className = "artist";
-  artist.textContent = data.artist;
+  artist.textContent = d.artist;
 
   const progress = document.createElement("div");
   progress.className = "progress";
 
   const fill = document.createElement("div");
   fill.className = "fill";
-
-  const percent = Math.min(
-    100,
-    Math.max(2, (data.progress / data.duration) * 100)
-  );
-  fill.style.width = percent + "%";
+  fill.style.width = Math.min(100, (d.progress / d.duration) * 100) + "%";
 
   progress.appendChild(fill);
   box.append(title, artist, progress);
@@ -44,16 +71,16 @@ function renderTrack(data) {
 
 async function loadTrack() {
   try {
-    const res = await fetch("/api/now-playing", { cache: "no-store" });
-    if (!res.ok) return setText("offline");
+    const r = await fetch("/api/now-playing", { cache: "no-store" });
+    if (!r.ok) return setText("offline");
 
-    const data = await res.json();
-    if (!data || data.playing !== true) {
+    const d = await r.json();
+    if (!d || d.playing !== true) {
       setText("not listening now");
       return;
     }
 
-    renderTrack(data);
+    renderTrack(d);
   } catch {
     setText("error");
   }
