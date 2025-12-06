@@ -10,55 +10,38 @@
 
 <main class="page">
 
-  <section class="section">
+  <section class="block">
     <h1># welcome!</h1>
 
     <p>
-      hello! my name is <strong>alex</strong>.  
-      i'm a developer who enjoys building things that simplify life,
-      save time and feel clean to use.
-    </p>
-
-    <p>
-      i mainly work with websites, backend logic and telegram bots,
-      but i often experiment with other areas just for fun.
+      hello! my name is <strong>alex</strong>.
+      i'm a developer focused on creating useful things:
+      websites, bots and tools that save time.
     </p>
   </section>
 
-  <section class="section">
+  <section class="block">
     <h2>## about</h2>
-
     <ul class="list">
       <li><span>name:</span> alex</li>
       <li><span>alive for:</span> <span id="alive"></span></li>
       <li><span>languages:</span> EN, RU</li>
-      <li>
-        <span>location:</span>
-        Ekaterinburg, RU (<span id="time"></span>)
-      </li>
-      <li class="multiline">
-        <span>occupation:</span>
-        creating game cheats, websites,<br>
-        telegram bots, parsers and checkers
-      </li>
+      <li><span>location:</span> Ekaterinburg, RU (<span id="time"></span>)</li>
+      <li><span>occupation:</span> websites · bots · parsers</li>
     </ul>
   </section>
 
-  <section class="section">
+  <section class="block">
     <h2>## background</h2>
-
     <p>
-      i started programming in 2021 when i was only 11 years old.
-      my first programming language was <strong>c++</strong>,
-      which taught me how things actually work under the hood.
+      started coding in 2021 at 11 years old.
+      first language was <strong>c++</strong>.
     </p>
   </section>
 
-  <section class="section">
+  <section class="block">
     <h2>## skills</h2>
-
     <ul class="list compact">
-      <li>programming</li>
       <li>c++, javascript, typescript</li>
       <li>backend & websites</li>
       <li>telegram bots</li>
@@ -66,27 +49,18 @@
     </ul>
   </section>
 
-  <section class="section">
+  <section class="block">
     <h2>## currently playing</h2>
-
-    <p class="muted">
-      this shows what i'm listening to on spotify right now.
-      if nothing is playing, it will say so.
-    </p>
 
     <div class="spotify-card" id="player">
       loading track data...
     </div>
-
-    <p class="footnote">
-      data may be delayed by a few seconds.
-    </p>
   </section>
 
 </main>
 
 <script>
-/* ===== alive counter ===== */
+/* alive counter */
 const birth = new Date("2010-08-05T00:00:00Z");
 function updateAlive() {
   let diff = Math.floor((Date.now() - birth) / 1000);
@@ -99,12 +73,12 @@ function updateAlive() {
   const m = Math.floor(diff / 60);
   const s = diff % 60;
   document.getElementById("alive").textContent =
-    `${d + y * 365}d, ${h}h, ${m}m, ${s}s (${y}y)`;
+    `${d + y * 365}d ${h}h ${m}m ${s}s`;
 }
 updateAlive();
 setInterval(updateAlive, 1000);
 
-/* ===== local time ===== */
+/* local time */
 function updateTime() {
   document.getElementById("time").textContent =
     new Intl.DateTimeFormat("en-GB", {
@@ -117,7 +91,7 @@ function updateTime() {
 updateTime();
 setInterval(updateTime, 1000);
 
-/* ===== spotify ===== */
+/* spotify now playing */
 const player = document.getElementById("player");
 
 async function loadNowPlaying() {
@@ -130,26 +104,23 @@ async function loadNowPlaying() {
       return;
     }
 
-    const progress =
-      Math.min(100, (data.progress / data.duration) * 100);
+    const percent = Math.min(
+      100,
+      Math.max(2, (data.progress / data.duration) * 100)
+    );
 
     player.innerHTML = `
-      <div class="spotify-header">
-        <img 
-          src="https://upload.wikimedia.org/wikipedia/commons/8/84/Spotify_icon.svg"
-          alt="Spotify"
-          class="spotify-icon"
-        >
-        <span>listening on spotify</span>
-      </div>
-
-      <div class="track-title">${data.title}</div>
-      <div class="track-artist">${data.artist}</div>
-
-      <div class="progress">
-        <div class="progress-fill" style="width:${progress}%"></div>
-      </div>
-    `;
+<div class="track">
+  <img class="cover" src="${data.cover}" alt="cover">
+  <div class="track-info">
+    <div class="track-title">${data.title}</div>
+    <div class="track-artist">${data.artist}</div>
+    <div class="progress">
+      <div class="progress-fill" style="width:${percent}%"></div>
+    </div>
+  </div>
+</div>
+`;
   } catch {
     player.textContent = "failed to load track data.";
   }
