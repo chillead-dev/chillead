@@ -8,23 +8,52 @@ body {
   color: #e6e6e6;
   font-family: "JetBrains Mono", monospace;
   font-size: 20px;
+  line-height: 1.6;
 }
 
 .page {
-  max-width: 720px;
+  max-width: 760px;
   margin: auto;
-  padding: 40px 20px 60px;
+  padding: 40px 20px 70px;
+}
+
+.block {
+  margin-bottom: 36px;
 }
 
 h1 {
+  font-size: 34px;
   margin: 0;
-  font-size: 32px;
+}
+
+h2 {
+  font-size: 22px;
+  margin-bottom: 12px;
+}
+
+p {
+  margin: 0;
 }
 
 .muted {
   color: #999;
   font-size: 14px;
-  margin-bottom: 24px;
+}
+
+/* lists */
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.list li {
+  margin-bottom: 6px;
+}
+
+.list span {
+  color: #aaa;
 }
 
 /* spotify */
@@ -47,7 +76,6 @@ h1 {
 
 .title {
   font-weight: 600;
-  font-size: 16px;
 }
 
 .artist {
@@ -67,25 +95,23 @@ h1 {
   background: #1db954;
 }
 
-/* links */
+/* footer */
 
-.links {
-  margin-top: 28px;
-  display: flex;
-  gap: 16px;
+.footer {
+  margin-top: 40px;
+  text-align: center;
+  font-size: 14px;
+  color: #777;
 }
 
-.links a {
+.footer a {
   color: #e6e6e6;
   text-decoration: none;
-  font-size: 15px;
 }
 
-.links a:hover {
+.footer a:hover {
   text-decoration: underline;
 }
-
-/* mobile */
 
 @media (max-width: 500px) {
   body {
