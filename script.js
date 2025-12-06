@@ -1,6 +1,6 @@
 "use strict";
 
-/* alive counter */
+/* alive time */
 const born = new Date("2010-08-05T00:00:00Z");
 const aliveEl = document.getElementById("alive");
 
@@ -13,14 +13,13 @@ function updateAlive() {
   const m = Math.floor(diff / 60);
   const s = diff % 60;
 
-  aliveEl.textContent = `${d}d ${h}h ${m}m ${s}s`;
+  aliveEl.textContent = `${d}d, ${h}h, ${m}m, ${s}s`;
 }
 updateAlive();
 setInterval(updateAlive, 1000);
 
 /* local time */
 const timeEl = document.getElementById("time");
-
 function updateTime() {
   timeEl.textContent = new Intl.DateTimeFormat("en-GB", {
     timeZone: "Asia/Yekaterinburg",
