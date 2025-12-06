@@ -4,78 +4,92 @@
 
 body {
   margin: 0;
-  background: radial-gradient(circle at top, #151515, #000);
+  background: radial-gradient(circle at top, #141414, #000);
   color: #e6e6e6;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 20px;
-  line-height: 1.6;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 18px;
+  line-height: 1.65;
 }
 
 .page {
-  max-width: 760px;
+  max-width: 850px;
   margin: auto;
-  padding: 40px 20px 70px;
+  padding: 44px 22px 80px;
 }
 
-.block {
-  margin-bottom: 36px;
+.hero {
+  margin-bottom: 40px;
 }
 
 h1 {
-  font-size: 34px;
   margin: 0;
+  font-size: 34px;
+}
+
+.subtitle {
+  margin: 4px 0 0;
+  color: #888;
+}
+
+.block {
+  margin-bottom: 42px;
 }
 
 h2 {
   font-size: 22px;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
-p {
-  margin: 0;
-}
-
-.muted {
-  color: #999;
-  font-size: 14px;
-}
-
-/* lists */
-
-.list {
+.meta {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.list li {
+.meta li {
   margin-bottom: 6px;
 }
 
-.list span {
+.meta span {
   color: #aaa;
+}
+
+.topic {
+  font-weight: 600;
+  margin: 14px 0 4px;
+}
+
+.desc {
+  color: #bbb;
+  font-size: 15px;
+}
+
+.muted {
+  color: #888;
+  font-size: 14px;
 }
 
 /* spotify */
 
 .spotify {
-  background: #0e0e0e;
-  border-radius: 14px;
+  background: #0d0d0d;
+  border-radius: 16px;
   border: 1px solid #1f1f1f;
-  padding: 14px;
+  padding: 16px;
   display: flex;
   gap: 14px;
   align-items: center;
 }
 
 .cover {
-  width: 56px;
-  height: 56px;
-  border-radius: 8px;
+  width: 64px;
+  height: 64px;
+  border-radius: 10px;
 }
 
 .title {
   font-weight: 600;
+  font-size: 16px;
 }
 
 .artist {
@@ -98,7 +112,7 @@ p {
 /* footer */
 
 .footer {
-  margin-top: 40px;
+  margin-top: 60px;
   text-align: center;
   font-size: 14px;
   color: #777;
@@ -113,8 +127,10 @@ p {
   text-decoration: underline;
 }
 
+/* mobile */
+
 @media (max-width: 500px) {
   body {
-    font-size: 18px;
+    font-size: 17px;
   }
 }
