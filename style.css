@@ -1,0 +1,130 @@
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap");
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #0b0b0b;
+  color: #e6e6e6;
+  font-family: "JetBrains Mono", monospace;
+}
+
+.page {
+  max-width: 900px;
+  padding: 32px 22px 80px;
+}
+
+.md {
+  margin-bottom: 44px;
+}
+
+h1, h2 {
+  font-weight: 600;
+  margin: 0 0 14px;
+}
+
+h1 {
+  font-size: 28px;
+}
+
+h2 {
+  font-size: 20px;
+  color: #dcdcdc;
+}
+
+p {
+  line-height: 1.6;
+  color: #cfcfcf;
+  max-width: 800px;
+}
+
+.muted {
+  color: #888;
+  font-size: 13px;
+}
+
+ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+li {
+  margin-bottom: 10px;
+  color: #cfcfcf;
+}
+
+.tag {
+  background: #1a1a1a;
+  padding: 2px 6px;
+  border-radius: 5px;
+  color: #fff;
+}
+
+/* === PLAYER === */
+
+.player {
+  margin-top: 18px;
+  background: #141414;
+  border-radius: 16px;
+  padding: 14px;
+  max-width: 520px;
+}
+
+.np {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.cover {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+}
+
+.np-info {
+  flex: 1;
+  overflow: hidden;
+}
+
+.np-title {
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.np-artist {
+  font-size: 12px;
+  color: #9a9a9a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.np-spotify {
+  font-size: 11px;
+  color: #1db954;
+  text-decoration: none;
+}
+
+.np-bar {
+  margin-top: 10px;
+  height: 4px;
+  background: #2a2a2a;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.np-progress {
+  height: 100%;
+  background: #fff;
+}
+
+.offline {
+  color: #777;
+  font-size: 13px;
+}
