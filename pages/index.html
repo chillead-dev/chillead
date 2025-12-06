@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>alex</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- favicon -->
+  <link rel="icon" href="https://telegifter.ru/wp-content/themes/gifts/assets/img/gifts/sakuraflower/Meower.webp" />
+
+  <style>
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top, #151515, #000);
+      color: #e6e6e6;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 20px;
+      line-height: 1.6;
+    }
+
+    .page {
+      max-width: 820px;
+      margin: auto;
+      padding: 36px 20px 64px;
+    }
+
+    h1 {
+      font-size: 32px;
+      margin-bottom: 14px;
+    }
+
+    h2 {
+      font-size: 22px;
+      margin: 30px 0 12px;
+    }
+
+    .lead {
+      font-size: 20px;
+      color: #ddd;
+    }
+
+    /* spotify */
+
+    .spotify {
+      margin-top: 14px;
+      background: #0e0e0e;
+      border: 1px solid #1f1f1f;
+      border-radius: 16px;
+      padding: 14px;
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .cover {
+      width: 70px;
+      height: 70px;
+      border-radius: 10px;
+    }
+
+    .title {
+      font-weight: 600;
+    }
+
+    .artist {
+      font-size: 15px;
+      color: #aaa;
+    }
+
+    .progress {
+      margin-top: 6px;
+      height: 4px;
+      background: #222;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .fill {
+      height: 100%;
+      background: #1db954;
+    }
+
+    /* widgets */
+
+    .widgets {
+      margin-top: 30px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .widget {
+      flex: 1 1 260px;
+      background: #0e0e0e;
+      border-radius: 16px;
+      padding: 14px;
+      border: 1px solid #1f1f1f;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #111;
+      display: grid;
+      place-items: center;
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 14px;
+      color: #888;
+    }
+
+    footer a {
+      color: #e6e6e6;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <h1># welcome!</h1>
+
+    <p class="lead">
+      hello! my name is <b>alex</b>.  
+      i create websites, telegram bots and small tools.
+    </p>
+
+    <h2>## currently playing</h2>
+    <div class="spotify" id="player">
+      loading track data...
+    </div>
+
+    <div class="widgets">
+      <a class="widget" href="https://github.com/chillead-dev" target="_blank">
+        <div class="circle">🐱</div>
+        <div>
+          <b>github</b><br />
+          this is where i post
+        </div>
+      </a>
+
+      <a class="widget" href="https://t.me/rizzdev" target="_blank">
+        <div class="circle">✉️</div>
+        <div>
+          <b>links</b><br />
+          telegram & contacts
+        </div>
+      </a>
+    </div>
+
+    <footer>
+      dm me telegram — <a href="https://t.me/rizzdev">@rizzdev</a>
+    </footer>
+  </div>
+
+  <script>
+    async function load() {
+      try {
+        const r = await fetch("/api/now-playing", { cache: "no-store" });
+        const d = await r.json();
+
+        const el = document.getElementById("player");
+
+        if (!d.playing) {
+          el.textContent = "nothing is playing right now.";
+          return;
+        }
+
+        el.innerHTML = `
+          <img class="cover" src="${d.cover}">
+          <div>
+            <div class="title">${d.title}</div>
+            <div class="artist">${d.artist}</div>
+            <div class="progress">
+              <div class="fill" style="width:${(d.progress / d.duration) * 100}%"></div>
+            </div>
+          </div>
+        `;
+      } catch {
+        document.getElementById("player").textContent = "failed to load track.";
+      }
+    }
+
+    load();
+    setInterval(load, 15000);
+  </script>
+</body>
+</html>
