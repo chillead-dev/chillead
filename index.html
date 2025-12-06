@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>alex</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<main class="container">
+<pre class="md">
+
+# welcome!
+
+hello. my name is <b>alex</b>.
+i am interested in programming and building things
+that simplify life and save time.
+
+## about
+
+- name: alex
+- alive for: <span id="alive"></span>
+- languages: EN, RU
+- location: Ekaterinburg, RU (<span id="time"></span>)
+- occupation:
+  creating game cheats, websites,
+  telegram bots, parsers & checkers
+
+## background
+
+started coding in 2021 at the age of 11.
+first programming language — <b>c++</b>.
+
+## currently playing
+
+below is the track i'm listening to on spotify.
+if nothing is playing — it will be shown as idle.
+
+</pre>
+
+<div class="player" id="player">
+loading track data...
+</div>
+
+</main>
+
+<script>
+/* ========= alive counter ========= */
+const birth = new Date("2010-08-05T00:00:00Z");
+function updateAlive() {
+  let diff = Math.floor((Date.now() - birth) / 1000);
+  const y = Math.floor(diff / 31557600);
+  diff -= y * 31557600;
+  const d = Math.floor(diff / 86400);
+  diff -= d * 86400;
+  const h = Math.floor(diff / 3600);
+  diff -= h * 3600;
+  const m = Math.floor(diff / 60);
+  const s = diff % 60;
+  document.getElementById("alive").textContent =
+    `${d + y * 365}d, ${h}h, ${m}m, ${s}s (${y}y)`;
+}
+setInterval(updateAlive, 1000);
+updateAlive();
+
+/* ========= ekaterinburg time ========= */
+function updateTime() {
+  document.getElementById("time").textContent =
+    new Intl.DateTimeFormat("en-GB", {
+      timeZone: "Asia/Yekaterinburg",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit"
+    }).format(new Date());
+}
+setInterval(updateTime, 1000);
+updateTime();
+
+/* ========= spotify now playing ========= */
+const box = document.getElementById("player");
+
+async function loadNowPlaying() {
+  try {
+    const res = await fetch("/api/now-playing", { cache: "no-store" });
+    const data = await res.json();
+
+    if (!data || !data.playing) {
+      box.textContent = "nothing is currently playing.";
+      return;
+    }
+
+    const percent = Math.min(
+      100,
+      Math.max(2, (data.progress / data.duration) * 100)
+    );
+
+    box.innerHTML = `
+<b>${data.title}</b>
+<div class="muted">${data.artist}</div>
+<div class="bar">
+  <div class="fill" style="width:${percent}%"></div>
+</div>
+`;
+  } catch {
+    box.textContent = "failed to load track data.";
+  }
+}
+
+loadNowPlaying();
+setInterval(loadNowPlaying, 15000);
+</script>
+
+</body>
+</html>
