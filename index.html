@@ -1,32 +1,91 @@
-<div id="now-playing">загружаю…</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<main class="page">
+
+  <section class="md">
+    <h1># welcome!</h1>
+    <p>
+      hello! this is a placeholder text.<br>
+      you will replace it with your own content later.
+    </p>
+  </section>
+
+  <section class="md">
+    <h2>## what do i do?</h2>
+    <ul>
+      <li><span class="tag">project_one</span> — description goes here</li>
+      <li><span class="tag">project_two</span> — description goes here</li>
+    </ul>
+  </section>
+
+  <section class="md">
+    <h2>## skills</h2>
+    <ul>
+      <li>typescript</li>
+      <li>postgresql</li>
+      <li>redis</li>
+      <li>cats 🐈</li>
+    </ul>
+  </section>
+
+  <section class="md">
+    <h2>## currently playing</h2>
+    <p class="muted">
+      below lies the track that i'm currently listening to on spotify…
+    </p>
+
+    <!-- NOW PLAYING -->
+    <div id="player" class="player">
+      loading…
+    </div>
+  </section>
+
+</main>
 
 <script>
-  async function loadNow() {
-    const el = document.getElementById("now-playing");
+async function loadNowPlaying() {
+  const el = document.getElementById("player");
 
-    try {
-      const r = await fetch("/api/now-playing");
-      const d = await r.json();
+  try {
+    const r = await fetch("/api/now-playing");
+    const d = await r.json();
 
-      if (!d.playing) {
-        el.innerHTML = "я сейчас ничего не слушаю";
-        return;
-      }
-
-      const percent = Math.round((d.progress / d.duration) * 100);
-
-      el.innerHTML = `
-        <strong>${d.title}</strong><br>
-        <span>${d.artist}</span>
-        <div style="margin-top:6px;height:4px;background:#333;border-radius:4px">
-          <div style="width:${percent}%;height:100%;background:#1db954"></div>
-        </div>
-      `;
-    } catch {
-      el.innerHTML = "ошибка загрузки";
+    if (!d.playing) {
+      el.innerHTML = `<div class="offline">nothing is playing right now</div>`;
+      return;
     }
-  }
 
-  loadNow();
-  setInterval(loadNow, 15000);
+    const percent = Math.floor((d.progress / d.duration) * 100);
+
+    el.innerHTML = `
+      <div class="np">
+        <img src="${d.cover}" class="cover">
+        <div class="np-info">
+          <div class="np-title">${d.title}</div>
+          <div class="np-artist">${d.artist}</div>
+        </div>
+        <a href="${d.url}" class="np-spotify" target="_blank">spotify</a>
+      </div>
+      <div class="np-bar">
+        <div class="np-progress" style="width:${percent}%"></div>
+      </div>
+    `;
+  } catch {
+    el.textContent = "failed to load spotify status";
+  }
+}
+
+loadNowPlaying();
+setInterval(loadNowPlaying, 15000);
 </script>
+
+</body>
+</html>
