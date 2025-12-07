@@ -4,6 +4,7 @@
 const born = new Date("2010-08-05T00:00:00Z");
 setInterval(() => {
   const el = document.getElementById("alive");
+  if (!el) return;
   let d = Math.floor((Date.now() - born) / 1000);
   const days = Math.floor(d / 86400);
   d %= 86400;
@@ -16,13 +17,14 @@ setInterval(() => {
 
 /* time */
 setInterval(() => {
-  document.getElementById("time").textContent =
-    new Intl.DateTimeFormat("en-GB", {
-      timeZone: "Asia/Yekaterinburg",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit"
-    }).format(new Date());
+  const t = document.getElementById("time");
+  if (!t) return;
+  t.textContent = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Yekaterinburg",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit"
+  }).format(new Date());
 }, 1000);
 
 /* currently playing */
@@ -43,11 +45,15 @@ function renderNow(d) {
 
 async function loadNow() {
   try {
-    const r = await fetch("/api/now-playing");
+    const r = await fetch("/api/now-playing", { cache: "no-store" });
     const d = await r.json();
-    if (!d.playing) return player.textContent = "not listening now";
+    if (!d || d.playing !== true) {
+      player.textContent = "not listening now";
+      return;
+    }
     renderNow(d);
-  } catch {
+  } catch (e) {
+    console.error("now-playing error", e);
     player.textContent = "error";
   }
 }
@@ -55,22 +61,30 @@ async function loadNow() {
 loadNow();
 setInterval(loadNow, 15000);
 
-/* ✅ recently played */
+/* recently played */
 const recentBox = document.getElementById("recent");
 
 function timeAgo(ts) {
-  const diff = Math.floor((Date.now() - ts) / 60000);
-  if (diff < 1) return "just now";
-  if (diff < 60) return `${diff} min ago`;
-  return `${Math.floor(diff / 60)}h ago`;
+  const diffMin = Math.floor((Date.now() - ts) / 60000);
+  if (diffMin < 1) return "just now";
+  if (diffMin < 60) return diffMin + " min ago";
+  const h = Math.floor(diffMin / 60);
+  return h + "h ago";
 }
 
 async function loadRecent() {
+  if (!recentBox) return;
+
   try {
-    const r = await fetch("/api/recently-played");
+    const r = await fetch("/api/recently-played", { cache: "no-store" });
     const list = await r.json();
 
     recentBox.innerHTML = "";
+
+    if (!Array.isArray(list) || list.length === 0) {
+      recentBox.textContent = "no recent tracks.";
+      return;
+    }
 
     list.forEach(t => {
       const div = document.createElement("div");
@@ -83,7 +97,8 @@ async function loadRecent() {
       `;
       recentBox.appendChild(div);
     });
-  } catch {
+  } catch (e) {
+    console.error("recently-played error", e);
     recentBox.textContent = "failed to load history";
   }
 }
