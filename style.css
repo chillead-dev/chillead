@@ -1,219 +1,55 @@
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  background: radial-gradient(circle at top, #141414, #000);
-  color: #e6e6e6;
-  font-family: "IBM Plex Mono", monospace;
-  font-size: 18px;
-  line-height: 1.65;
-}
-
-.page {
-  max-width: 860px;
-  margin: auto;
-  padding: 44px 22px 80px;
-}
-
-/* hero */
-
-.hero {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 16px;
-  margin-bottom: 40px;
-}
-
-.hero-main h1 {
-  margin: 0;
-  font-size: 34px;
-}
-
-.subtitle {
-  margin: 4px 0 0;
-  color: #888;
-}
-
-.hero-gif {
-  flex-shrink: 0;
-  width: 80px;
-  height: 80px;
-  overflow: hidden;
-  border-radius: 16px;
-}
-
-/* blocks */
-
-.block {
-  margin-bottom: 42px;
-}
-
-.block h2 {
-  font-size: 22px;
-  margin-bottom: 16px;
-}
-
-/* metadata */
-
-.meta {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.meta li {
-  margin-bottom: 6px;
-}
-
-.meta span {
-  color: #aaa;
-}
-
-.muted {
-  color: #888;
-  font-size: 14px;
-  margin-top: 10px;
-}
-
-/* hobbies */
-
-.topic {
-  font-weight: 600;
-  margin: 14px 0 4px;
-}
-
-.desc {
-  color: #bbb;
-  font-size: 15px;
-  margin: 0;
-}
-
-/* spotify */
-
-.spotify {
-  background: #0d0d0d;
-  border-radius: 16px;
-  border: 1px solid #1f1f1f;
-  padding: 16px;
-  display: flex;
-  gap: 14px;
-  align-items: center;
-}
-
-.cover {
-  width: 64px;
-  height: 64px;
-  border-radius: 10px;
-}
-
-.title {
-  font-weight: 600;
-  font-size: 16px;
-}
-
-.artist {
-  font-size: 14px;
-  color: #aaa;
-}
-
-.progress {
-  height: 3px;
-  background: #222;
-  border-radius: 999px;
-  margin-top: 6px;
-  overflow: hidden;
-}
-
-.fill {
-  height: 100%;
-  background: #1db954;
-}
-
 /* github widget */
 
-.github-card {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  text-decoration: none;
-  color: inherit;
-  background: #0d0d0d;
-  border-radius: 16px;
-  padding: 14px 16px;
-  border: 1px solid #1f1f1f;
-}
-
-.github-left {
+.github-widget {
   display: flex;
   align-items: center;
   gap: 12px;
+  padding: 16px;
+  border-radius: 16px;
+  background: #0d0d0d;
+  border: 1px solid #1f1f1f;
+  text-decoration: none;
+  color: inherit;
 }
 
-.github-icon-circle {
-  width: 32px;
-  height: 32px;
-  border-radius: 999px;
-  background: #111;
-  display: grid;
-  place-items: center;
+.gh-icon {
+  font-size: 22px;
 }
 
-.github-icon {
-  font-size: 18px;
-}
-
-.github-title {
-  font-size: 15px;
+.gh-title {
   font-weight: 600;
 }
 
-.github-sub {
+.gh-sub {
   font-size: 13px;
   color: #aaa;
 }
 
-.github-right {
-  flex-shrink: 0;
+/* reactions */
+
+.reactions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-.github-badge {
-  font-size: 11px;
-  text-transform: uppercase;
-  padding: 3px 8px;
-  border-radius: 999px;
-  border: 1px solid #333;
-}
-
-/* footer */
-
-.footer {
-  margin-top: 60px;
-  text-align: center;
-  font-size: 14px;
-  color: #777;
-}
-
-.footer a {
+.reactions button {
+  background: #0d0d0d;
+  border: 1px solid #1f1f1f;
   color: #e6e6e6;
-  text-decoration: none;
+  font-family: inherit;
+  font-size: 15px;
+  padding: 6px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
 
-.footer a:hover {
-  text-decoration: underline;
+.reactions button:hover {
+  background: #151515;
 }
 
-/* mobile */
-
-@media (max-width: 600px) {
-  body {
-    font-size: 17px;
-  }
-
-  .hero {
-    flex-direction: row;
-    align-items: center;
-  }
+.reactions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
