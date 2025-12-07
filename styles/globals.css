@@ -1,0 +1,82 @@
+body {
+  margin: 0;
+  background: #000;
+  color: #e6e6e6;
+  font-family: "IBM Plex Mono", monospace;
+}
+
+.page {
+  max-width: 860px;
+  margin: auto;
+  padding: 40px 20px;
+}
+
+.hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.gif {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+}
+
+.subtitle {
+  color: #888;
+}
+
+.block {
+  margin-top: 40px;
+}
+
+.player {
+  position: relative;
+  padding: 16px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #222;
+}
+
+.player .bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  filter: blur(20px) brightness(0.4);
+}
+
+.player img {
+  position: relative;
+  width: 64px;
+  border-radius: 12px;
+}
+
+.player b {
+  position: relative;
+}
+
+.bar {
+  height: 3px;
+  background: #333;
+  margin-top: 6px;
+}
+
+.fill {
+  height: 100%;
+  background: #1db954;
+}
+
+.history {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+}
+
+.history div {
+  min-width: 140px;
+}
+.footer {
+  margin-top: 60px;
+  color: #888;
+}
