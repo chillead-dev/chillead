@@ -5,7 +5,6 @@
   <title>chillead</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- favicon -->
   <link rel="icon" href="https://telegifter.ru/wp-content/themes/gifts/assets/img/gifts/sakuraflower/Meower.webp">
 
   <!-- security -->
@@ -13,7 +12,6 @@
   <meta http-equiv="Referrer-Policy" content="strict-origin">
   <meta http-equiv="X-Frame-Options" content="DENY">
 
-  <!-- CSP (БЕЗ iframe и сторонних скриптов) -->
   <meta http-equiv="Content-Security-Policy"
     content="
       default-src 'self';
@@ -27,7 +25,6 @@
       frame-ancestors 'none';
     ">
 
-  <!-- font -->
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -35,22 +32,19 @@
 <body>
 <main class="page">
 
-<!-- HEADER -->
 <header class="hero">
   <div>
     <h1># alex</h1>
     <p class="subtitle">## sleep deprived developer</p>
   </div>
 
-  <!-- ✅ GIF (100% работает) -->
   <img
     src="https://media.tenor.com/HErQk1qA0MoAAAAC/anime-cat-girl-dancing.gif"
-    alt="gif"
     class="hero-gif"
+    alt="gif"
   >
 </header>
 
-<!-- ABOUT -->
 <section class="block">
   <h2># personal metadata</h2>
   <ul class="meta">
@@ -58,22 +52,11 @@
     <li><span>nickname:</span> chillead</li>
     <li><span>alive for:</span> <span id="alive"></span> (15y)</li>
     <li><span>languages:</span> EN, RU</li>
-    <li>
-      <span>location:</span>
-      Ekaterinburg, RU (<span id="time"></span>)
-    </li>
-    <li>
-      <span>occupation:</span>
-      websites, telegram bots, parsers
-    </li>
+    <li><span>location:</span> Ekaterinburg, RU (<span id="time"></span>)</li>
+    <li><span>occupation:</span> websites, telegram bots, parsers</li>
   </ul>
-
-  <p class="muted">
-    i don't have much to say about myself honestly sooo...
-  </p>
 </section>
 
-<!-- SKILLS -->
 <section class="block">
   <h2># skills</h2>
   <ul class="list">
@@ -81,59 +64,24 @@
     <li>javascript</li>
     <li>telegram bots</li>
     <li>web & backend</li>
-    <li>parsers / checkers</li>
   </ul>
 </section>
 
-<!-- SPOTIFY -->
 <section class="block">
   <h2># currently playing</h2>
-  <div id="player" class="spotify muted">
-    loading track…
-  </div>
+  <div id="player" class="spotify muted">loading…</div>
 </section>
 
-<!-- GITHUB -->
+<!-- ✅ RECENTLY PLAYED -->
 <section class="block">
-  <h2># github</h2>
-  <a
-    class="github-widget"
-    href="https://github.com/chillead-dev"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    <span class="gh-icon">🐱</span>
-    <div>
-      <div class="gh-title">chillead-dev</div>
-      <div class="gh-sub">my code & experiments</div>
-    </div>
-  </a>
-</section>
-
-<!-- REACTIONS -->
-<section class="block">
-  <h2># reactions</h2>
-  <div class="reactions">
-    <button data-r="like">👍 <span>0</span></button>
-    <button data-r="love">❤️ <span>0</span></button>
-    <button data-r="fire">🔥 <span>0</span></button>
-    <button data-r="skull">💀 <span>0</span></button>
-  </div>
-</section>
-
-<!-- VISITS -->
-<section class="block">
-  <p class="muted">total visits: <span id="visits">–</span></p>
+  <h2># recently played</h2>
+  <div id="recent" class="recent-list"></div>
 </section>
 
 <footer class="footer">
-  <a href="https://github.com/chillead-dev" target="_blank" rel="noopener noreferrer">
-    github
-  </a>
+  <a href="https://github.com/chillead-dev" target="_blank">github</a>
   ·
-  <a href="https://t.me/rizzdev" target="_blank" rel="noopener noreferrer">
-    telegram
-  </a>
+  <a href="https://t.me/rizzdev" target="_blank">telegram</a>
 </footer>
 
 </main>
