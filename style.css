@@ -1,7 +1,3 @@
-/* ======================
-   BASE
-====================== */
-
 * {
   box-sizing: border-box;
 }
@@ -21,9 +17,7 @@ body {
   padding: 44px 22px 80px;
 }
 
-/* ======================
-   HERO
-====================== */
+/* HERO */
 
 .hero {
   display: flex;
@@ -39,21 +33,19 @@ body {
 }
 
 .subtitle {
-  margin: 4px 0 0;
+  margin-top: 4px;
   font-size: 14px;
   color: #888;
 }
 
-.tenor-gif-embed {
+.hero-gif {
   width: 88px;
   height: 88px;
-  overflow: hidden;
   border-radius: 14px;
+  object-fit: cover;
 }
 
-/* ======================
-   SECTIONS
-====================== */
+/* SECTIONS */
 
 .block {
   margin-bottom: 42px;
@@ -64,9 +56,7 @@ body {
   margin-bottom: 16px;
 }
 
-/* ======================
-   METADATA
-====================== */
+/* METADATA */
 
 .meta {
   list-style: none;
@@ -82,30 +72,25 @@ body {
   color: #aaa;
 }
 
-/* ======================
-   TEXT
-====================== */
+/* LIST */
+
+.list {
+  padding-left: 18px;
+  margin: 0;
+}
+
+.list li {
+  margin-bottom: 6px;
+}
+
+/* TEXT */
 
 .muted {
   color: #888;
   font-size: 14px;
-  margin-top: 10px;
 }
 
-.topic {
-  font-weight: 600;
-  margin: 14px 0 4px;
-}
-
-.desc {
-  color: #bbb;
-  font-size: 15px;
-  margin: 0;
-}
-
-/* ======================
-   SPOTIFY
-====================== */
+/* SPOTIFY */
 
 .spotify {
   background: #0d0d0d;
@@ -125,7 +110,6 @@ body {
 
 .title {
   font-weight: 600;
-  font-size: 16px;
 }
 
 .artist {
@@ -146,9 +130,7 @@ body {
   background: #1db954;
 }
 
-/* ======================
-   GITHUB WIDGET
-====================== */
+/* GITHUB */
 
 .github-widget {
   display: flex;
@@ -160,11 +142,6 @@ body {
   border: 1px solid #1f1f1f;
   text-decoration: none;
   color: inherit;
-  transition: background 0.15s ease;
-}
-
-.github-widget:hover {
-  background: #141414;
 }
 
 .gh-icon {
@@ -173,7 +150,6 @@ body {
 
 .gh-title {
   font-weight: 600;
-  font-size: 15px;
 }
 
 .gh-sub {
@@ -181,13 +157,10 @@ body {
   color: #aaa;
 }
 
-/* ======================
-   REACTIONS
-====================== */
+/* REACTIONS */
 
 .reactions {
   display: flex;
-  flex-wrap: wrap;
   gap: 10px;
 }
 
@@ -200,15 +173,6 @@ body {
   padding: 6px 12px;
   border-radius: 12px;
   cursor: pointer;
-  transition: background 0.15s ease, transform 0.05s ease;
-}
-
-.reactions button:hover {
-  background: #151515;
-}
-
-.reactions button:active {
-  transform: scale(0.96);
 }
 
 .reactions button:disabled {
@@ -216,9 +180,7 @@ body {
   cursor: not-allowed;
 }
 
-/* ======================
-   FOOTER
-====================== */
+/* FOOTER */
 
 .footer {
   margin-top: 50px;
@@ -236,17 +198,10 @@ body {
   text-decoration: underline;
 }
 
-/* ======================
-   MOBILE
-====================== */
+/* MOBILE */
 
 @media (max-width: 600px) {
   body {
     font-size: 17px;
-  }
-
-  .hero {
-    flex-direction: row;
-    align-items: center;
   }
 }
