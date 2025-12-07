@@ -1,3 +1,7 @@
+/* ======================
+   BASE
+====================== */
+
 * {
   box-sizing: border-box;
 }
@@ -17,7 +21,9 @@ body {
   padding: 44px 22px 80px;
 }
 
-/* HERO */
+/* ======================
+   HERO
+====================== */
 
 .hero {
   display: flex;
@@ -45,7 +51,9 @@ body {
   object-fit: cover;
 }
 
-/* SECTIONS */
+/* ======================
+   SECTIONS
+====================== */
 
 .block {
   margin-bottom: 42px;
@@ -56,7 +64,9 @@ body {
   margin-bottom: 16px;
 }
 
-/* METADATA */
+/* ======================
+   METADATA
+====================== */
 
 .meta {
   list-style: none;
@@ -72,7 +82,9 @@ body {
   color: #aaa;
 }
 
-/* LIST */
+/* ======================
+   LIST / SKILLS
+====================== */
 
 .list {
   padding-left: 18px;
@@ -83,14 +95,18 @@ body {
   margin-bottom: 6px;
 }
 
-/* TEXT */
+/* ======================
+   TEXT
+====================== */
 
 .muted {
   color: #888;
   font-size: 14px;
 }
 
-/* SPOTIFY */
+/* ======================
+   SPOTIFY NOW PLAYING
+====================== */
 
 .spotify {
   background: #0d0d0d;
@@ -106,10 +122,12 @@ body {
   width: 64px;
   height: 64px;
   border-radius: 10px;
+  object-fit: cover;
 }
 
 .title {
   font-weight: 600;
+  font-size: 16px;
 }
 
 .artist {
@@ -130,57 +148,67 @@ body {
   background: #1db954;
 }
 
-/* GITHUB */
+/* ======================
+   RECENTLY PLAYED
+====================== */
 
-.github-widget {
+.recent-list {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px;
-  border-radius: 16px;
+  gap: 14px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scroll-snap-type: x mandatory;
+}
+
+.recent-list::-webkit-scrollbar {
+  height: 6px;
+}
+
+.recent-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.recent-list::-webkit-scrollbar-thumb {
+  background: #222;
+  border-radius: 999px;
+}
+
+.recent-item {
+  min-width: 160px;
   background: #0d0d0d;
   border: 1px solid #1f1f1f;
-  text-decoration: none;
-  color: inherit;
+  border-radius: 14px;
+  padding: 10px;
+  scroll-snap-align: start;
 }
 
-.gh-icon {
-  font-size: 22px;
+.recent-cover {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  object-fit: cover;
 }
 
-.gh-title {
+.recent-title {
+  font-size: 14px;
   font-weight: 600;
+  margin-top: 8px;
 }
 
-.gh-sub {
+.recent-artist {
   font-size: 13px;
   color: #aaa;
 }
 
-/* REACTIONS */
-
-.reactions {
-  display: flex;
-  gap: 10px;
+.recent-time {
+  font-size: 12px;
+  color: #777;
+  margin-top: 4px;
 }
 
-.reactions button {
-  background: #0d0d0d;
-  border: 1px solid #1f1f1f;
-  color: #e6e6e6;
-  font-family: inherit;
-  font-size: 15px;
-  padding: 6px 12px;
-  border-radius: 12px;
-  cursor: pointer;
-}
-
-.reactions button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* FOOTER */
+/* ======================
+   FOOTER
+====================== */
 
 .footer {
   margin-top: 50px;
@@ -198,10 +226,21 @@ body {
   text-decoration: underline;
 }
 
-/* MOBILE */
+/* ======================
+   MOBILE
+====================== */
 
 @media (max-width: 600px) {
   body {
     font-size: 17px;
+  }
+
+  .hero {
+    align-items: flex-start;
+  }
+
+  .hero-gif {
+    width: 72px;
+    height: 72px;
   }
 }
