@@ -1,5 +1,3 @@
-import fetch from "node-fetch";
-
 const {
   SPOTIFY_CLIENT_ID,
   SPOTIFY_CLIENT_SECRET,
@@ -23,38 +21,42 @@ async function getAccessToken() {
     })
   });
 
-  return res.json();
+  const data = await res.json();
+  return data.access_token;
 }
 
 export default async function handler(req, res) {
   try {
-    const { access_token } = await getAccessToken();
+    const accessToken = await getAccessToken();
 
     const r = await fetch(
       "https://api.spotify.com/v1/me/player/recently-played?limit=12",
       {
         headers: {
-          Authorization: `Bearer ${access_token}`
+          Authorization: `Bearer ${accessToken}`
         }
       }
     );
 
     if (!r.ok) {
-      return res.status(200).json([]);
+      res.setHeader("Cache-Control", "no-store");
+      res.status(200).json([]);
+      return;
     }
 
     const data = await r.json();
 
-    const tracks = data.items.map(i => ({
-      title: i.track.name,
-      artist: i.track.artists.map(a => a.name).join(", "),
-      cover: i.track.album.images[0]?.url,
-      played_at: new Date(i.played_at).getTime()
+    const tracks = (data.items || []).map(item => ({
+      title: item.track.name,
+      artist: item.track.artists.map(a => a.name).join(", "),
+      cover: item.track.album.images[0]?.url,
+      played_at: new Date(item.played_at).getTime()
     }));
 
     res.setHeader("Cache-Control", "no-store");
     res.status(200).json(tracks);
   } catch (e) {
+    res.setHeader("Cache-Control", "no-store");
     res.status(200).json([]);
   }
 }
