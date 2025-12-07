@@ -6,16 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- favicon -->
-  <link rel="icon" href="https://telegifter.ru/wp-content/themes/gifts/assets/img/gifts/sakuraflower/Meower.webp" />
+  <link rel="icon" href="https://telegifter.ru/wp-content/themes/gifts/assets/img/gifts/sakuraflower/Meower.webp">
 
   <!-- security -->
-  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
-  <meta http-equiv="Referrer-Policy" content="strict-origin" />
-  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="Referrer-Policy" content="strict-origin">
+  <meta http-equiv="X-Frame-Options" content="DENY">
 
-  <!-- ✅ ОБНОВЛЁННЫЙ CSP (Tenor теперь работает) -->
-  <meta
-    http-equiv="Content-Security-Policy"
+  <!-- CSP -->
+  <meta http-equiv="Content-Security-Policy"
     content="
       default-src 'self';
       script-src 'self' https://tenor.com;
@@ -27,8 +26,7 @@
       object-src 'none';
       base-uri 'none';
       frame-ancestors 'none';
-    "
-  />
+    ">
 
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
@@ -37,55 +35,74 @@
 <body>
 <main class="page">
 
-  <header class="hero">
+<header class="hero">
+  <div>
+    <h1># alex</h1>
+    <p class="subtitle">## sleep deprived developer</p>
+  </div>
+
+  <!-- GIF -->
+  <div class="tenor-gif-embed"
+       data-postid="11880612084971354203"
+       data-share-method="host"
+       data-aspect-ratio="1"
+       data-width="88">
+  </div>
+</header>
+
+<section class="block">
+  <h2># personal metadata</h2>
+  <ul class="meta">
+    <li><span>name:</span> alex</li>
+    <li><span>nickname:</span> chillead</li>
+    <li><span>alive for:</span> <span id="alive"></span> (15y)</li>
+    <li><span>languages:</span> EN, RU</li>
+    <li><span>location:</span> Ekaterinburg, RU (<span id="time"></span>)</li>
+  </ul>
+  <p class="muted">i don't have much to say about myself honestly sooo...</p>
+</section>
+
+<section class="block">
+  <h2># currently playing</h2>
+  <div id="player" class="spotify muted">loading track…</div>
+</section>
+
+<!-- ✅ GitHub widget -->
+<section class="block">
+  <h2># github</h2>
+
+  <a class="github-widget"
+     href="https://github.com/chillead-dev"
+     target="_blank"
+     rel="noopener noreferrer">
+    <span class="gh-icon">🐱</span>
     <div>
-      <h1># alex</h1>
-      <p class="subtitle">## sleep deprived developer</p>
+      <div class="gh-title">chillead-dev</div>
+      <div class="gh-sub">my code & experiments</div>
     </div>
+  </a>
+</section>
 
-    <!-- ✅ Tenor GIF -->
-    <div class="tenor-gif-embed"
-         data-postid="11880612084971354203"
-         data-share-method="host"
-         data-aspect-ratio="1"
-         data-width="90">
-    </div>
-  </header>
+<!-- ✅ reactions -->
+<section class="block">
+  <h2># reactions</h2>
+  <div class="reactions">
+    <button data-r="like">👍 <span>0</span></button>
+    <button data-r="love">❤️ <span>0</span></button>
+    <button data-r="fire">🔥 <span>0</span></button>
+    <button data-r="skull">💀 <span>0</span></button>
+  </div>
+</section>
 
-  <section class="block">
-    <h2># personal metadata</h2>
-    <ul class="meta">
-      <li><span>name:</span> alex</li>
-      <li><span>nickname:</span> chillead</li>
-      <li><span>alive for:</span> <span id="alive"></span> (15y)</li>
-      <li><span>languages:</span> EN, RU</li>
-      <li><span>location:</span> Ekaterinburg, RU (<span id="time"></span>)</li>
-    </ul>
-    <p class="muted">i don't have much to say about myself honestly sooo...</p>
-    <p class="muted">total visits: <span id="visits">–</span></p>
-  </section>
+<!-- ✅ visits -->
+<section class="block">
+  <p class="muted">total visits: <span id="visits">–</span></p>
+</section>
 
-  <section class="block">
-    <h2># currently playing</h2>
-    <div id="player" class="spotify muted">loading track…</div>
-  </section>
-
-  <!-- ✅ reactions -->
-  <section class="block">
-    <h2># reactions</h2>
-    <div class="reactions">
-      <button data-r="like">👍 <span>0</span></button>
-      <button data-r="love">❤️ <span>0</span></button>
-      <button data-r="fire">🔥 <span>0</span></button>
-      <button data-r="skull">💀 <span>0</span></button>
-    </div>
-  </section>
-
-  <footer class="footer">
-    <a href="https://github.com/chillead-dev" target="_blank" rel="noopener noreferrer">github</a>
-    ·
-    <a href="https://t.me/rizzdev" target="_blank" rel="noopener noreferrer">telegram</a>
-  </footer>
+<footer class="footer">
+  <a href="https://github.com/chillead-dev" target="_blank">github</a> ·
+  <a href="https://t.me/rizzdev" target="_blank">telegram</a>
+</footer>
 
 </main>
 
