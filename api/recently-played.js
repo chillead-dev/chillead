@@ -1,11 +1,11 @@
-const {
-  SPOTIFY_CLIENT_ID,
-  SPOTIFY_CLIENT_SECRET,
-  SPOTIFY_REFRESH_TOKEN
-} = process.env;
+export default async function handler(req, res) {
+  const {
+    SPOTIFY_CLIENT_ID,
+    SPOTIFY_CLIENT_SECRET,
+    SPOTIFY_REFRESH_TOKEN
+  } = process.env;
 
-async function getAccessToken() {
-  const res = await fetch("https://accounts.spotify.com/api/token", {
+  const tokenRes = await fetch("https://accounts.spotify.com/api/token", {
     method: "POST",
     headers: {
       Authorization:
@@ -21,42 +21,17 @@ async function getAccessToken() {
     })
   });
 
-  const data = await res.json();
-  return data.access_token;
-}
+  const { access_token } = await tokenRes.json();
 
-export default async function handler(req, res) {
-  try {
-    const accessToken = await getAccessToken();
-
-    const r = await fetch(
-      "https://api.spotify.com/v1/me/player/recently-played?limit=12",
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
-      }
-    );
-
-    if (!r.ok) {
-      res.setHeader("Cache-Control", "no-store");
-      res.status(200).json([]);
-      return;
+  const r = await fetch(
+    "https://api.spotify.com/v1/me/player/recently-played?limit=5",
+    {
+      headers: { Authorization: `Bearer ${access_token}` }
     }
+  );
 
-    const data = await r.json();
+  const text = await r.text();
 
-    const tracks = (data.items || []).map(item => ({
-      title: item.track.name,
-      artist: item.track.artists.map(a => a.name).join(", "),
-      cover: item.track.album.images[0]?.url,
-      played_at: new Date(item.played_at).getTime()
-    }));
-
-    res.setHeader("Cache-Control", "no-store");
-    res.status(200).json(tracks);
-  } catch (e) {
-    res.setHeader("Cache-Control", "no-store");
-    res.status(200).json([]);
-  }
+  res.setHeader("Content-Type", "application/json");
+  res.status(200).send(text);
 }
