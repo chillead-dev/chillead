@@ -25,16 +25,10 @@ setInterval(() => {
     }).format(new Date());
 }, 1000);
 
-/* visits */
-fetch("/api/visit", { cache: "no-store" })
-  .then(r => r.json())
-  .then(d => document.getElementById("visits").textContent = d.count)
-  .catch(() => document.getElementById("visits").textContent = "?");
-
-/* spotify */
+/* currently playing */
 const player = document.getElementById("player");
 
-function renderTrack(d) {
+function renderNow(d) {
   player.innerHTML = `
     <img class="cover" src="${d.cover}">
     <div>
@@ -47,34 +41,51 @@ function renderTrack(d) {
   `;
 }
 
-async function loadTrack() {
+async function loadNow() {
   try {
-    const r = await fetch("/api/now-playing", { cache: "no-store" });
-    if (!r.ok) return player.textContent = "offline";
+    const r = await fetch("/api/now-playing");
     const d = await r.json();
-    if (!d || d.playing !== true) return player.textContent = "not listening now";
-    renderTrack(d);
+    if (!d.playing) return player.textContent = "not listening now";
+    renderNow(d);
   } catch {
     player.textContent = "error";
   }
 }
-loadTrack();
-setInterval(loadTrack, 15000);
 
-/* reactions */
-fetch("/api/react").then(r => r.json()).then(d => {
-  document.querySelectorAll(".reactions button").forEach(b => {
-    b.querySelector("span").textContent = d[b.dataset.r];
-  });
-});
+loadNow();
+setInterval(loadNow, 15000);
 
-document.querySelectorAll(".reactions button").forEach(btn => {
-  btn.onclick = async () => {
-    await fetch("/api/react", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ type: btn.dataset.r })
+/* ✅ recently played */
+const recentBox = document.getElementById("recent");
+
+function timeAgo(ts) {
+  const diff = Math.floor((Date.now() - ts) / 60000);
+  if (diff < 1) return "just now";
+  if (diff < 60) return `${diff} min ago`;
+  return `${Math.floor(diff / 60)}h ago`;
+}
+
+async function loadRecent() {
+  try {
+    const r = await fetch("/api/recently-played");
+    const list = await r.json();
+
+    recentBox.innerHTML = "";
+
+    list.forEach(t => {
+      const div = document.createElement("div");
+      div.className = "recent-item";
+      div.innerHTML = `
+        <img src="${t.cover}" class="recent-cover">
+        <div class="recent-title">${t.title}</div>
+        <div class="recent-artist">${t.artist}</div>
+        <div class="recent-time">${timeAgo(t.played_at)}</div>
+      `;
+      recentBox.appendChild(div);
     });
-    btn.disabled = true;
-  };
-});
+  } catch {
+    recentBox.textContent = "failed to load history";
+  }
+}
+
+loadRecent();
