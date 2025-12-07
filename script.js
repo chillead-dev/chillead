@@ -15,7 +15,7 @@ setInterval(() => {
   el.textContent = `${days}d ${h}h ${m}m ${s}s`;
 }, 1000);
 
-/* time */
+/* local time */
 setInterval(() => {
   const t = document.getElementById("time");
   if (!t) return;
@@ -44,63 +44,46 @@ function renderNow(d) {
 }
 
 async function loadNow() {
-  try {
-    const r = await fetch("/api/now-playing", { cache: "no-store" });
-    const d = await r.json();
-    if (!d || d.playing !== true) {
-      player.textContent = "not listening now";
-      return;
-    }
-    renderNow(d);
-  } catch (e) {
-    console.error("now-playing error", e);
-    player.textContent = "error";
+  const r = await fetch("/api/now-playing", { cache: "no-store" });
+  const d = await r.json();
+  if (!d.playing) {
+    player.textContent = "not listening now";
+    return;
   }
+  renderNow(d);
 }
 
 loadNow();
 setInterval(loadNow, 15000);
 
-/* recently played */
-const recentBox = document.getElementById("recent");
+/* 🎵 history */
+const recentEl = document.getElementById("recent");
 
 function timeAgo(ts) {
-  const diffMin = Math.floor((Date.now() - ts) / 60000);
-  if (diffMin < 1) return "just now";
-  if (diffMin < 60) return diffMin + " min ago";
-  const h = Math.floor(diffMin / 60);
-  return h + "h ago";
+  const m = Math.floor((Date.now() - ts) / 60000);
+  if (m < 1) return "just now";
+  if (m < 60) return `${m} min ago`;
+  return `${Math.floor(m / 60)}h ago`;
 }
 
-async function loadRecent() {
-  if (!recentBox) return;
+async function loadHistory() {
+  const r = await fetch("/api/history", { cache: "no-store" });
+  const list = await r.json();
 
-  try {
-    const r = await fetch("/api/recently-played", { cache: "no-store" });
-    const list = await r.json();
+  recentEl.innerHTML = "";
 
-    recentBox.innerHTML = "";
-
-    if (!Array.isArray(list) || list.length === 0) {
-      recentBox.textContent = "no recent tracks.";
-      return;
-    }
-
-    list.forEach(t => {
-      const div = document.createElement("div");
-      div.className = "recent-item";
-      div.innerHTML = `
-        <img src="${t.cover}" class="recent-cover">
-        <div class="recent-title">${t.title}</div>
-        <div class="recent-artist">${t.artist}</div>
-        <div class="recent-time">${timeAgo(t.played_at)}</div>
-      `;
-      recentBox.appendChild(div);
-    });
-  } catch (e) {
-    console.error("recently-played error", e);
-    recentBox.textContent = "failed to load history";
-  }
+  list.forEach(t => {
+    const d = document.createElement("div");
+    d.className = "recent-item";
+    d.innerHTML = `
+      <img class="recent-cover" src="${t.cover}">
+      <div class="recent-title">${t.title}</div>
+      <div class="recent-artist">${t.artist}</div>
+      <div class="recent-time">${timeAgo(t.played_at)}</div>
+    `;
+    recentEl.appendChild(d);
+  });
 }
 
-loadRecent();
+loadHistory();
+setInterval(loadHistory, 20000);
