@@ -1,12 +1,11 @@
 "use strict";
 
-/* === alive timer === */
+/* ===== alive timer ===== */
 const born = new Date("2010-08-05T00:00:00Z");
 const aliveEl = document.getElementById("alive");
 
 function updateAlive() {
-  if (!aliveEl) return;
-  let diff = Math.floor((Date.now() - born.getTime()) / 1000);
+  let diff = Math.floor((Date.now() - born) / 1000);
   const d = Math.floor(diff / 86400);
   diff -= d * 86400;
   const h = Math.floor(diff / 3600);
@@ -18,11 +17,9 @@ function updateAlive() {
 updateAlive();
 setInterval(updateAlive, 1000);
 
-/* === local time === */
+/* ===== local time ===== */
 const timeEl = document.getElementById("time");
-
 function updateTime() {
-  if (!timeEl) return;
   timeEl.textContent = new Intl.DateTimeFormat("en-GB", {
     timeZone: "Asia/Yekaterinburg",
     hour: "2-digit",
@@ -33,84 +30,86 @@ function updateTime() {
 updateTime();
 setInterval(updateTime, 1000);
 
-/* === spotify now playing === */
+/* ===== visits ===== */
+async function loadVisits() {
+  try {
+    const r = await fetch("/api/visit", { cache: "no-store" });
+    const d = await r.json();
+    document.getElementById("visits").textContent = d.count;
+  } catch {
+    document.getElementById("visits").textContent = "?";
+  }
+}
+loadVisits();
 
+/* ===== spotify ===== */
 const player = document.getElementById("player");
 
-function setPlayerText(text) {
-  if (!player) return;
-  player.textContent = text;
+function setText(t) {
+  player.textContent = t;
 }
 
-function renderTrack(data) {
-  if (!player) return;
-
+function renderTrack(d) {
   player.innerHTML = "";
 
   const img = document.createElement("img");
-  img.src = data.cover;
-  img.alt = "album cover";
+  img.src = d.cover;
   img.className = "cover";
 
-  const wrap = document.createElement("div");
+  const box = document.createElement("div");
 
   const title = document.createElement("div");
   title.className = "title";
-  title.textContent = data.title;
+  title.textContent = d.title;
 
   const artist = document.createElement("div");
   artist.className = "artist";
-  artist.textContent = data.artist;
+  artist.textContent = d.artist;
 
   const progress = document.createElement("div");
   progress.className = "progress";
 
   const fill = document.createElement("div");
   fill.className = "fill";
-
-  const duration = Number(data.duration) || 1;
-  const progressMs = Number(data.progress) || 0;
-  const percent = Math.min(100, Math.max(0, (progressMs / duration) * 100));
-
-  fill.style.width = percent + "%";
+  fill.style.width = Math.min(100, (d.progress / d.duration) * 100) + "%";
 
   progress.appendChild(fill);
-  wrap.append(title, artist, progress);
-
-  player.append(img, wrap);
+  box.append(title, artist, progress);
+  player.append(img, box);
 }
 
 async function loadTrack() {
   try {
-    const res = await fetch("/api/now-playing", {
-      cache: "no-store",
-      headers: { Accept: "application/json" }
-    });
-
-    if (!res.ok) {
-      setPlayerText("offline");
-      return;
-    }
-
-    const data = await res.json();
-
-    if (
-      !data ||
-      typeof data !== "object" ||
-      data.playing !== true ||
-      typeof data.title !== "string" ||
-      typeof data.artist !== "string" ||
-      typeof data.cover !== "string"
-    ) {
-      setPlayerText("not listening now");
-      return;
-    }
-
-    renderTrack(data);
+    const r = await fetch("/api/now-playing", { cache: "no-store" });
+    if (!r.ok) return setText("offline");
+    const d = await r.json();
+    if (!d || d.playing !== true) return setText("not listening now");
+    renderTrack(d);
   } catch {
-    setPlayerText("error");
+    setText("error");
   }
 }
-
 loadTrack();
 setInterval(loadTrack, 15000);
+
+/* ===== reactions ===== */
+async function loadReactions() {
+  const r = await fetch("/api/react", { cache: "no-store" });
+  const d = await r.json();
+  document.querySelectorAll(".reactions button").forEach(b => {
+    b.querySelector("span").textContent = d[b.dataset.r];
+  });
+}
+
+document.querySelectorAll(".reactions button").forEach(btn => {
+  btn.onclick = async () => {
+    await fetch("/api/react", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type: btn.dataset.r })
+    });
+    loadReactions();
+  };
+});
+
+loadReactions();
