@@ -1,58 +1,70 @@
+const {
+  SPOTIFY_CLIENT_ID,
+  SPOTIFY_CLIENT_SECRET,
+  SPOTIFY_REFRESH_TOKEN
+} = process.env;
+
+async function getAccessToken() {
+  const res = await fetch("https://accounts.spotify.com/api/token", {
+    method: "POST",
+    headers: {
+      Authorization:
+        "Basic " +
+        Buffer.from(
+          SPOTIFY_CLIENT_ID + ":" + SPOTIFY_CLIENT_SECRET
+        ).toString("base64"),
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: new URLSearchParams({
+      grant_type: "refresh_token",
+      refresh_token: SPOTIFY_REFRESH_TOKEN
+    })
+  });
+
+  const data = await res.json();
+  return data.access_token;
+}
+
 export default async function handler(req, res) {
   try {
-    // 1. Получаем access_token
-    const basic = Buffer.from(
-      process.env.SPOTIFY_CLIENT_ID +
-        ":" +
-        process.env.SPOTIFY_CLIENT_SECRET
-    ).toString("base64");
+    const accessToken = await getAccessToken();
 
-    const tokenRes = await fetch("https://accounts.spotify.com/api/token", {
-      method: "POST",
+    const r = await fetch("https://api.spotify.com/v1/me/player/currently-playing", {
       headers: {
-        Authorization: `Basic ${basic}`,
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        grant_type: "refresh_token",
-        refresh_token: process.env.SPOTIFY_REFRESH_TOKEN,
-      }),
+        Authorization: `Bearer ${accessToken}`
+      }
     });
 
-    const tokenData = await tokenRes.json();
-    const accessToken = tokenData.access_token;
-
-    // 2. ИСПОЛЬЗУЕМ /me/player (НЕ currently-playing)
-    const nowRes = await fetch(
-      "https://api.spotify.com/v1/me/player",
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
-
-    if (nowRes.status === 204) {
-      return res.status(200).json({ playing: false });
+    // 204 = ничего не играет
+    if (r.status === 204) {
+      res.status(200).json({ playing: false });
+      return;
     }
 
-    const data = await nowRes.json();
-
-    if (!data.is_playing || !data.item) {
-      return res.status(200).json({ playing: false });
+    if (!r.ok) {
+      res.status(200).json({ playing: false });
+      return;
     }
 
+    const data = await r.json();
+
+    if (!data || !data.item) {
+      res.status(200).json({ playing: false });
+      return;
+    }
+
+    const track = data.item;
+
+    res.setHeader("Cache-Control", "no-store");
     res.status(200).json({
-      playing: true,
-      title: data.item.name,
-      artist: data.item.artists.map(a => a.name).join(", "),
-      cover: data.item.album.images[0]?.url,
-      url: data.item.external_urls.spotify,
-      duration: data.item.duration_ms,
-      progress: data.progress_ms,
+      playing: data.is_playing === true,
+      title: track.name,
+      artist: track.artists.map(a => a.name).join(", "),
+      cover: track.album.images[0]?.url,
+      progress: data.progress_ms || 0,
+      duration: track.duration_ms || 1
     });
   } catch (e) {
-    console.error(e);
-    return res.status(500).json({ playing: false });
+    res.status(200).json({ playing: false });
   }
 }
