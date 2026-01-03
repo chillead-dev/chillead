@@ -20,103 +20,102 @@
 
 <main class="wrap">
 
-  <header class="header">
-    <h1># chillead</h1>
-    <div class="muted small">
-      alive: <span id="aliveInline"></span> · local: <span id="localTime"></span>
+<header class="header">
+  <h1># chillead</h1>
+  <div class="muted small">
+    alive: <span id="aliveInline"></span> · local: <span id="localTime"></span>
+  </div>
+</header>
+
+<section class="card profile-card">
+
+  <div class="profile-text">
+    <div class="intro">hiii~</div>
+
+    <div class="mono">
+      i am <b>alex</b> aka <b>chillead</b><br>
+      i build small tools, websites and telegram bots<br>
+      that make life easier and save time.
     </div>
-  </header>
 
-  <!-- PROFILE CARD (inside it: left text + right square gif) -->
-  <section class="card profile-card" aria-label="profile">
-    <div class="profile-text">
-      <div class="mono">
-        <div class="block-title">PROFILE</div>
-        <div>name: alex</div>
-        <div>nickname: chillead</div>
+    <div class="spacer"></div>
 
-        <br />
-        <div class="block-title">LOCATION</div>
-        <div>Ekaterinburg, RU</div>
+    <div class="mono block">
+      <div class="label">profile:</div>
+      name — alex<br>
+      nickname — chillead
+    </div>
 
-        <br />
-        <div class="block-title">LANGUAGES</div>
-        <div>EN / RU</div>
+    <div class="mono block">
+      <div class="label">location:</div>
+      ekaterinburg, ru
+    </div>
 
-        <br />
-        <div class="block-title">OCCUPATION</div>
-        <div>creating websites</div>
-        <div>creating telegram bots</div>
-        <div>parsers / checkers</div>
+    <div class="mono block">
+      <div class="label">languages:</div>
+      en / ru
+    </div>
 
-        <br />
-        <div class="block-title">SKILLS</div>
-        <div>c++</div>
-        <div>javascript</div>
-        <div>telegram bots</div>
-        <div>web & backend</div>
-        <div>parsers / checkers</div>
+    <div class="mono block">
+      <div class="label">occupation:</div>
+      creating websites<br>
+      creating telegram bots<br>
+      parsers / checkers
+    </div>
 
-        <br />
-        <div class="block-title">ABOUT</div>
-        <div>my name is alex.</div>
-        <div>i like building small tools, websites and telegram bots</div>
-        <div>that make life easier and save time.</div>
+    <div class="mono block">
+      <div class="label">skills:</div>
+      c++<br>
+      javascript<br>
+      telegram bots<br>
+      web & backend<br>
+      parsers / checkers
+    </div>
+  </div>
+
+  <!-- квадрат справа — ТОЧНО там -->
+  <aside class="gif-box">
+    <img
+      src="https://media.tenor.com/wxhwrp30VkgAAAAi/ayaya-club-ayaya.gif"
+      alt="ayaya"
+      loading="lazy"
+      decoding="async"
+    />
+  </aside>
+
+</section>
+
+<section class="spotify">
+  <h2>## spotify</h2>
+
+  <div id="player" class="player hidden">
+    <img id="cover" class="cover" />
+    <div class="info">
+      <a id="trackLink" class="title" target="_blank"></a>
+      <div id="artist" class="muted"></div>
+      <div class="progress">
+        <span id="current">0:00</span>
+        <div class="bar"><div id="fill"></div></div>
+        <span id="total">0:00</span>
       </div>
     </div>
+  </div>
 
-    <!-- THIS is exactly the “square” on the right -->
-    <aside class="gif-box" aria-label="ayaya gif">
-      <img
-        src="https://media.tenor.com/wxhwrp30VkgAAAAi/ayaya-club-ayaya.gif"
-        alt="Ayaya"
-        loading="lazy"
-        decoding="async"
-      />
-    </aside>
-  </section>
+  <div id="empty" class="muted">not listening right now</div>
 
-  <section class="spotify">
-    <h2>## spotify</h2>
+  <h3>### history</h3>
+  <div class="card subtle">
+    <pre id="history" class="pre muted">empty</pre>
+  </div>
+</section>
 
-    <div id="player" class="player hidden">
-      <img id="cover" class="cover" alt="cover" />
-      <div class="info">
-        <a id="trackLink" class="title" target="_blank" rel="noopener noreferrer"></a>
-        <div id="artist" class="muted"></div>
-        <div class="progress">
-          <span id="current">0:00</span>
-          <div class="bar" aria-hidden="true"><div id="fill"></div></div>
-          <span id="total">0:00</span>
-        </div>
-      </div>
-    </div>
-
-    <div id="empty" class="muted">not listening right now</div>
-
-    <h3 class="h3">### history</h3>
-    <div class="card">
-      <pre id="history" class="muted pre">empty</pre>
-    </div>
-  </section>
-
-  <footer class="footer">
-    <div class="footer-icons">
-      <a class="iconbtn" href="https://t.me/rizzdev" target="_blank" rel="noopener noreferrer" aria-label="Telegram">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M9.04 15.59 8.87 19c.44 0 .63-.19.86-.41l2.07-2 4.29 3.14c.79.44 1.35.21 1.56-.73l2.83-13.28c.26-1.18-.42-1.64-1.19-1.36L2.61 9.62c-1.14.44-1.12 1.07-.2 1.36l4.51 1.41L17.4 6.33c.54-.36 1.03-.16.62.2L9.04 15.59z"/>
-        </svg>
-      </a>
-
-      <a class="iconbtn" href="https://github.com/chillead-dev" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M12 .5C5.73.5.75 5.62.75 12c0 5.12 3.29 9.46 7.86 11 .58.11.79-.26.79-.58v-2.2c-3.2.71-3.88-1.58-3.88-1.58-.53-1.38-1.29-1.75-1.29-1.75-1.05-.74.08-.72.08-.72 1.16.08 1.77 1.22 1.77 1.22 1.03 1.8 2.7 1.28 3.36.98.1-.77.4-1.28.72-1.58-2.56-.3-5.25-1.31-5.25-5.84 0-1.29.45-2.35 1.18-3.17-.12-.3-.51-1.51.11-3.15 0 0 .97-.31 3.18 1.21.92-.26 1.9-.39 2.88-.39.98 0 1.97.13 2.88.39 2.2-1.52 3.17-1.21 3.17-1.21.63 1.64.24 2.85.12 3.15.74.82 1.18 1.88 1.18 3.17 0 4.54-2.7 5.54-5.27 5.83.41.37.77 1.1.77 2.22v3.29c0 .32.2.69.8.58 4.56-1.54 7.86-5.88 7.86-11C23.25 5.62 18.27.5 12 .5z"/>
-        </svg>
-      </a>
-    </div>
-
-    <div class="muted footer-text">перейди для перехода на англ</div>
-  </footer>
+<footer class="footer">
+  <div class="footer-icons">
+    <a class="iconbtn" href="https://t.me/rizzdev" target="_blank">tg</a>
+    <a class="iconbtn" href="https://github.com/chillead-dev" target="_blank">gh</a>
+  </div>
+  <div class="muted footer-text">перейди для перехода на англ</div>
+</footer>
 
 </main>
 
