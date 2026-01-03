@@ -1,11 +1,9 @@
-// /api/now-playing.js
 const TOKEN_ENDPOINT = "https://accounts.spotify.com/api/token";
 const NOW_PLAYING_ENDPOINT = "https://api.spotify.com/v1/me/player/currently-playing";
 
-// простой in-memory rate limit (на один инстанс). Для базовой защиты хватает.
 const bucket = new Map(); // ip -> {count, ts}
 
-function rateLimit(req, limit = 60, windowMs = 60_000) {
+function rateLimit(req, limit = 30, windowMs = 60_000) {
   const ip =
     (req.headers["x-forwarded-for"] || "").split(",")[0].trim() ||
     req.socket?.remoteAddress ||
@@ -13,23 +11,26 @@ function rateLimit(req, limit = 60, windowMs = 60_000) {
 
   const now = Date.now();
   const cur = bucket.get(ip) || { count: 0, ts: now };
+
   if (now - cur.ts > windowMs) {
     cur.count = 0;
     cur.ts = now;
   }
+
   cur.count += 1;
   bucket.set(ip, cur);
   return cur.count <= limit;
 }
 
 function setSecurityHeaders(res) {
-  // Базовые хедеры (не “панацея”, но must-have)
   res.setHeader("Content-Type", "application/json; charset=utf-8");
-  res.setHeader("Cache-Control", "no-store");
+  res.setHeader("Cache-Control", "no-store, max-age=0");
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("Referrer-Policy", "no-referrer");
   res.setHeader("X-Frame-Options", "DENY");
   res.setHeader("Permissions-Policy", "geolocation=(), microphone=(), camera=()");
+  // CORS не открываем
+  res.setHeader("Access-Control-Allow-Origin", "null");
 }
 
 async function getAccessToken() {
@@ -57,6 +58,7 @@ async function getAccessToken() {
     const txt = await r.text().catch(() => "");
     throw new Error(`Token refresh failed: ${r.status} ${txt}`);
   }
+
   const data = await r.json();
   return data.access_token;
 }
@@ -68,7 +70,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ ok: false, error: "method_not_allowed" });
   }
 
-  if (!rateLimit(req, 60, 60_000)) {
+  if (!rateLimit(req, 30, 60_000)) {
     return res.status(429).json({ ok: false, error: "rate_limited" });
   }
 
@@ -79,18 +81,17 @@ export default async function handler(req, res) {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
 
-    // 204 = ничего не играет
-    if (r.status === 204) return res.status(200).json({ ok: true, playing: false });
+    if (r.status === 204) {
+      return res.status(200).json({ ok: true, playing: false });
+    }
 
     if (!r.ok) {
-      const txt = await r.text().catch(() => "");
-      return res.status(200).json({ ok: false, error: "spotify_error", status: r.status, details: txt });
+      return res.status(200).json({ ok: false, error: "spotify_error", status: r.status });
     }
 
     const data = await r.json();
-
-    // Валидация нужного минимума, чтобы не сломать фронт
     const item = data?.item;
+
     if (!item) return res.status(200).json({ ok: true, playing: false });
 
     const artists = (item.artists || []).map(a => a.name).filter(Boolean).join(", ");
@@ -99,14 +100,15 @@ export default async function handler(req, res) {
     return res.status(200).json({
       ok: true,
       playing: true,
-      title: item.name,
+      track_id: item.id || null,
+      title: item.name || "Unknown",
       artists,
       cover,
-      duration_ms: item.duration_ms,
-      progress_ms: data.progress_ms,
+      duration_ms: item.duration_ms || 0,
+      progress_ms: data.progress_ms || 0,
       track_url: item.external_urls?.spotify || null,
     });
   } catch (e) {
-    return res.status(200).json({ ok: false, error: "server_error", message: String(e?.message || e) });
+    return res.status(200).json({ ok: false, error: "server_error" });
   }
 }
