@@ -1,4 +1,4 @@
-:root {
+:root{
   --bg:#0b0b0c;
   --fg:#e9e9ee;
   --muted:#a3a3b0;
@@ -17,21 +17,18 @@ html,body{
 .wrap{
   max-width:760px;
   margin:0 auto;
-  padding:24px 16px 48px;
+  padding:24px 16px 36px;
 }
 
-h1{
-  margin:0;
-  font-size:34px;
-}
+h1{margin:0;font-size:34px}
+h2{margin:18px 0 8px;font-size:22px}
+h3{margin:14px 0 6px;font-size:18px}
 
-h2{
-  margin:16px 0 8px;
-  font-size:22px;
-}
+.small{font-size:14px}
+.muted{color:var(--muted)}
 
 pre{
-  margin:16px 0;
+  margin:14px 0;
   padding:14px 16px;
   background:rgba(255,255,255,0.03);
   border:1px solid var(--stroke);
@@ -41,23 +38,7 @@ pre{
   white-space:pre-wrap;
 }
 
-.muted{color:var(--muted)}
-.small{font-size:14px}
-
-.links{
-  display:flex;
-  gap:18px;
-  margin:8px 2px 24px;
-}
-
-.links a{
-  color:var(--fg);
-  text-decoration:none;
-  opacity:.85;
-}
-.links a:hover{opacity:1;text-decoration:underline}
-
-.spotify{margin-top:8px}
+.spotify{margin-top:6px}
 
 .player{
   display:flex;
@@ -107,4 +88,42 @@ pre{
   height:100%;
   width:0%;
   background:rgba(255,255,255,0.55);
+}
+
+.history{
+  margin-top:6px;
+}
+
+.footer{
+  margin-top:28px;
+  text-align:center;
+}
+
+.icons{
+  display:flex;
+  justify-content:center;
+  gap:18px;
+  margin-bottom:6px;
+}
+
+.icons a{
+  width:36px;
+  height:36px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:12px;
+  border:1px solid var(--stroke);
+  background:rgba(255,255,255,0.03);
+}
+
+.icons svg{
+  width:18px;
+  height:18px;
+  fill:var(--fg);
+  opacity:.9;
+}
+
+.footer-text{
+  font-size:13px;
 }
