@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>welcome</title>
+  <title>chillead</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- CSP (чтобы сложнее было XSS и т.п.). Разрешаем только свой домен + картинки spotify -->
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self';
                  img-src 'self' https: data:;
@@ -17,53 +16,92 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <main class="container">
-    <h1># welcome!</h1>
-    <p>hello! my name's <b>vless</b>, my nickname is <b>vless</b>.</p>
-    <p>i do various stuff eventually, but mostly it's programming or something about programming <span class="muted">(duh!)</span></p>
+<main class="container">
 
-    <h2>## what do i do?</h2>
-    <ul>
-      <li><span class="pill">telegram</span> userbots / bots</li>
-      <li><span class="pill">spotify</span> now playing / integrations</li>
-      <li><span class="pill">web</span> small projects</li>
-    </ul>
+<h1># profile</h1>
+<pre>
+name: alex
+nickname: chillead
+</pre>
 
-    <h2>## skills <span class="muted">(and not only)</span></h2>
-    <ul>
-      <li>typescript / node</li>
-      <li>python</li>
-      <li>postgresql / redis</li>
-      <li>cats 🐈</li>
-    </ul>
+<h2>## alive for</h2>
+<pre id="alive"></pre>
+<pre class="muted">age: 15y</pre>
 
-    <h2>## currently playing</h2>
-    <p class="muted">below lies the track that i'm currently listening to on spotify... or nothing if i'm not listening atm :P</p>
+<h2>## location</h2>
+<pre>
+city: Ekaterinburg, RU
+timezone: Asia/Yekaterinburg
+local time: <span id="localTime"></span>
+</pre>
 
-    <section id="player" class="player hidden">
-      <img id="cover" class="cover" alt="cover" />
-      <div class="info">
-        <div class="title-row">
-          <a id="trackLink" class="title" href="#" target="_blank" rel="noopener noreferrer"></a>
-          <span class="spotify-badge" title="Spotify"></span>
-        </div>
-        <div id="artist" class="artist muted"></div>
+<h2>## languages</h2>
+<pre>EN
+RU</pre>
 
-        <div class="progress-row">
-          <span id="current">0:00</span>
-          <div class="bar"><div id="fill"></div></div>
-          <span id="total">0:00</span>
-        </div>
-      </div>
-    </section>
+<h2>## occupation</h2>
+<pre>
+creating websites
+creating telegram bots
+parsers / checkers
+</pre>
 
-    <div id="empty" class="empty">
-      <div class="empty-box">nothing is playing right now.</div>
+<h2>## skills</h2>
+<pre>
+c++
+javascript
+telegram bots
+web & backend
+parsers / checkers
+</pre>
+
+<h2>## about</h2>
+<pre>
+my name is alex.
+i like building small tools, websites and telegram bots
+that make life easier and save time.
+</pre>
+
+<h2>## spotify</h2>
+<pre class="muted">
+currently playing:
+shows the track that is playing right now
+if nothing is playing → not listening right now
+</pre>
+
+<section id="player" class="player hidden">
+  <img id="cover" class="cover" />
+  <div class="info">
+    <a id="trackLink" class="title" target="_blank"></a>
+    <div id="artist" class="muted"></div>
+    <div class="progress-row">
+      <span id="current">0:00</span>
+      <div class="bar"><div id="fill"></div></div>
+      <span id="total">0:00</span>
     </div>
+  </div>
+</section>
 
-    <p class="foot muted">this data is approximate and may be delayed by a few seconds.</p>
-  </main>
+<div id="empty" class="empty">
+  <div class="empty-box">not listening right now</div>
+</div>
 
-  <script src="script.js"></script>
+<h3>### history</h3>
+<pre id="history" class="muted">empty</pre>
+
+<h2>## links</h2>
+<pre>
+github: https://github.com/chillead-dev
+telegram: https://t.me/rizzdev
+</pre>
+
+<p class="foot muted">
+spotify updates every ~15 seconds<br>
+history is stored locally in your browser only
+</p>
+
+</main>
+
+<script src="script.js"></script>
 </body>
 </html>
