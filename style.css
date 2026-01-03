@@ -5,7 +5,7 @@
   --stroke:rgba(255,255,255,0.12);
   --cardBg:rgba(255,255,255,0.035);
   --accent:#d7a6ff;
-  --radius:16px;
+  --radius:14px;
 }
 
 *{box-sizing:border-box}
@@ -19,16 +19,36 @@ html,body{
 .wrap{
   max-width: 860px;
   margin: 0 auto;
-  padding: 24px 16px 44px;
+  padding: 18px 14px 28px;
 }
 
-.header h1{margin:0;font-size:34px}
-.small{font-size:14px}
+/* header */
+.header-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.avatar{
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  object-fit:cover;
+  border:1px solid var(--stroke);
+}
+
+.header h1{
+  margin:0;
+  font-size:32px;
+}
+
+.small{font-size:13px}
 .muted{color:var(--muted)}
 
-h2{margin:22px 0 10px;font-size:22px}
-h3{margin:14px 0 8px;font-size:18px}
+h2{margin:14px 0 6px;font-size:22px}
+h3{margin:10px 0 4px;font-size:18px}
 
+/* cards */
 .card{
   border:1px solid var(--stroke);
   border-radius:var(--radius);
@@ -37,27 +57,27 @@ h3{margin:14px 0 8px;font-size:18px}
 
 .subtle{background:rgba(255,255,255,0.025)}
 
+/* profile */
 .profile-card{
   display:grid;
-  grid-template-columns: 1fr 260px;
-  gap:20px;
-  padding:18px;
-  margin-top:14px;
+  grid-template-columns: 1fr 220px;
+  gap:12px;
+  padding:12px;
+  margin-top:10px;
 }
 
-.profile-text{font-size:15px;line-height:1.6}
+.profile-text{
+  font-size:14px;
+  line-height:1.45;
+}
 
 .intro{
   color:var(--accent);
-  margin-bottom:6px;
-}
-
-.mono{
-  white-space:pre-wrap;
+  margin-bottom:4px;
 }
 
 .block{
-  margin-top:10px;
+  margin-top:6px;
 }
 
 .label{
@@ -65,11 +85,14 @@ h3{margin:14px 0 8px;font-size:18px}
   opacity:.85;
 }
 
-.spacer{height:10px}
+.mono{
+  white-space:pre-wrap;
+}
 
+/* gif */
 .gif-box{
   aspect-ratio:1/1;
-  border-radius:14px;
+  border-radius:12px;
   background:#000;
   border:1px solid var(--stroke);
   overflow:hidden;
@@ -90,7 +113,7 @@ h3{margin:14px 0 8px;font-size:18px}
     grid-template-columns:1fr;
   }
   .gif-box{
-    max-width:320px;
+    max-width:260px;
     margin:0 auto;
   }
 }
@@ -98,8 +121,8 @@ h3{margin:14px 0 8px;font-size:18px}
 /* spotify */
 .player{
   display:flex;
-  gap:12px;
-  padding:12px;
+  gap:10px;
+  padding:10px;
   border-radius:var(--radius);
   border:1px solid var(--stroke);
   background:linear-gradient(180deg,rgba(255,255,255,0.06),transparent);
@@ -107,15 +130,16 @@ h3{margin:14px 0 8px;font-size:18px}
 .hidden{display:none}
 
 .cover{
-  width:72px;height:72px;
-  border-radius:12px;
+  width:64px;
+  height:64px;
+  border-radius:10px;
   object-fit:cover;
 }
 
 .info{flex:1}
 
 .title{
-  font-size:18px;
+  font-size:17px;
   font-weight:600;
   color:var(--fg);
   text-decoration:none;
@@ -123,43 +147,61 @@ h3{margin:14px 0 8px;font-size:18px}
 
 .progress{
   display:flex;
-  gap:8px;
+  gap:6px;
   align-items:center;
-  font-size:13px;
-  margin-top:6px;
+  font-size:12px;
+  margin-top:4px;
 }
+
 .bar{
   flex:1;
-  height:6px;
+  height:5px;
   background:rgba(255,255,255,0.1);
   border-radius:999px;
   overflow:hidden;
 }
-#fill{height:100%;width:0%;background:rgba(255,255,255,0.55)}
+
+#fill{
+  height:100%;
+  width:0%;
+  background:rgba(255,255,255,0.55);
+}
 
 .pre{
   margin:0;
-  padding:12px 14px;
-  font-size:14px;
+  padding:10px 12px;
+  font-size:13px;
 }
 
 /* footer */
 .footer{
-  margin-top:28px;
+  margin-top:18px;
   text-align:center;
 }
+
 .footer-icons{
   display:flex;
   justify-content:center;
-  gap:16px;
-  margin-bottom:6px;
+  gap:14px;
+  margin-bottom:4px;
 }
+
 .iconbtn{
-  padding:8px 12px;
-  border-radius:10px;
-  border:1px solid var(--stroke);
-  background:rgba(255,255,255,0.03);
-  text-decoration:none;
-  color:var(--fg);
+  padding:0;
+  border:none;
+  background:none;
 }
-.footer-text{font-size:13px}
+
+.iconbtn svg{
+  width:18px;
+  height:18px;
+  fill:var(--fg);
+  opacity:.7;
+}
+
+.iconbtn:hover svg{opacity:1}
+
+.footer-text{
+  font-size:12px;
+  opacity:.6;
+}
