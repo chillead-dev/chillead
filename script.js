@@ -14,7 +14,7 @@ const localTimeEl = el("localTime");
 
 const TZ = "Asia/Yekaterinburg";
 const BIRTH = new Date("2010-08-05T00:00:00+05:00");
-const HISTORY_KEY = "spotify_history_readonly";
+const HISTORY_KEY = "spotify_history";
 
 function msToTime(ms){
   const s = Math.floor(ms/1000);
@@ -38,21 +38,40 @@ function updateLocalTime(){
 }
 
 function getHistory(){
-  try{ return JSON.parse(localStorage.getItem(HISTORY_KEY)||"[]"); }
-  catch{ return []; }
+  try{
+    return JSON.parse(localStorage.getItem(HISTORY_KEY)||"[]");
+  }catch{
+    return [];
+  }
+}
+
+function timeAgo(ts){
+  const s = Math.floor((Date.now()-ts)/1000);
+  if(s < 60) return `${s}s ago`;
+  const m = Math.floor(s/60);
+  if(m < 60) return `${m}m ago`;
+  const h = Math.floor(m/60);
+  if(h < 24) return `${h}h ago`;
+  const d = Math.floor(h/24);
+  return `${d}d ago`;
 }
 
 function saveHistory(track){
   const h = getHistory();
   if(h[0]?.id === track.id) return;
-  h.unshift(track);
+  h.unshift({...track, playedAt: Date.now()});
   localStorage.setItem(HISTORY_KEY, JSON.stringify(h.slice(0,10)));
 }
 
 function renderHistory(){
   const h = getHistory();
-  historyEl.textContent = h.length
-    ? h.map(t=>`- ${t.title} — ${t.artist}`).join("\n")
+  historyEl.innerHTML = h.length
+    ? h.map(t => `
+        <div class="history-line">
+          <span>${t.title} — ${t.artist}</span>
+          <span class="history-time">${timeAgo(t.playedAt)}</span>
+        </div>
+      `).join("")
     : "empty";
 }
 
