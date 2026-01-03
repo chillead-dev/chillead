@@ -8,11 +8,13 @@ const artist = el("artist");
 const current = el("current");
 const total = el("total");
 const fill = el("fill");
+const historyEl = el("history");
 const aliveInline = el("aliveInline");
 const localTimeEl = el("localTime");
 
 const TZ = "Asia/Yekaterinburg";
 const BIRTH = new Date("2010-08-05T00:00:00+05:00");
+const HISTORY_KEY = "spotify_history_readonly";
 
 function msToTime(ms){
   const s = Math.floor(ms/1000);
@@ -33,6 +35,25 @@ function updateLocalTime(){
   localTimeEl.textContent = new Intl.DateTimeFormat("en-GB",{
     timeZone:TZ,hour:"2-digit",minute:"2-digit",second:"2-digit"
   }).format(new Date());
+}
+
+function getHistory(){
+  try{ return JSON.parse(localStorage.getItem(HISTORY_KEY)||"[]"); }
+  catch{ return []; }
+}
+
+function saveHistory(track){
+  const h = getHistory();
+  if(h[0]?.id === track.id) return;
+  h.unshift(track);
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(h.slice(0,10)));
+}
+
+function renderHistory(){
+  const h = getHistory();
+  historyEl.textContent = h.length
+    ? h.map(t=>`- ${t.title} — ${t.artist}`).join("\n")
+    : "empty";
 }
 
 async function updateSpotify(){
@@ -57,6 +78,9 @@ async function updateSpotify(){
     current.textContent = msToTime(data.progress_ms);
     total.textContent = msToTime(data.duration_ms);
     fill.style.width = `${(data.progress_ms/data.duration_ms)*100}%`;
+
+    saveHistory({ id:data.track_id, title:data.title, artist:data.artists });
+    renderHistory();
   }catch{
     player.classList.add("hidden");
     empty.classList.remove("hidden");
@@ -70,3 +94,4 @@ setInterval(updateSpotify,15000);
 updateAlive();
 updateLocalTime();
 updateSpotify();
+renderHistory();
