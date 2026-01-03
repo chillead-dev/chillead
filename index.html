@@ -5,6 +5,10 @@
   <title>chillead</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <!-- favicon -->
+  <link rel="icon" type="image/jpeg"
+        href="https://i.pinimg.com/originals/36/f2/2d/36f22d33e7cf670793a300b9e33e0a29.jpg?nii=t">
+
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self';
                  img-src 'self' https: data:;
@@ -39,8 +43,8 @@
 </header>
 
 <section class="card profile-card">
-
   <div class="profile-text">
+
     <div class="intro">hiii~</div>
 
     <div class="mono">
@@ -80,9 +84,9 @@
       web & backend<br>
       parsers / checkers
     </div>
+
   </div>
 
-  <!-- квадрат справа -->
   <aside class="gif-box">
     <img
       src="https://media.tenor.com/wxhwrp30VkgAAAAi/ayaya-club-ayaya.gif"
@@ -91,7 +95,6 @@
       decoding="async"
     />
   </aside>
-
 </section>
 
 <section class="spotify">
@@ -100,7 +103,7 @@
   <div id="player" class="player hidden">
     <img id="cover" class="cover" alt="cover" />
     <div class="info">
-      <a id="trackLink" class="title" target="_blank"></a>
+      <a id="trackLink" class="title" target="_blank" rel="noopener noreferrer"></a>
       <div id="artist" class="muted"></div>
       <div class="progress">
         <span id="current">0:00</span>
@@ -114,7 +117,7 @@
 
   <h3>### history</h3>
   <div class="card subtle">
-    <pre id="history" class="pre muted">empty</pre>
+    <div id="history" class="pre muted">empty</div>
   </div>
 </section>
 
