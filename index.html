@@ -5,76 +5,85 @@
   <title>chillead</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- CSP (дублируется и через headers в vercel.json; meta — доп. страховка) -->
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self';
                  img-src 'self' https: data:;
                  style-src 'self' 'unsafe-inline';
                  script-src 'self';
                  connect-src 'self';
-                 base-uri 'none';
-                 form-action 'none';
                  frame-ancestors 'none';
-                 upgrade-insecure-requests">
+                 base-uri 'none';">
 
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+
 <main class="wrap">
 
-  <header class="top">
-    <div>
-      <h1># chillead</h1>
-      <div class="muted small">
-        alive: <span id="aliveInline">—</span> · local: <span id="localTime">—</span>
+<header>
+  <h1># chillead</h1>
+  <div class="muted small">
+    alive: <span id="aliveInline"></span> · local: <span id="localTime"></span>
+  </div>
+</header>
+
+<section>
+<pre>
+PROFILE
+name: alex
+nickname: chillead
+
+LOCATION
+Ekaterinburg, RU
+
+LANGUAGES
+EN / RU
+
+OCCUPATION
+creating websites
+creating telegram bots
+parsers / checkers
+
+SKILLS
+c++
+javascript
+telegram bots
+web & backend
+parsers / checkers
+
+ABOUT
+my name is alex.
+i like building small tools, websites and telegram bots
+that make life easier and save time.
+</pre>
+</section>
+
+<section class="links">
+  <a href="https://github.com/chillead-dev" target="_blank" rel="noopener noreferrer">github</a>
+  <a href="https://t.me/rizzdev" target="_blank" rel="noopener noreferrer">telegram</a>
+</section>
+
+<section class="spotify">
+  <h2>## spotify</h2>
+
+  <div id="player" class="player hidden">
+    <img id="cover" class="cover" />
+    <div class="info">
+      <a id="trackLink" class="title" target="_blank"></a>
+      <div id="artist" class="muted"></div>
+      <div class="progress">
+        <span id="current">0:00</span>
+        <div class="bar"><div id="fill"></div></div>
+        <span id="total">0:00</span>
       </div>
     </div>
+  </div>
 
-    <nav class="links" aria-label="links">
-      <a class="iconbtn" href="https://github.com/chillead-dev" target="_blank" rel="noopener noreferrer" title="GitHub">
-        <!-- GitHub icon -->
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.73.5.75 5.62.75 12c0 5.12 3.29 9.46 7.86 11 .58.11.79-.26.79-.58v-2.2c-3.2.71-3.88-1.58-3.88-1.58-.53-1.38-1.29-1.75-1.29-1.75-1.05-.74.08-.72.08-.72 1.16.08 1.77 1.22 1.77 1.22 1.03 1.8 2.7 1.28 3.36.98.1-.77.4-1.28.72-1.58-2.56-.3-5.25-1.31-5.25-5.84 0-1.29.45-2.35 1.18-3.17-.12-.3-.51-1.51.11-3.15 0 0 .97-.31 3.18 1.21.92-.26 1.9-.39 2.88-.39.98 0 1.97.13 2.88.39 2.2-1.52 3.17-1.21 3.17-1.21.63 1.64.24 2.85.12 3.15.74.82 1.18 1.88 1.18 3.17 0 4.54-2.7 5.54-5.27 5.83.41.37.77 1.1.77 2.22v3.29c0 .32.2.69.8.58 4.56-1.54 7.86-5.88 7.86-11C23.25 5.62 18.27.5 12 .5z"/></svg>
-      </a>
-
-      <a class="iconbtn" href="https://t.me/rizzdev" target="_blank" rel="noopener noreferrer" title="Telegram">
-        <!-- Telegram icon -->
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.04 15.59 8.87 19c.44 0 .63-.19.86-.41l2.07-2 4.29 3.14c.79.44 1.35.21 1.56-.73l2.83-13.28h0c.26-1.18-.42-1.64-1.19-1.36L2.61 9.62c-1.14.44-1.12 1.07-.2 1.36l4.51 1.41L17.4 6.33c.54-.36 1.03-.16.62.2L9.04 15.59z"/></svg>
-      </a>
-    </nav>
-  </header>
-
-  <section class="block">
-    <h2>## spotify</h2>
-
-    <div id="player" class="player hidden">
-      <img id="cover" class="cover" alt="cover" />
-      <div class="info">
-        <a id="trackLink" class="title" href="#" target="_blank" rel="noopener noreferrer"></a>
-        <div id="artist" class="muted small oneLine"></div>
-        <div class="progress">
-          <span id="current">0:00</span>
-          <div class="bar" aria-hidden="true"><div id="fill"></div></div>
-          <span id="total">0:00</span>
-        </div>
-      </div>
-    </div>
-
-    <div id="empty" class="empty muted">not listening right now</div>
-
-    <div class="row">
-      <h3>### history</h3>
-      <button id="clearHistory" class="ghost" type="button">clear</button>
-    </div>
-    <pre id="history" class="muted small">empty</pre>
-
-    <div class="muted tiny foot">
-      updates every ~15s · history stored locally (browser only)
-    </div>
-  </section>
+  <div id="empty" class="muted">not listening right now</div>
+</section>
 
 </main>
 
 <script src="script.js"></script>
-<script src="cursor.js"></script>
 </body>
 </html>
