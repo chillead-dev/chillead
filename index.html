@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>welcome</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- CSP (чтобы сложнее было XSS и т.п.). Разрешаем только свой домен + картинки spotify -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self';
+                 img-src 'self' https: data:;
+                 style-src 'self' 'unsafe-inline';
+                 script-src 'self';
+                 connect-src 'self';
+                 frame-ancestors 'none';">
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="container">
+    <h1># welcome!</h1>
+    <p>hello! my name's <b>vless</b>, my nickname is <b>vless</b>.</p>
+    <p>i do various stuff eventually, but mostly it's programming or something about programming <span class="muted">(duh!)</span></p>
+
+    <h2>## what do i do?</h2>
+    <ul>
+      <li><span class="pill">telegram</span> userbots / bots</li>
+      <li><span class="pill">spotify</span> now playing / integrations</li>
+      <li><span class="pill">web</span> small projects</li>
+    </ul>
+
+    <h2>## skills <span class="muted">(and not only)</span></h2>
+    <ul>
+      <li>typescript / node</li>
+      <li>python</li>
+      <li>postgresql / redis</li>
+      <li>cats 🐈</li>
+    </ul>
+
+    <h2>## currently playing</h2>
+    <p class="muted">below lies the track that i'm currently listening to on spotify... or nothing if i'm not listening atm :P</p>
+
+    <section id="player" class="player hidden">
+      <img id="cover" class="cover" alt="cover" />
+      <div class="info">
+        <div class="title-row">
+          <a id="trackLink" class="title" href="#" target="_blank" rel="noopener noreferrer"></a>
+          <span class="spotify-badge" title="Spotify"></span>
+        </div>
+        <div id="artist" class="artist muted"></div>
+
+        <div class="progress-row">
+          <span id="current">0:00</span>
+          <div class="bar"><div id="fill"></div></div>
+          <span id="total">0:00</span>
+        </div>
+      </div>
+    </section>
+
+    <div id="empty" class="empty">
+      <div class="empty-box">nothing is playing right now.</div>
+    </div>
+
+    <p class="foot muted">this data is approximate and may be delayed by a few seconds.</p>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
