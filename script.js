@@ -1,10 +1,23 @@
+// ===== alive counter =====
+const aliveEl = document.getElementById("alive");
+const born = new Date("2010-08-05T00:00:00Z").getTime();
+
+setInterval(()=>{
+  const d = Date.now() - born;
+  const days = Math.floor(d/86400000);
+  const h = Math.floor(d/3600000)%24;
+  const m = Math.floor(d/60000)%60;
+  const s = Math.floor(d/1000)%60;
+  aliveEl.textContent = `alive: ${days}d ${h}h ${m}m ${s}s`;
+},1000);
+
 // ===== letterbox =====
 const text = document.getElementById("letterText");
 const send = document.getElementById("sendLetter");
 const status = document.getElementById("letterStatus");
 
-document.querySelectorAll(".emojis button").forEach(b=>{
-  b.onclick = ()=> text.value += " " + b.textContent;
+document.querySelectorAll(".emojis span").forEach(e=>{
+  e.onclick = ()=> text.value += " " + e.textContent;
 });
 
 send.onclick = async ()=>{
@@ -24,23 +37,22 @@ send.onclick = async ()=>{
   if(j.ok) text.value = "";
 };
 
-// ===== history demo (замени на spotify api) =====
+// ===== history (пример, у тебя подменяется реальными данными) =====
 const history = document.getElementById("history");
 
-const demoTracks = [
-  { t:"hyperpop luv", a:"whyalive", c:"https://i.scdn.co/image/ab67616d00001e02" },
-  { t:"Shine", a:"FRANSE", c:"https://i.scdn.co/image/ab67616d00001e02" },
-  { t:"Mitchell & Ness", a:"reefuh", c:"https://i.scdn.co/image/ab67616d00001e02" }
-];
-
-demoTracks.forEach(x=>{
+function addTrack(title, artist, cover){
   history.insertAdjacentHTML("beforeend",`
-    <div class="track">
-      <img src="${x.c}">
+    <div class="track-card">
+      <img src="${cover}">
       <div>
-        <div class="track-title">${x.t}</div>
-        <div class="track-artist">${x.a}</div>
+        <div class="track-title">${title}</div>
+        <div class="track-artist">${artist}</div>
       </div>
     </div>
   `);
-});
+}
+
+// DEMO
+addTrack("hyperpop luv","whyalive","https://i.scdn.co/image/ab67616d00001e02");
+addTrack("Shine","FRANSE","https://i.scdn.co/image/ab67616d00001e02");
+addTrack("Mitchell & Ness","reefuh","https://i.scdn.co/image/ab67616d00001e02");
