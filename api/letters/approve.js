@@ -1,44 +1,67 @@
-import { redis, setSecHeaders, requireAdmin } from "./_redis.js";
+import { redis, setHeaders, requireAdmin } from "./_redis.js";
 
 export default async function handler(req, res){
-  setSecHeaders(res);
+  setHeaders(res);
 
-  if(req.method !== "POST") return res.status(405).json({ ok:false, error:"method_not_allowed" });
-  if(!requireAdmin(req)) return res.status(403).json({ ok:false, error:"forbidden" });
+  if (req.method !== "POST") {
+    return res.status(405).json({ ok:false, error:"method_not_allowed" });
+  }
 
-  try{
-    const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
-    const id = String(body?.id || "").trim();
-    if(!id) return res.status(200).json({ ok:false, error:"missing_id" });
+  if (!requireAdmin(req)) {
+    return res.status(403).json({ ok:false, error:"forbidden" });
+  }
 
-    const raw = (await redis("LRANGE", "letters:pending", 0, 200)) || [];
-    let foundStr = null;
-    let foundObj = null;
+  try {
+    const body = typeof req.body === "string"
+      ? JSON.parse(req.body)
+      : req.body;
 
-    for(const s of raw){
-      try{
-        const o = JSON.parse(s);
-        if(o?.id === id){
-          foundStr = s;
-          foundObj = o;
-          break;
-        }
-      }catch{}
+    const id = body?.id;
+    if (!id) {
+      return res.status(200).json({ ok:false, error:"missing_id" });
     }
 
-    if(!foundStr || !foundObj){
+    const pending = await redis("LRANGE", "letters:pending", 0, -1);
+
+    let approvedItem = null;
+
+    for (const raw of pending) {
+      if (!raw) continue;
+
+      let item;
+      try {
+        item = JSON.parse(raw);
+      } catch {
+        continue;
+      }
+
+      if (item.id === id) {
+        approvedItem = item;
+        await redis("LREM", "letters:pending", 1, raw);
+        break;
+      }
+    }
+
+    if (!approvedItem) {
       return res.status(200).json({ ok:false, error:"not_found" });
     }
 
-    // push to approved (keep createdAt)
-    await redis("LPUSH", "letters:approved", JSON.stringify(foundObj));
-    await redis("LTRIM", "letters:approved", 0, 200);
+    approvedItem.approvedAt = Date.now();
+    approvedItem.answered = false;
 
-    // remove from pending by exact string match
-    await redis("LREM", "letters:pending", 1, foundStr);
+    await redis(
+      "LPUSH",
+      "letters:approved",
+      JSON.stringify(approvedItem)
+    );
 
     return res.status(200).json({ ok:true });
-  }catch{
-    return res.status(200).json({ ok:false, error:"server_error" });
+
+  } catch (e) {
+    return res.status(200).json({
+      ok:false,
+      error:"server_error",
+      message: String(e?.message || e)
+    });
   }
 }
