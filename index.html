@@ -12,45 +12,88 @@
 
 <main class="wrap">
 
+<!-- ================= HEADER ================= -->
+<header class="header">
+  <h1># chillead</h1>
+  <div class="muted" id="alive">alive: loading…</div>
+</header>
+
+<!-- ================= PROFILE ================= -->
+<section class="card">
+<pre>
+profile:
+  name — alex
+  nickname — chillead
+
+location:
+  ekaterinburg, ru
+
+languages:
+  en / ru
+
+occupation:
+  creating websites
+  creating telegram bots
+  parsers / checkers
+
+skills:
+  c++
+  javascript
+  telegram bots
+  web & backend
+  parsers / checkers
+</pre>
+</section>
+
+<!-- ================= SPOTIFY ================= -->
+<section class="section">
+  <h2># spotify</h2>
+  <div id="nowPlaying" class="muted">not listening right now</div>
+</section>
+
+<!-- ================= HISTORY ================= -->
+<section class="section">
+  <h2># scrobbles history</h2>
+  <p class="sub">fetched almost in real-time</p>
+
+  <div class="history-scroll" id="history"></div>
+  <div class="hint">← drag to scroll →</div>
+</section>
+
 <!-- ================= LETTERBOX ================= -->
 <section class="section">
-  <h1># anonymous letterbox</h1>
+  <h2># anonymous letterbox</h2>
   <p class="sub">say anything you want here! or maybe just say hi :D</p>
 
-  <div class="letterbox">
+  <div class="letterbox-ui">
     <textarea id="letterText" placeholder="Write your message here..."></textarea>
 
     <div class="letterbox-bar">
       <div class="emojis">
-        <button>:3</button>
-        <button>^_^</button>
-        <button>>w<</button>
-        <button>uwu</button>
-        <button>owo</button>
-        <button>>:3</button>
-        <button>o_o</button>
-        <button>T_T</button>
-        <button>x3</button>
+        <span>:3</span>
+        <span>^_^</span>
+        <span>>w&lt;</span>
+        <span>uwu</span>
+        <span>owo</span>
+        <span>>:3</span>
+        <span>o_o</span>
+        <span>T_T</span>
+        <span>x3</span>
       </div>
 
-      <button id="sendLetter" class="send-btn">[ Send ]</button>
+      <button id="sendLetter">[ Send ]</button>
     </div>
-
-    <div id="letterStatus" class="muted"></div>
-  </div>
-</section>
-
-<!-- ================= MUSIC HISTORY ================= -->
-<section class="section">
-  <h1># scrobbles history</h1>
-  <p class="sub">fetched almost in real-time. wow much music</p>
-
-  <div class="history-wrap" id="history">
-    <!-- cards inserted by JS -->
   </div>
 
-  <div class="hint">← [ drag to scroll ] →</div>
+  <div id="letterStatus" class="muted"></div>
 </section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer">
+  <a href="https://t.me/rizzdev" target="_blank">telegram</a>
+  ·
+  <a href="https://github.com/chillead-dev" target="_blank">github</a>
+</footer>
 
 </main>
 
