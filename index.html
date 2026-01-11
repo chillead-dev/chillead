@@ -12,13 +12,11 @@
 
 <main class="wrap">
 
-<!-- ================= HEADER ================= -->
 <header class="header">
   <h1># chillead</h1>
   <div class="muted" id="alive">alive: loading…</div>
 </header>
 
-<!-- ================= PROFILE ================= -->
 <section class="card">
 <pre>
 profile:
@@ -45,50 +43,42 @@ skills:
 </pre>
 </section>
 
-<!-- ================= SPOTIFY ================= -->
 <section class="section">
   <h2># spotify</h2>
   <div id="nowPlaying" class="muted">not listening right now</div>
 </section>
 
-<!-- ================= HISTORY ================= -->
 <section class="section">
   <h2># scrobbles history</h2>
   <p class="sub">fetched almost in real-time</p>
-
-  <div class="history-scroll" id="history"></div>
+  <div id="history"></div>
   <div class="hint">← drag to scroll →</div>
 </section>
 
-<!-- ================= LETTERBOX ================= -->
 <section class="section">
   <h2># anonymous letterbox</h2>
   <p class="sub">say anything you want here! or maybe just say hi :D</p>
 
-  <div class="letterbox-ui">
-    <textarea id="letterText" placeholder="Write your message here..."></textarea>
+  <textarea id="letterText" placeholder="Write your message here..."></textarea>
 
-    <div class="letterbox-bar">
-      <div class="emojis">
-        <span>:3</span>
-        <span>^_^</span>
-        <span>>w&lt;</span>
-        <span>uwu</span>
-        <span>owo</span>
-        <span>>:3</span>
-        <span>o_o</span>
-        <span>T_T</span>
-        <span>x3</span>
-      </div>
-
-      <button id="sendLetter">[ Send ]</button>
+  <div class="letterbox-bar">
+    <div class="emojis">
+      <span>:3</span>
+      <span>^_^</span>
+      <span>>w&lt;</span>
+      <span>uwu</span>
+      <span>owo</span>
+      <span>>:3</span>
+      <span>o_o</span>
+      <span>T_T</span>
+      <span>x3</span>
     </div>
+    <button id="sendLetter">[ Send ]</button>
   </div>
 
   <div id="letterStatus" class="muted"></div>
 </section>
 
-<!-- ================= FOOTER ================= -->
 <footer class="footer">
   <a href="https://t.me/rizzdev" target="_blank">telegram</a>
   ·
