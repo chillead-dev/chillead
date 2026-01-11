@@ -1,24 +1,42 @@
 (() => {
   "use strict";
 
-  // ---------------------------
-  // Config
-  // ---------------------------
+  /* ======================================================
+     CONFIG
+  ====================================================== */
   const TZ = "Asia/Yekaterinburg";
-  const BIRTH = new Date("2010-08-05T00:00:00+05:00"); // for alive timer
+  const BIRTH = new Date("2010-08-05T00:00:00+05:00").getTime();
+
   const SPOTIFY_POLL_MS = 15000;
   const LETTERS_POLL_MS = 30000;
-  const HISTORY_KEY = "spotify_history_v4";
-  const HISTORY_LIMIT = 20;
 
-  // ---------------------------
-  // Helpers
-  // ---------------------------
+  const HISTORY_KEY = "spotify_history_v5";
+  const HISTORY_LIMIT = 25;
+
+  const PAGE_SIZE = 10;
+
+  /* ======================================================
+     DOM HELPERS (SAFE)
+  ====================================================== */
   const $ = (id) => document.getElementById(id);
+
+  function pickFirstId(ids) {
+    for (const id of ids) {
+      const el = $(id);
+      if (el) return el;
+    }
+    return null;
+  }
 
   function safeText(el, text) {
     if (!el) return;
     el.textContent = text ?? "";
+  }
+
+  function safeShow(el, show) {
+    if (!el) return;
+    if (show) el.classList.remove("hidden");
+    else el.classList.add("hidden");
   }
 
   function clamp(n, a, b) {
@@ -44,6 +62,10 @@
     return `${d}d ago`;
   }
 
+  function isVisible() {
+    return document.visibilityState === "visible";
+  }
+
   async function fetchJson(url, options = {}, timeoutMs = 12000) {
     const ctrl = new AbortController();
     const t = setTimeout(() => ctrl.abort(), timeoutMs);
@@ -53,69 +75,67 @@
         ...options,
         cache: "no-store",
         signal: ctrl.signal,
-        headers: {
-          ...(options.headers || {}),
-        },
+        headers: { ...(options.headers || {}) },
       });
 
-      // Even for non-200 we try to parse JSON for better diagnostics
       let data = null;
-      try {
-        data = await r.json();
-      } catch {
-        data = null;
-      }
+      try { data = await r.json(); } catch { data = null; }
 
       return { ok: r.ok, status: r.status, data };
+    } catch (e) {
+      return { ok: false, status: 0, data: null, err: e };
     } finally {
       clearTimeout(t);
     }
   }
 
-  function isPageVisible() {
-    return document.visibilityState === "visible";
-  }
+  /* ======================================================
+     DOM REFERENCES (FALLBACK IDS)
+  ====================================================== */
 
-  // ---------------------------
-  // DOM refs
-  // ---------------------------
-  const aliveInline = $("aliveInline");
-  const localTimeEl = $("localTime");
+  // alive + local time ids were changed multiple times:
+  const aliveEl = pickFirstId(["aliveInline", "alive"]);
+  const localTimeEl = pickFirstId(["localTime", "localTimeEl"]);
 
-  // Spotify now playing
-  const npCard = $("nowPlayingCard");
-  const npEmpty = $("nowPlayingEmpty");
-  const npCover = $("npCover");
-  const npTitle = $("npTitle");
-  const npArtist = $("npArtist");
-  const npCur = $("npCur");
-  const npTot = $("npTot");
-  const npFill = $("npFill");
+  // now playing container ids:
+  const npCard = pickFirstId(["nowPlayingCard", "nowPlaying"]);
+  const npEmpty = pickFirstId(["nowPlayingEmpty", "npEmpty"]);
 
-  // Spotify history
-  const historyWrap = $("history");
+  // now playing elements:
+  const npCover = pickFirstId(["npCover"]);
+  const npTitle = pickFirstId(["npTitle"]);
+  const npArtist = pickFirstId(["npArtist"]);
+  const npCur = pickFirstId(["npCur", "npTime"]);
+  const npTot = pickFirstId(["npTot", "npDuration"]);
+  const npFill = pickFirstId(["npFill"]);
 
-  // Letterbox
-  const hp = $("lb_hp");
-  const letterText = $("letterText");
-  const sendLetter = $("sendLetter");
-  const letterStatus = $("letterStatus");
-  const lettersList = $("lettersList");
+  // history container:
+  const historyWrap = pickFirstId(["history", "listening-history"]);
 
-  // Emoji bar
+  // letterbox:
+  const hp = pickFirstId(["lb_hp", "lb_website"]);
+  const letterText = pickFirstId(["letterText", "letter-input"]);
+  const sendLetter = pickFirstId(["sendLetter"]);
+  const letterStatus = pickFirstId(["letterStatus"]);
+
+  // approved list:
+  const lettersList = pickFirstId(["lettersList", "letters"]);
+  const paginationEl = pickFirstId(["pagination"]);
+
+  // emoji bar:
   const emojiSpans = document.querySelectorAll(".emojis span");
 
-  // ---------------------------
-  // Alive + local time
-  // ---------------------------
-  function updateAliveAndTime() {
-    if (aliveInline) {
-      const diff = Math.floor((Date.now() - BIRTH.getTime()) / 1000);
+  /* ======================================================
+     ALIVE + LOCAL TIME
+  ====================================================== */
+  function tickAliveAndTime() {
+    if (aliveEl) {
+      const diff = Math.floor((Date.now() - BIRTH) / 1000);
       const d = Math.floor(diff / 86400);
       const h = Math.floor((diff % 86400) / 3600);
       const m = Math.floor((diff % 3600) / 60);
       const s = diff % 60;
-      aliveInline.textContent = `${d}d ${h}h ${m}m ${s}s`;
+      aliveEl.textContent = `${d}d ${h}h ${m}m ${s}s`;
     }
 
     if (localTimeEl) {
@@ -128,9 +148,9 @@
     }
   }
 
-  // ---------------------------
-  // History storage/render
-  // ---------------------------
+  /* ======================================================
+     HISTORY STORAGE
+  ====================================================== */
   function getHistory() {
     try {
       const raw = localStorage.getItem(HISTORY_KEY);
@@ -142,26 +162,21 @@
   }
 
   function setHistory(arr) {
-    try {
-      localStorage.setItem(HISTORY_KEY, JSON.stringify(arr));
-    } catch {
-      // ignore storage quota errors
-    }
+    try { localStorage.setItem(HISTORY_KEY, JSON.stringify(arr)); } catch {}
   }
 
   function pushHistory(item) {
     const h = getHistory();
-    const id = String(item?.id || "");
-    if (!id) return;
+    if (!item?.id) return;
 
-    if (h[0]?.id === id) return;
+    if (h[0]?.id === item.id) return;
 
     h.unshift({
-      id,
+      id: String(item.id),
       title: String(item.title || "Unknown"),
       artist: String(item.artist || ""),
-      cover: item.cover ? String(item.cover) : null,
-      url: item.url ? String(item.url) : null,
+      cover: item.cover ? String(item.cover) : "",
+      url: item.url ? String(item.url) : "",
       playedAt: Date.now(),
     });
 
@@ -194,21 +209,21 @@
 
       const title = document.createElement("div");
       title.className = "track-title";
-      title.textContent = t.title || "Unknown";
+      title.textContent = t.title;
 
       const artist = document.createElement("div");
       artist.className = "track-artist";
-      artist.textContent = t.artist || "";
-
-      meta.appendChild(title);
-      meta.appendChild(artist);
+      artist.textContent = t.artist;
 
       const ago = document.createElement("div");
       ago.className = "track-ago";
       ago.textContent = timeAgo(t.playedAt);
 
+      meta.appendChild(title);
+      meta.appendChild(artist);
+      meta.appendChild(ago);
+
       card.appendChild(meta);
-      card.appendChild(ago);
 
       if (t.url) {
         card.style.cursor = "pointer";
@@ -223,32 +238,24 @@
     historyWrap.appendChild(frag);
   }
 
-  // ---------------------------
-  // Spotify now playing
-  // ---------------------------
+  /* ======================================================
+     SPOTIFY NOW PLAYING (API contract: {ok, playing, ...})
+  ====================================================== */
   function showNowPlaying(playing) {
-    if (!npCard || !npEmpty) return;
-    if (playing) {
-      npCard.classList.remove("hidden");
-      npEmpty.classList.add("hidden");
-    } else {
-      npCard.classList.add("hidden");
-      npEmpty.classList.remove("hidden");
-    }
+    // supports both patterns:
+    // - card/empty
+    // - if npCard is the card itself, keep empty visible when not playing
+    if (npCard) safeShow(npCard, playing);
+    if (npEmpty) npEmpty.style.display = playing ? "none" : "block";
   }
 
   async function updateSpotify() {
-    if (!npCard || !npEmpty) return;
-
-    // Avoid wasting requests when tab is hidden
-    if (!isPageVisible()) return;
+    if (!npCard && !npEmpty) return;
+    if (!isVisible()) return;
 
     const { ok, data } = await fetchJson("/api/now-playing", {}, 12000);
 
-    // Expected API contract (from your backend):
-    // { ok:true, playing:true/false, track_id, title, artists, cover, duration_ms, progress_ms, track_url }
     if (!ok || !data || data.ok === false) {
-      // API error; do not hard-break UI
       showNowPlaying(false);
       return;
     }
@@ -260,50 +267,48 @@
 
     showNowPlaying(true);
 
-    if (npCover) npCover.src = data.cover || "";
-    if (npTitle) {
-      npTitle.textContent = data.title || "Unknown";
-      npTitle.href = data.track_url || "#";
-    }
-    safeText(npArtist, data.artists || "");
+    // expected fields:
+    // track_id, title, artists, cover, duration_ms, progress_ms, track_url
+    const title = data.title || "Unknown";
+    const artists = data.artists || "";
+    const cover = data.cover || "";
+    const url = data.track_url || "#";
+    const trackId = data.track_id || "";
+
+    if (npCover) npCover.src = cover;
+    if (npTitle) { npTitle.textContent = title; npTitle.href = url; }
+    if (npArtist) npArtist.textContent = artists;
 
     const p = Number(data.progress_ms || 0);
     const d = Number(data.duration_ms || 0);
 
-    safeText(npCur, msToTime(p));
-    safeText(npTot, msToTime(d));
+    if (npCur) npCur.textContent = msToTime(p);
+    if (npTot) npTot.textContent = msToTime(d);
 
     if (npFill) {
       const percent = d > 0 ? clamp((p / d) * 100, 0, 100) : 0;
       npFill.style.width = `${percent}%`;
     }
 
-    // Push to local history
-    if (data.track_id) {
-      pushHistory({
-        id: data.track_id,
-        title: data.title,
-        artist: data.artists,
-        cover: data.cover,
-        url: data.track_url,
-      });
+    if (trackId) {
+      pushHistory({ id: trackId, title, artist: artists, cover, url });
       renderHistory();
     }
   }
 
-  // ---------------------------
-  // Letterbox: submit + list
-  // ---------------------------
+  /* ======================================================
+     LETTERBOX SUBMIT (safe UX)
+  ====================================================== */
   function setLetterStatus(text) {
     if (!letterStatus) return;
     letterStatus.textContent = text || "";
   }
 
   async function submitLetter() {
-    if (!letterText) return;
+    if (!letterText || !sendLetter) return;
 
     // honeypot
-    if (hp && hp.value.trim().length > 0) {
+    if (hp && hp.value && hp.value.trim().length > 0) {
       setLetterStatus("sent.");
       letterText.value = "";
       return;
@@ -315,160 +320,194 @@
       return;
     }
 
+    sendLetter.disabled = true;
     setLetterStatus("sending…");
-    const { ok, data } = await fetchJson(
-      "/api/letters/submit",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: msg }),
-      },
-      12000
-    );
+
+    const { ok, data } = await fetchJson("/api/letters/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: msg }),
+    }, 12000);
 
     if (!ok || !data) {
       setLetterStatus("error.");
+      sendLetter.disabled = false;
       return;
     }
 
     if (data.ok) {
       setLetterStatus("sent for moderation.");
       letterText.value = "";
-      // optional: don't auto-refresh approved immediately (it won't appear until approved)
-      return;
+    } else {
+      setLetterStatus(data.error ? `error: ${data.error}` : "error.");
     }
 
-    setLetterStatus(data.error ? `error: ${data.error}` : "error.");
+    setTimeout(() => {
+      sendLetter.disabled = false;
+      setLetterStatus("");
+    }, 900);
   }
 
-  function clearNode(n) {
-    while (n && n.firstChild) n.removeChild(n.firstChild);
+  /* ======================================================
+     APPROVED LIST + PAGINATION + ANSWERS
+  ====================================================== */
+  let approvedCache = [];
+  let currentPage = 1;
+
+  function clearNode(n) { while (n && n.firstChild) n.removeChild(n.firstChild); }
+
+  function renderPagination(totalItems) {
+    if (!paginationEl) return;
+
+    const pages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
+    clearNode(paginationEl);
+
+    if (pages <= 1) return;
+
+    for (let i = 1; i <= pages; i++) {
+      const b = document.createElement("div");
+      b.className = "page-btn" + (i === currentPage ? " active" : "");
+      b.textContent = String(i);
+      b.addEventListener("click", () => {
+        currentPage = i;
+        renderApprovedPage();
+        renderPagination(totalItems);
+      });
+      paginationEl.appendChild(b);
+    }
   }
 
-  async function loadApprovedLetters() {
+  function makeLetterRow(it) {
+    const row = document.createElement("div");
+    row.className = "letter-item";
+
+    const left = document.createElement("div");
+    left.className = "letter-msg";
+
+    const msg = document.createElement("div");
+    msg.textContent = String(it.message || "");
+    left.appendChild(msg);
+
+    if (it.answered && it.answer) {
+      const ans = document.createElement("div");
+      const label = document.createElement("span");
+      label.className = "letter-answer-label";
+      label.textContent = "answer";
+      const text = document.createElement("span");
+      text.textContent = String(it.answer);
+      ans.appendChild(label);
+      ans.appendChild(text);
+      left.appendChild(ans);
+    }
+
+    const right = document.createElement("div");
+    right.className = "letter-time";
+    right.textContent = timeAgo(it.createdAt);
+
+    row.appendChild(left);
+    row.appendChild(right);
+    return row;
+  }
+
+  function renderApprovedPage() {
     if (!lettersList) return;
-    if (!isPageVisible()) return;
 
-    const { ok, data } = await fetchJson("/api/letters/list", {}, 12000);
+    clearNode(lettersList);
 
-    if (!ok || !data || data.ok === false) {
-      lettersList.textContent = "failed to load.";
-      return;
-    }
-
-    const items = Array.isArray(data.items) ? data.items : [];
-    if (items.length === 0) {
+    if (!approvedCache.length) {
       lettersList.textContent = "no approved messages yet.";
       return;
     }
 
-    clearNode(lettersList);
+    const start = (currentPage - 1) * PAGE_SIZE;
+    const end = start + PAGE_SIZE;
+    const slice = approvedCache.slice(start, end);
 
     const frag = document.createDocumentFragment();
-
-    for (const it of items) {
-      const row = document.createElement("div");
-      row.className = "letter-item";
-
-      const msgWrap = document.createElement("div");
-      msgWrap.className = "letter-msg";
-
-      const userMsg = document.createElement("div");
-      userMsg.textContent = String(it.message || "");
-      msgWrap.appendChild(userMsg);
-
-      if (it.answered && it.answer) {
-        const ans = document.createElement("div");
-        ans.style.marginTop = "8px";
-        ans.style.paddingTop = "8px";
-        ans.style.borderTop = "1px solid rgba(255,255,255,.08)";
-
-        const label = document.createElement("span");
-        label.textContent = "answer: ";
-        label.style.color = "var(--muted)";
-        label.style.opacity = "0.95";
-
-        const txt = document.createElement("span");
-        txt.textContent = String(it.answer);
-
-        ans.appendChild(label);
-        ans.appendChild(txt);
-        msgWrap.appendChild(ans);
-      }
-
-      const tm = document.createElement("div");
-      tm.className = "letter-time";
-      tm.textContent = timeAgo(it.createdAt);
-
-      row.appendChild(msgWrap);
-      row.appendChild(tm);
-
-      frag.appendChild(row);
-    }
-
+    for (const it of slice) frag.appendChild(makeLetterRow(it));
     lettersList.appendChild(frag);
   }
 
-  // ---------------------------
-  // Init wiring
-  // ---------------------------
+  async function loadApprovedLetters() {
+    if (!lettersList) return;
+    if (!isVisible()) return;
+
+    const { ok, data } = await fetchJson("/api/letters/list", {}, 12000);
+
+    if (!ok || !data || data.ok === false) {
+      // keep previous view, but show minimal info
+      if (!approvedCache.length) lettersList.textContent = "failed to load.";
+      return;
+    }
+
+    const items = Array.isArray(data.items) ? data.items : [];
+    approvedCache = items;
+
+    const pages = Math.max(1, Math.ceil(approvedCache.length / PAGE_SIZE));
+    currentPage = clamp(currentPage, 1, pages);
+
+    renderApprovedPage();
+    renderPagination(approvedCache.length);
+  }
+
+  /* ======================================================
+     EMOJIS INSERT
+  ====================================================== */
+  function initEmojis() {
+    if (!emojiSpans || !emojiSpans.length || !letterText) return;
+    emojiSpans.forEach(sp => {
+      sp.addEventListener("click", () => {
+        const add = sp.textContent || "";
+        const cur = letterText.value || "";
+        letterText.value = (cur + " " + add).trimStart();
+        letterText.focus();
+      });
+    });
+  }
+
+  /* ======================================================
+     INIT
+  ====================================================== */
   function init() {
-    // Initial renders
-    updateAliveAndTime();
+    tickAliveAndTime();
     renderHistory();
     loadApprovedLetters();
     updateSpotify();
+    initEmojis();
 
-    // Timers
-    setInterval(updateAliveAndTime, 1000);
+    // timers
+    setInterval(tickAliveAndTime, 1000);
 
     setInterval(() => {
-      if (isPageVisible()) updateSpotify();
+      if (isVisible()) updateSpotify();
     }, SPOTIFY_POLL_MS);
 
     setInterval(() => {
-      if (isPageVisible()) loadApprovedLetters();
+      if (isVisible()) loadApprovedLetters();
     }, LETTERS_POLL_MS);
 
-    // When tab becomes visible again, refresh instantly
+    // visibility change refresh
     document.addEventListener("visibilitychange", () => {
-      if (isPageVisible()) {
-        updateAliveAndTime();
+      if (isVisible()) {
+        tickAliveAndTime();
         updateSpotify();
-        loadApprovedLetters();
         renderHistory();
+        loadApprovedLetters();
       }
     });
 
-    // Letterbox submit
-    if (sendLetter) {
-      sendLetter.addEventListener("click", submitLetter);
-    }
-
+    // submit hook
+    if (sendLetter) sendLetter.addEventListener("click", submitLetter);
     if (letterText) {
       letterText.addEventListener("keydown", (e) => {
-        // Ctrl+Enter to send
         if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
           e.preventDefault();
           submitLetter();
         }
       });
     }
-
-    // Emoji insert
-    if (emojiSpans && emojiSpans.length && letterText) {
-      emojiSpans.forEach((sp) => {
-        sp.addEventListener("click", () => {
-          const add = sp.textContent || "";
-          const cur = letterText.value || "";
-          letterText.value = (cur + " " + add).trimStart();
-          letterText.focus();
-        });
-      });
-    }
   }
 
-  // Run after DOM is ready
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init, { once: true });
   } else {
