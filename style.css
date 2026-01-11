@@ -1,13 +1,16 @@
 :root{
   --bg:#000;
   --panel:#0b0b0c;
-  --border:rgba(255,255,255,.085);
+  --panel-soft: rgba(255,255,255,.035);
+  --border: rgba(255,255,255,.085);
   --text:#e6e6eb;
   --muted:#8b8b91;
 
   --radius:14px;
   --pad:14px;
-  --gap:12px;
+
+  --answer-bg: rgba(90,160,255,.18);
+  --answer-fg: #9ec5ff;
 }
 
 *{ box-sizing:border-box; }
@@ -22,39 +25,15 @@ html,body{
 .wrap{
   max-width:900px;
   margin:0 auto;
-  padding:18px 14px 56px;
+  padding:20px 14px 60px;
 }
 
 /* ===== headings ===== */
-.header{ margin-bottom: 12px; }
-.header-inner{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+h1{ margin:0; font-size:26px; }
+h2{ margin:0 0 8px; font-size:18px; }
+.sub{ color:var(--muted); font-size:13px; }
 
-.header h1{
-  margin:0;
-  font-size:26px;
-  line-height:1.15;
-}
-
-h2{
-  margin:0 0 10px;
-  font-size:18px;
-  font-weight:600;
-}
-
-.h3{
-  margin:16px 0 8px;
-  font-size:14px;
-  font-weight:500;
-  color:var(--muted);
-}
-
-.section{ margin-top:22px; }
-
-.muted{ color:var(--muted); }
-.small{ font-size:13px; }
-.sub{ margin:6px 0 8px; font-size:13px; }
-
-/* ===== unified panel ===== */
+/* ===== panels ===== */
 .panel{
   background:var(--panel);
   border:1px solid var(--border);
@@ -62,191 +41,59 @@ h2{
   padding:var(--pad);
 }
 
-.subtle{
-  background: rgba(255,255,255,0.025);
+/* ===== SHOUTBOX / LETTERS ===== */
+.letters-list{
+  padding:10px 12px;
 }
 
-/* ===== ABOUT: grid so it is always ровно ===== */
-.about-panel{
-  margin-top:14px;
-  display:grid;
-  grid-template-columns: 1fr 132px; /* фикс ширина блока под гиф */
+.letter-item{
+  background:var(--panel-soft);
+  border-radius:14px;
+  padding:16px 18px;
+  margin-bottom:14px;
+  display:flex;
   gap:16px;
-  align-items:start;
+  justify-content:space-between;
 }
 
-.about-text{
-  margin:0;
-  white-space:pre-wrap;
-  line-height:1.45;
-}
-
-.about-media{
-  width:132px;
-  height:132px;           /* квадрат, чтобы блок ровный был */
-  display:flex;
-  align-items:flex-start;
-  justify-content:flex-end;
-}
-
-.about-gif{
-  width:120px;
-  height:120px;
-  object-fit:cover;
-  border-radius:12px;
-  opacity:0.92;
-  user-select:none;
-  pointer-events:none;
-}
-
-@media (max-width:650px){
-  .about-panel{
-    grid-template-columns: 1fr;
-  }
-  .about-media{
-    width:100%;
-    height:auto;
-    justify-content:flex-end;
-  }
-  .about-gif{
-    width:110px;
-    height:110px;
-  }
-}
-
-/* ===== NOW PLAYING ===== */
-.np-card{
-  display:flex;
-  gap:var(--gap);
-  align-items:center;
-  padding:10px;
-}
-
-.hidden{ display:none !important; }
-
-.np-cover{
-  width:52px;
-  height:52px;
-  min-width:52px;
-  min-height:52px;
-  flex:0 0 52px;
-  border-radius:10px;
-  object-fit:cover;
-  background:#000;
-}
-
-.np-info{ flex:1; min-width:0; }
-
-.np-title{
-  display:block;
-  color:var(--text);
-  text-decoration:none;
-  font-size:14px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.np-title:hover{ opacity:.9; text-decoration:underline; }
-
-.np-artist{
-  font-size:12px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.np-progress{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  margin-top:6px;
-  font-size:12px;
-}
-
-.np-bar{
+.letter-msg{
   flex:1;
-  height:5px;
-  border-radius:999px;
-  overflow:hidden;
-  background:rgba(255,255,255,.10);
-  border:1px solid rgba(255,255,255,.10);
+  white-space:pre-wrap;
+  line-height:1.55;
+  font-size:15px;
+  word-break:break-word;
 }
 
-#npFill{
-  height:100%;
-  width:0%;
-  background:rgba(255,255,255,.58);
-}
-
-/* ===== HISTORY: cards ровные и одинаковые ===== */
-.history-scroll{
-  display:flex;
-  gap:12px;
-  overflow-x:auto;
-  padding:2px 2px 10px;
-  scroll-snap-type:x mandatory;
-}
-
-.history-scroll::-webkit-scrollbar{ display:none; }
-
-.track-card{
-  min-width:240px;
-  scroll-snap-align:start;
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  padding:10px;
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-.track-card img{
-  width:44px;
-  height:44px;
-  min-width:44px;
-  min-height:44px;
-  flex:0 0 44px;
+/* answer block (second div inside letter-msg) */
+.letter-msg > div + div{
+  margin-top:12px;
+  background: rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.06);
   border-radius:10px;
-  object-fit:cover;
-  background:#000;
+  padding:10px 12px;
+  font-size:14px;
 }
 
-.track-meta{ flex:1; min-width:0; }
-
-.track-title{
-  font-size:13px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.track-artist{
+.letter-answer-label{
+  display:inline-block;
+  background:var(--answer-bg);
+  color:var(--answer-fg);
   font-size:12px;
-  color:var(--muted);
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
+  padding:3px 8px;
+  border-radius:6px;
+  margin-right:8px;
 }
 
-.track-ago{
-  font-size:11px;
-  color:var(--muted);
-  opacity:.8;
-  white-space:nowrap;
-}
-
-.hint{
-  margin-top:8px;
-  text-align:center;
+.letter-time{
   font-size:12px;
-  color:var(--muted);
+  opacity:.35;
+  white-space:nowrap;
+  align-self:flex-end;
 }
 
-/* ===== LETTERBOX: всё строго ровно ===== */
+/* ===== LETTERBOX INPUT ===== */
 .letterbox{
-  padding:0;      /* внутренние отступы у textarea/bar */
+  padding:0;
   overflow:hidden;
 }
 
@@ -255,38 +102,31 @@ h2{
   min-height:120px;
   background:transparent;
   border:none;
+  outline:none;
   color:var(--text);
   padding:14px;
   font:inherit;
   resize:none;
-  outline:none;
-  line-height:1.4;
 }
 
 .lb-text::placeholder{ color:var(--muted); }
 
 .letterbox-bar{
-  display:grid;
-  grid-template-columns: 1fr auto; /* emojis | send */
+  display:flex;
   align-items:center;
-  gap:10px;
+  justify-content:space-between;
   padding:8px 10px;
   border-top:1px solid var(--border);
 }
 
 .emojis{
   display:flex;
-  flex-wrap:wrap;
   gap:6px;
-  align-items:center;
-  min-height: 20px; /* чтобы не прыгало */
 }
 
 .emojis span{
   cursor:pointer;
-  opacity:.65;
-  user-select:none;
-  line-height:1;
+  opacity:.6;
 }
 
 .emojis span:hover{ opacity:1; }
@@ -295,70 +135,20 @@ h2{
   background:none;
   border:none;
   color:var(--muted);
-  font:inherit;
   cursor:pointer;
-  white-space:nowrap;
-  padding:0 2px;
+  font:inherit;
 }
 
 .send-btn:hover{ color:#fff; }
 
+/* honeypot */
 .lb-hp{
   position:absolute !important;
   left:-9999px !important;
-  width:1px !important;
-  height:1px !important;
   opacity:0 !important;
 }
 
-/* dev hint */
-.dev-hint{
-  font-size:12px;
-  color:var(--muted);
-  opacity:0.75;
-  margin:0 0 10px;
-}
-
-.dev-hint a{
-  color:var(--muted);
-  text-decoration:none;
-  border-bottom:1px dotted rgba(255,255,255,.25);
-}
-
-.dev-hint a:hover{
-  color:#fff;
-  border-bottom-color:#fff;
-}
-
-/* approved list */
-.letters-list{ padding: 10px 12px; }
-
-.letter-item{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  padding:10px 0;
-  border-top:1px solid rgba(255,255,255,.08);
-}
-
-.letter-item:first-child{ border-top:none; }
-
-.letter-msg{
-  color:var(--text);
-  font-size:13px;
-  line-height:1.45;
-  white-space:pre-wrap;
-  word-break:break-word;
-}
-
-.letter-time{
-  font-size:11px;
-  color:var(--muted);
-  opacity:.75;
-  white-space:nowrap;
-}
-
-/* footer */
+/* ===== footer ===== */
 .footer{
   margin-top:40px;
   text-align:center;
@@ -371,5 +161,3 @@ h2{
 }
 
 .footer a:hover{ color:#fff; }
-
-.sep{ color:var(--muted); opacity:.7; padding:0 6px; }
