@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>chillead · api</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- используем тот же стиль -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<main class="wrap">
+
+<header class="header">
+  <h1># letterbox api</h1>
+  <div class="muted small">
+    status: <span id="apiStatus">checking…</span>
+  </div>
+</header>
+
+<section class="card">
+<pre>
+base url:
+  https://hatesocial.lol
+
+auth:
+  admin endpoints require:
+  Authorization: Bearer ADMIN_TOKEN
+
+rate limits:
+  submit — ~8 req / minute / ip
+  now-playing — ~30 req / minute / ip
+</pre>
+</section>
+
+<section class="section">
+  <h2># endpoints</h2>
+
+  <div class="card subtle">
+<pre>
+POST /api/letters/submit
+-----------------------
+description:
+  submit anonymous message to letterbox
+
+body (json):
+  {
+    "message": "your text"
+  }
+
+response:
+  { "ok": true }
+
+notes:
+  - max 500 chars
+  - sanitized (xss safe)
+  - goes to moderation
+</pre>
+  </div>
+
+  <div class="card subtle">
+<pre>
+GET /api/letters/list
+--------------------
+description:
+  get approved messages
+
+response:
+  {
+    "ok": true,
+    "items": [
+      {
+        "message": "text",
+        "createdAt": 1736382948123
+      }
+    ]
+  }
+
+notes:
+  - public
+  - cache: no-store
+</pre>
+  </div>
+
+  <div class="card subtle">
+<pre>
+GET /api/letters/pending   [admin]
+-------------------------
+headers:
+  Authorization: Bearer ADMIN_TOKEN
+
+description:
+  get messages awaiting moderation
+</pre>
+  </div>
+
+  <div class="card subtle">
+<pre>
+POST /api/letters/approve   [admin]
+--------------------------
+headers:
+  Authorization: Bearer ADMIN_TOKEN
+
+body:
+  { "id": "message_id" }
+
+description:
+  approve message (moves to public list)
+</pre>
+  </div>
+</section>
+
+<section class="section">
+  <h2># api health</h2>
+
+  <div class="card subtle">
+    <div class="muted small">
+      now-playing:
+      <span id="npStatus">checking…</span>
+    </div>
+
+    <div class="muted small">
+      letterbox submit:
+      <span id="lbStatus">checking…</span>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <a href="/">← back to site</a>
+</footer>
+
+</main>
+
+<script src="api-docs.js"></script>
+</body>
+</html>
