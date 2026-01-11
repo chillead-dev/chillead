@@ -1,383 +1,164 @@
 /* ======================================================
-   RESET (SAFE)
+   UTILS
 ====================================================== */
-* {
-  box-sizing: border-box;
+function qs(id){ return document.getElementById(id); }
+
+function formatTime(ms){
+  const s = Math.floor(ms / 1000);
+  const m = Math.floor(s / 60);
+  return `${m}:${String(s % 60).padStart(2,'0')}`;
 }
 
-html, body {
-  margin: 0;
-  padding: 0;
+function timeAgo(ts){
+  const diff = Date.now() - ts;
+  const m = Math.floor(diff / 60000);
+  if (m < 1) return 'just now';
+  if (m < 60) return `${m} min ago`;
+  const h = Math.floor(m / 60);
+  return `${h} h ago`;
 }
 
 /* ======================================================
-   ROOT THEME
+   ALIVE TIMER + LOCAL TIME
 ====================================================== */
-:root {
-  --bg: #000000;
-  --panel: #0b0b0c;
-  --panel-soft: rgba(255,255,255,0.04);
-  --border: rgba(255,255,255,0.10);
+(function(){
+  const born = new Date('2010-08-05T00:00:00+05:00').getTime();
+  const aliveEl = qs('alive');
+  const timeEl = qs('localTime');
 
-  --text: #e6e6eb;
-  --muted: #8b8b91;
+  function tick(){
+    const now = Date.now();
+    const diff = now - born;
 
-  --radius: 14px;
-  --gap: 14px;
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor(diff / 3600000) % 24;
+    const m = Math.floor(diff / 60000) % 60;
+    const s = Math.floor(diff / 1000) % 60;
 
-  --answer-bg: rgba(90,160,255,0.18);
-  --answer-text: #9ec5ff;
-}
+    if (aliveEl) aliveEl.textContent = `${d}d ${h}h ${m}m ${s}s`;
+    if (timeEl) timeEl.textContent =
+      new Date().toLocaleTimeString('en-GB',{ hour:'2-digit', minute:'2-digit', second:'2-digit' });
+  }
 
-/* ======================================================
-   BASE
-====================================================== */
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.wrap {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 18px 14px 60px;
-}
-
-/* ======================================================
-   HEADER
-====================================================== */
-.header {
-  margin-bottom: 12px;
-}
-
-.header h1 {
-  margin: 0;
-  font-size: 26px;
-  font-weight: 600;
-}
-
-.sub {
-  margin-top: 4px;
-  font-size: 13px;
-  color: var(--muted);
-}
-
-/* ======================================================
-   SECTIONS
-====================================================== */
-.section {
-  margin-top: 26px;
-}
-
-.section h2 {
-  margin: 0 0 10px;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-/* ======================================================
-   PANEL (GENERIC)
-====================================================== */
-.panel {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: var(--gap);
-}
-
-/* ======================================================
-   ABOUT
-====================================================== */
-.about-panel {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 16px;
-}
-
-.about-text {
-  white-space: pre-wrap;
-  line-height: 1.45;
-}
-
-.about-gif {
-  width: 88px;
-  height: 88px;
-  border-radius: 12px;
-  object-fit: cover;
-  opacity: 0.9;
-  pointer-events: none;
-}
+  tick();
+  setInterval(tick, 1000);
+})();
 
 /* ======================================================
    SPOTIFY — NOW PLAYING
 ====================================================== */
-#nowPlaying.hidden {
-  display: none;
-}
+async function loadNowPlaying(){
+  try{
+    const r = await fetch('/api/now-playing');
+    const data = await r.json();
 
-.np-card {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
+    const card = qs('nowPlaying');
+    const empty = qs('npEmpty');
 
-.np-cover {
-  width: 56px;
-  height: 56px;
-  min-width: 56px;
-  border-radius: 12px;
-  object-fit: cover;
-  border: 1px solid var(--border);
-}
+    if (!data || !data.ok || !data.playing){
+      card.classList.add('hidden');
+      empty.style.display = 'block';
+      return;
+    }
 
-.np-info {
-  flex: 1;
-  min-width: 0;
-}
+    const item = data.item;
+    if (!item) return;
 
-.np-title {
-  display: block;
-  font-size: 15px;
-  font-weight: 600;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+    qs('npCover').src = item.cover;
+    qs('npTitle').textContent = item.name;
+    qs('npTitle').href = item.url;
+    qs('npArtist').textContent = item.artist;
 
-.np-artist {
-  font-size: 12px;
-  color: var(--muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-top: 2px;
-}
+    qs('npTime').textContent = formatTime(data.progress);
+    qs('npDuration').textContent = formatTime(item.duration);
 
-.np-progress {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  margin-top: 8px;
-  font-size: 12px;
-  color: var(--muted);
-}
+    const pct = Math.min(100, Math.max(0, (data.progress / item.duration) * 100));
+    qs('npFill').style.width = pct + '%';
 
-.np-bar {
-  flex: 1;
-  height: 6px;
-  background: rgba(255,255,255,0.12);
-  border-radius: 999px;
-  overflow: hidden;
-}
+    card.classList.remove('hidden');
+    empty.style.display = 'none';
 
-#npFill {
-  height: 100%;
-  width: 0%;
-  background: rgba(255,255,255,0.6);
+  }catch(e){
+    console.error('now playing error', e);
+  }
 }
 
 /* ======================================================
-   HISTORY
+   HISTORY (LOCAL)
 ====================================================== */
-.history-scroll {
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  padding-bottom: 6px;
-}
+function renderHistory(){
+  const el = qs('history');
+  if (!el) return;
 
-.history-scroll::-webkit-scrollbar {
-  display: none;
-}
+  const raw = localStorage.getItem('spotify_history');
+  if (!raw) return;
 
-.track-card {
-  min-width: 220px;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 10px;
-  display: flex;
-  gap: 10px;
-}
+  let list;
+  try{ list = JSON.parse(raw); }
+  catch{ return; }
 
-.track-card img {
-  width: 46px;
-  height: 46px;
-  border-radius: 10px;
-  object-fit: cover;
-  border: 1px solid var(--border);
-}
+  el.innerHTML = '';
 
-.track-meta {
-  flex: 1;
-  min-width: 0;
-}
+  list.slice(0,20).forEach(t=>{
+    const card = document.createElement('div');
+    card.className = 'track-card';
 
-.track-title {
-  font-size: 13px;
-  font-weight: 600;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.track-artist,
-.track-ago {
-  font-size: 12px;
-  color: var(--muted);
+    card.innerHTML = `
+      <img src="${t.cover}">
+      <div class="track-meta">
+        <div class="track-title">${t.name}</div>
+        <div class="track-artist">${t.artist}</div>
+        <div class="track-ago">${timeAgo(t.time)}</div>
+      </div>
+    `;
+    el.appendChild(card);
+  });
 }
 
 /* ======================================================
-   LETTERBOX INPUT
+   LETTERBOX (SAFE SEND)
 ====================================================== */
-.letterbox {
-  padding: 0;
-  overflow: hidden;
-}
+(function(){
+  const btn = qs('sendLetter');
+  const ta = qs('letterText');
 
-.lb-text {
-  width: 100%;
-  min-height: 120px;
-  background: none;
-  border: none;
-  padding: 14px;
-  font: inherit;
-  color: var(--text);
-  resize: none;
-  outline: none;
-}
+  if (!btn || !ta) return;
 
-.letterbox-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 10px;
-  border-top: 1px solid var(--border);
-}
+  btn.onclick = async ()=>{
+    const text = ta.value.trim();
+    if (text.length < 3) return;
 
-.emojis span {
-  margin-right: 6px;
-  cursor: pointer;
-  opacity: 0.6;
-}
+    btn.disabled = true;
+    btn.textContent = '[ sending… ]';
 
-.emojis span:hover {
-  opacity: 1;
-}
+    try{
+      const r = await fetch('/api/letters/submit',{
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body: JSON.stringify({ message:text })
+      });
+      const data = await r.json();
 
-.send-btn {
-  background: none;
-  border: none;
-  font: inherit;
-  color: var(--muted);
-  cursor: pointer;
-}
+      if (data.ok){
+        ta.value = '';
+        btn.textContent = '[ sent ]';
+      }else{
+        btn.textContent = '[ error ]';
+      }
+    }catch(e){
+      btn.textContent = '[ error ]';
+    }
 
-.send-btn:hover {
-  color: #fff;
-}
+    setTimeout(()=>{
+      btn.disabled = false;
+      btn.textContent = '[ send ]';
+    },1200);
+  };
+})();
 
 /* ======================================================
-   SHOUTBOX
+   INIT
 ====================================================== */
-.letters-list {
-  margin-top: 10px;
-}
-
-.letter-item {
-  background: var(--panel-soft);
-  border-radius: var(--radius);
-  padding: 16px;
-  margin-bottom: 14px;
-  display: flex;
-  gap: 16px;
-  justify-content: space-between;
-}
-
-.letter-msg {
-  flex: 1;
-  white-space: pre-wrap;
-  word-break: break-word;
-  line-height: 1.55;
-}
-
-.letter-msg > div + div {
-  margin-top: 12px;
-  background: rgba(255,255,255,0.04);
-  border-radius: 10px;
-  padding: 10px 12px;
-}
-
-.letter-answer-label {
-  display: inline-block;
-  background: var(--answer-bg);
-  color: var(--answer-text);
-  font-size: 12px;
-  padding: 3px 8px;
-  border-radius: 6px;
-  margin-right: 6px;
-}
-
-.letter-time {
-  font-size: 12px;
-  color: var(--muted);
-  white-space: nowrap;
-  align-self: flex-end;
-}
-
-/* ======================================================
-   PAGINATION
-====================================================== */
-.pagination {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 14px;
-}
-
-.page-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: var(--radius);
-  background: rgba(255,255,255,0.05);
-  border: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
-.page-btn.active {
-  background: rgba(255,255,255,0.15);
-  font-weight: 600;
-}
-
-/* ======================================================
-   FOOTER
-====================================================== */
-.footer {
-  margin-top: 40px;
-  text-align: center;
-  font-size: 13px;
-}
-
-.footer a {
-  color: var(--muted);
-}
-
-.footer a:hover {
-  color: #fff;
-}
-
-.sep {
-  padding: 0 6px;
-  color: var(--muted);
-}
+loadNowPlaying();
+renderHistory();
+setInterval(loadNowPlaying, 15000);
