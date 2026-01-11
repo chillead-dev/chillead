@@ -11,16 +11,18 @@
 <main class="wrap">
 
 <header class="header">
-  <div>
-    <h1># chillead</h1>
-    <div class="muted small">
-      alive: <span id="aliveInline">—</span> · local: <span id="localTime">—</span>
+  <div class="header-inner">
+    <div>
+      <h1># chillead</h1>
+      <div class="muted small">
+        alive: <span id="aliveInline">—</span> · local: <span id="localTime">—</span>
+      </div>
     </div>
   </div>
 </header>
 
 <!-- ===== ABOUT / PROFILE ===== -->
-<section class="card about-wrap">
+<section class="panel about-panel">
   <pre class="about-text">
 profile:
   name — alex
@@ -45,26 +47,29 @@ skills:
   parsers / checkers
   </pre>
 
-  <img
-    class="about-gif"
-    src="https://media1.tenor.com/m/21BfZcD8mcsAAAAC/kawaii-kawaii-core.gif"
-    alt="kawaii gif"
-    loading="lazy"
-  />
+  <div class="about-media">
+    <img
+      class="about-gif"
+      src="https://media1.tenor.com/m/21BfZcD8mcsAAAAC/kawaii-kawaii-core.gif"
+      alt="kawaii gif"
+      loading="lazy"
+    />
+  </div>
 </section>
 
 <!-- ===== SPOTIFY ===== -->
 <section class="section">
   <h2># spotify</h2>
 
-  <div id="nowPlayingCard" class="np-card hidden">
+  <div id="nowPlayingCard" class="panel np-card hidden">
     <img id="npCover" class="np-cover" alt="cover" />
     <div class="np-info">
-      <a id="npTitle" class="np-title" href="#" target="_blank" rel="noopener"></a>
+      <a id="npTitle" class="np-title" href="#" target="_blank" rel="noopener noreferrer"></a>
       <div id="npArtist" class="np-artist muted"></div>
+
       <div class="np-progress">
         <span id="npCur">0:00</span>
-        <div class="np-bar"><div id="npFill"></div></div>
+        <div class="np-bar" aria-hidden="true"><div id="npFill"></div></div>
         <span id="npTot">0:00</span>
       </div>
     </div>
@@ -86,7 +91,7 @@ skills:
     for devs — <a href="/api.html">API</a>
   </div>
 
-  <div class="letterbox">
+  <div class="panel letterbox">
     <input id="lb_hp" class="lb-hp" type="text" autocomplete="off" tabindex="-1" />
 
     <textarea
@@ -97,7 +102,7 @@ skills:
     ></textarea>
 
     <div class="letterbox-bar">
-      <div class="emojis">
+      <div class="emojis" aria-label="emojis">
         <span>:3</span>
         <span>^_^</span>
         <span>>w&lt;</span>
@@ -109,23 +114,23 @@ skills:
         <span>x3</span>
       </div>
 
-      <button id="sendLetter" class="send-btn">[ Send ]</button>
+      <button id="sendLetter" class="send-btn" type="button">[ Send ]</button>
     </div>
   </div>
 
   <div id="letterStatus" class="muted small"></div>
 
   <h3 class="h3"># approved</h3>
-  <div class="card subtle">
+  <div class="panel subtle">
     <div id="lettersList" class="letters-list muted">loading...</div>
   </div>
 </section>
 
 <footer class="footer">
-  <a href="https://t.me/rizzdev" target="_blank" rel="noopener">telegram</a>
-  ·
-  <a href="https://github.com/chillead-dev" target="_blank" rel="noopener">github</a>
-  ·
+  <a href="https://t.me/rizzdev" target="_blank" rel="noopener noreferrer">telegram</a>
+  <span class="sep">·</span>
+  <a href="https://github.com/chillead-dev" target="_blank" rel="noopener noreferrer">github</a>
+  <span class="sep">·</span>
   <a href="/api.html">api</a>
 </footer>
 
