@@ -1,4 +1,4 @@
-function endpoint(){
+function pipelineUrl(){
   const base = process.env.UPSTASH_REDIS_REST_URL;
   if(!base) return null;
   const clean = base.replace(/\/+$/, "");
@@ -6,7 +6,7 @@ function endpoint(){
 }
 
 async function redis(cmd, ...args){
-  const url = endpoint();
+  const url = pipelineUrl();
   const token = process.env.UPSTASH_REDIS_REST_TOKEN;
   if(!url || !token) throw new Error("missing_upstash_env");
 
@@ -14,46 +14,23 @@ async function redis(cmd, ...args){
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
-      "Content-Type":"application/json"
+      "Content-Type": "application/json"
     },
     body: JSON.stringify([[cmd, ...args]])
   });
 
-  const data = await r.json();
+  const data = await r.json().catch(() => null);
+  if(!data || !Array.isArray(data)) throw new Error("bad_upstash_response");
   return data?.[0]?.result;
 }
 
-function setSecHeaders(res){
-  res.setHeader("Cache-Control", "no-store, max-age=0");
-  res.setHeader("X-Content-Type-Options", "nosniff");
-  res.setHeader("Referrer-Policy", "no-referrer");
-  res.setHeader("X-Frame-Options", "DENY");
-  res.setHeader("Permissions-Policy", "geolocation=(), microphone=(), camera=()");
-  res.setHeader("Content-Type", "application/json; charset=utf-8");
-  res.setHeader("Access-Control-Allow-Origin", "null");
-}
-
-function originOk(req){
-  const origin = req.headers.origin || "";
-  const host = req.headers.host || "";
-  if(!origin) return true;
-  try{
-    const o = new URL(origin);
-    return o.host === host;
-  }catch{
-    return false;
-  }
-}
-
-const bucket = new Map();
-function rateLimit(req, limit = 8, windowMs = 60_000){
-  const ip = (req.headers["x-forwarded-for"] || "").split(",")[0].trim() || "unknown";
-  const now = Date.now();
-  const cur = bucket.get(ip) || { c:0, ts: now };
-  if(now - cur.ts > windowMs){ cur.c = 0; cur.ts = now; }
-  cur.c += 1;
-  bucket.set(ip, cur);
-  return cur.c <= limit;
+function setHeaders(res){
+  res.setHeader("Content-Type","application/json; charset=utf-8");
+  res.setHeader("Cache-Control","no-store, max-age=0");
+  res.setHeader("X-Content-Type-Options","nosniff");
+  res.setHeader("Referrer-Policy","no-referrer");
+  res.setHeader("X-Frame-Options","DENY");
+  res.setHeader("Permissions-Policy","geolocation=(), microphone=(), camera=()");
 }
 
 function cleanMessage(s){
@@ -73,4 +50,4 @@ function requireAdmin(req){
   return auth === `Bearer ${expected}`;
 }
 
-export { redis, setSecHeaders, originOk, rateLimit, cleanMessage, makeId, requireAdmin };
+export { redis, setHeaders, cleanMessage, makeId, requireAdmin };
