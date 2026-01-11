@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+
 <main class="wrap">
 
 <header class="header">
@@ -18,8 +19,9 @@
   </div>
 </header>
 
-<section class="card">
-<pre>
+<!-- ===== ABOUT / PROFILE ===== -->
+<section class="card about-wrap">
+  <pre class="about-text">
 profile:
   name — alex
   nickname — chillead
@@ -41,16 +43,24 @@ skills:
   telegram bots
   web & backend
   parsers / checkers
-</pre>
+  </pre>
+
+  <img
+    class="about-gif"
+    src="https://media1.tenor.com/m/21BfZcD8mcsAAAAC/kawaii-kawaii-core.gif"
+    alt="kawaii gif"
+    loading="lazy"
+  />
 </section>
 
+<!-- ===== SPOTIFY ===== -->
 <section class="section">
   <h2># spotify</h2>
 
   <div id="nowPlayingCard" class="np-card hidden">
     <img id="npCover" class="np-cover" alt="cover" />
     <div class="np-info">
-      <a id="npTitle" class="np-title" href="#" target="_blank" rel="noopener noreferrer"></a>
+      <a id="npTitle" class="np-title" href="#" target="_blank"></a>
       <div id="npArtist" class="np-artist muted"></div>
       <div class="np-progress">
         <span id="npCur">0:00</span>
@@ -67,15 +77,24 @@ skills:
   <div class="hint">← drag to scroll →</div>
 </section>
 
+<!-- ===== LETTERBOX ===== -->
 <section class="section">
   <h2># anonymous letterbox</h2>
   <p class="sub muted">say anything you want here! it will appear after moderation.</p>
 
+  <div class="dev-hint">
+    for devs — <a href="/api.html">API</a>
+  </div>
+
   <div class="letterbox">
-    <!-- honeypot -->
     <input id="lb_hp" class="lb-hp" type="text" autocomplete="off" tabindex="-1" />
 
-    <textarea id="letterText" class="lb-text" placeholder="Write your message here..." maxlength="500"></textarea>
+    <textarea
+      id="letterText"
+      class="lb-text"
+      placeholder="Write your message here..."
+      maxlength="500"
+    ></textarea>
 
     <div class="letterbox-bar">
       <div class="emojis">
@@ -103,9 +122,11 @@ skills:
 </section>
 
 <footer class="footer">
-  <a href="https://t.me/rizzdev" target="_blank" rel="noopener noreferrer">telegram</a>
+  <a href="https://t.me/rizzdev" target="_blank">telegram</a>
   ·
-  <a href="https://github.com/chillead-dev" target="_blank" rel="noopener noreferrer">github</a>
+  <a href="https://github.com/chillead-dev" target="_blank">github</a>
+  ·
+  <a href="/api.html">api</a>
 </footer>
 
 </main>
