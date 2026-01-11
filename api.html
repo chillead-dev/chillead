@@ -2,10 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>chillead · api</title>
+  <title>letterbox api · chillead</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- используем тот же стиль -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -21,41 +19,61 @@
 
 <section class="card">
 <pre>
+what is this?
+-------------
+Letterbox API allows you to add
+anonymous messages (guestbook / feedback)
+to your own website.
+
+users can write messages,
+you moderate them,
+approved messages are public.
+
 base url:
   https://hatesocial.lol
-
-auth:
-  admin endpoints require:
-  Authorization: Bearer ADMIN_TOKEN
-
-rate limits:
-  submit — ~8 req / minute / ip
-  now-playing — ~30 req / minute / ip
 </pre>
 </section>
 
 <section class="section">
-  <h2># endpoints</h2>
+  <h2># quick start (for websites)</h2>
+
+  <div class="card subtle">
+<pre>
+1) send message (no auth required)
+
+POST /api/letters/submit
+Content-Type: application/json
+
+{
+  "message": "hello from my site!"
+}
+
+2) show approved messages
+
+GET /api/letters/list
+</pre>
+  </div>
+</section>
+
+<section class="section">
+  <h2># public endpoints (no token)</h2>
 
   <div class="card subtle">
 <pre>
 POST /api/letters/submit
 -----------------------
 description:
-  submit anonymous message to letterbox
+  send anonymous message
 
-body (json):
+body:
   {
-    "message": "your text"
+    "message": "text"
   }
 
-response:
-  { "ok": true }
-
-notes:
-  - max 500 chars
-  - sanitized (xss safe)
-  - goes to moderation
+rules:
+  - max 500 characters
+  - html is sanitized
+  - message goes to moderation
 </pre>
   </div>
 
@@ -71,42 +89,71 @@ response:
     "ok": true,
     "items": [
       {
-        "message": "text",
+        "message": "hi!",
         "createdAt": 1736382948123
       }
     ]
   }
+</pre>
+  </div>
+</section>
 
-notes:
-  - public
-  - cache: no-store
+<section class="section">
+  <h2># admin endpoints (token required)</h2>
+
+  <div class="card subtle">
+<pre>
+IMPORTANT:
+----------
+Admin token gives FULL control.
+
+DO NOT expose it on client-side.
+Use it only on server, bot or private tools.
+
+Authorization header:
+  Authorization: Bearer ADMIN_TOKEN
 </pre>
   </div>
 
   <div class="card subtle">
 <pre>
-GET /api/letters/pending   [admin]
--------------------------
-headers:
-  Authorization: Bearer ADMIN_TOKEN
-
+GET /api/letters/pending
+-----------------------
 description:
-  get messages awaiting moderation
+  messages waiting for moderation
 </pre>
   </div>
 
   <div class="card subtle">
 <pre>
-POST /api/letters/approve   [admin]
---------------------------
-headers:
-  Authorization: Bearer ADMIN_TOKEN
-
+POST /api/letters/approve
+------------------------
 body:
   { "id": "message_id" }
 
 description:
-  approve message (moves to public list)
+  approve message
+  (becomes public)
+</pre>
+  </div>
+</section>
+
+<section class="section">
+  <h2># usage example (frontend)</h2>
+
+  <div class="card subtle">
+<pre>
+fetch("/api/letters/submit", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    message: "hello!"
+  })
+})
+.then(r => r.json())
+.then(console.log)
 </pre>
   </div>
 </section>
@@ -114,16 +161,9 @@ description:
 <section class="section">
   <h2># api health</h2>
 
-  <div class="card subtle">
-    <div class="muted small">
-      now-playing:
-      <span id="npStatus">checking…</span>
-    </div>
-
-    <div class="muted small">
-      letterbox submit:
-      <span id="lbStatus">checking…</span>
-    </div>
+  <div class="card subtle small">
+    letterbox: <span id="lbStatus">checking…</span><br>
+    now-playing: <span id="npStatus">checking…</span>
   </div>
 </section>
 
