@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>chillead</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <link rel="icon" href="/favicon.png">
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
 <main class="wrap">
 
 <header class="header">
-  <h1># chillead</h1>
-  <div class="muted" id="alive">alive: loading…</div>
+  <div>
+    <h1># chillead</h1>
+    <div class="muted small">
+      alive: <span id="aliveInline">—</span> · local: <span id="localTime">—</span>
+    </div>
+  </div>
 </header>
 
 <section class="card">
@@ -45,44 +46,66 @@ skills:
 
 <section class="section">
   <h2># spotify</h2>
-  <div id="nowPlaying" class="muted">not listening right now</div>
-</section>
 
-<section class="section">
-  <h2># scrobbles history</h2>
-  <p class="sub">fetched almost in real-time</p>
-  <div id="history"></div>
+  <div id="nowPlayingCard" class="np-card hidden">
+    <img id="npCover" class="np-cover" alt="cover" />
+    <div class="np-info">
+      <a id="npTitle" class="np-title" href="#" target="_blank" rel="noopener noreferrer"></a>
+      <div id="npArtist" class="np-artist muted"></div>
+      <div class="np-progress">
+        <span id="npCur">0:00</span>
+        <div class="np-bar"><div id="npFill"></div></div>
+        <span id="npTot">0:00</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="nowPlayingEmpty" class="muted">not listening right now</div>
+
+  <h3 class="h3"># scrobbles history</h3>
+  <div id="history" class="history-scroll"></div>
   <div class="hint">← drag to scroll →</div>
 </section>
 
 <section class="section">
   <h2># anonymous letterbox</h2>
-  <p class="sub">say anything you want here! or maybe just say hi :D</p>
+  <p class="sub muted">say anything you want here! it will appear after moderation.</p>
 
-  <textarea id="letterText" placeholder="Write your message here..."></textarea>
+  <div class="letterbox">
+    <!-- honeypot -->
+    <input id="lb_hp" class="lb-hp" type="text" autocomplete="off" tabindex="-1" />
 
-  <div class="letterbox-bar">
-    <div class="emojis">
-      <span>:3</span>
-      <span>^_^</span>
-      <span>>w&lt;</span>
-      <span>uwu</span>
-      <span>owo</span>
-      <span>>:3</span>
-      <span>o_o</span>
-      <span>T_T</span>
-      <span>x3</span>
+    <textarea id="letterText" class="lb-text" placeholder="Write your message here..." maxlength="500"></textarea>
+
+    <div class="letterbox-bar">
+      <div class="emojis">
+        <span>:3</span>
+        <span>^_^</span>
+        <span>>w&lt;</span>
+        <span>uwu</span>
+        <span>owo</span>
+        <span>>:3</span>
+        <span>o_o</span>
+        <span>T_T</span>
+        <span>x3</span>
+      </div>
+
+      <button id="sendLetter" class="send-btn">[ Send ]</button>
     </div>
-    <button id="sendLetter">[ Send ]</button>
   </div>
 
-  <div id="letterStatus" class="muted"></div>
+  <div id="letterStatus" class="muted small"></div>
+
+  <h3 class="h3"># approved</h3>
+  <div class="card subtle">
+    <div id="lettersList" class="letters-list muted">loading...</div>
+  </div>
 </section>
 
 <footer class="footer">
-  <a href="https://t.me/rizzdev" target="_blank">telegram</a>
+  <a href="https://t.me/rizzdev" target="_blank" rel="noopener noreferrer">telegram</a>
   ·
-  <a href="https://github.com/chillead-dev" target="_blank">github</a>
+  <a href="https://github.com/chillead-dev" target="_blank" rel="noopener noreferrer">github</a>
 </footer>
 
 </main>
