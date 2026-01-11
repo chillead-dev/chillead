@@ -1,259 +1,261 @@
-:root{
-  --bg:#000;
-  --card:#0b0b0c;
-  --border:rgba(255,255,255,.08);
-  --text:#e6e6eb;
-  --muted:#8b8b91;
+const TZ = "Asia/Yekaterinburg";
+const BIRTH = new Date("2010-08-05T00:00:00+05:00");
+
+const aliveInline = document.getElementById("aliveInline");
+const localTimeEl = document.getElementById("localTime");
+
+function updateAlive(){
+  let diff = Math.floor((Date.now()-BIRTH.getTime())/1000);
+  const d = Math.floor(diff/86400); diff%=86400;
+  const h = Math.floor(diff/3600); diff%=3600;
+  const m = Math.floor(diff/60);
+  const s = diff%60;
+  aliveInline.textContent = `${d}d ${h}h ${m}m ${s}s`;
 }
 
-*{ box-sizing:border-box; }
-
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+function updateLocalTime(){
+  localTimeEl.textContent = new Intl.DateTimeFormat("en-GB",{
+    timeZone:TZ, hour:"2-digit", minute:"2-digit", second:"2-digit"
+  }).format(new Date());
 }
 
-.wrap{
-  max-width:900px;
-  margin:0 auto;
-  padding:18px 14px 60px;
+function msToTime(ms){
+  const s = Math.max(0, Math.floor(ms/1000));
+  const m = Math.floor(s/60);
+  return `${m}:${String(s%60).padStart(2,"0")}`;
 }
 
-.header h1{
-  margin:0;
-  font-size:26px;
+function timeAgo(ts){
+  const sec = Math.floor((Date.now()-ts)/1000);
+  if(sec < 60) return `${sec}s ago`;
+  const m = Math.floor(sec/60);
+  if(m < 60) return `${m}m ago`;
+  const h = Math.floor(m/60);
+  if(h < 24) return `${h}h ago`;
+  const d = Math.floor(h/24);
+  return `${d}d ago`;
 }
 
-.section{ margin-top:22px; }
+/* ===== Spotify now playing ===== */
+const npCard = document.getElementById("nowPlayingCard");
+const npEmpty = document.getElementById("nowPlayingEmpty");
+const npCover = document.getElementById("npCover");
+const npTitle = document.getElementById("npTitle");
+const npArtist = document.getElementById("npArtist");
+const npCur = document.getElementById("npCur");
+const npTot = document.getElementById("npTot");
+const npFill = document.getElementById("npFill");
 
-.card{
-  margin-top:14px;
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:14px;
-}
+/* ===== History (local) ===== */
+const HISTORY_KEY = "spotify_history_v3";
+const historyWrap = document.getElementById("history");
 
-.subtle{ background: rgba(255,255,255,0.025); }
-
-pre{
-  margin:0;
-  font:inherit;
-  white-space:pre-wrap;
-  line-height:1.45;
-}
-
-.muted{ color:var(--muted); }
-.small{ font-size:13px; }
-.sub{ margin: 6px 0 10px; }
-
-h2{
-  margin:0 0 10px;
-  font-size:18px;
-}
-.h3{
-  margin:16px 0 8px;
-  font-size:16px;
-  font-weight:400;
-  color:var(--muted);
+function getHistory(){
+  try{ return JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]"); }
+  catch{ return []; }
 }
 
-/* ===== now playing card ===== */
-.np-card{
-  display:flex;
-  gap:12px;
-  align-items:center;
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:10px;
-}
-.hidden{ display:none; }
-
-.np-cover{
-  width:52px;
-  height:52px;
-  border-radius:10px;
-  object-fit:cover;
-  background:#000;
-}
-.np-info{ flex:1; min-width:0; }
-.np-title{
-  display:block;
-  color:var(--text);
-  text-decoration:none;
-  font-size:14px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-.np-title:hover{ opacity:.9; text-decoration:underline; }
-.np-artist{ font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-
-.np-progress{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  margin-top:6px;
-  font-size:12px;
-}
-.np-bar{
-  flex:1;
-  height:5px;
-  border-radius:999px;
-  overflow:hidden;
-  background:rgba(255,255,255,.10);
-  border:1px solid rgba(255,255,255,.10);
-}
-#npFill{
-  height:100%;
-  width:0%;
-  background:rgba(255,255,255,.55);
+function setHistory(items){
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(items));
 }
 
-/* ===== history cards (like your screenshots) ===== */
-.history-scroll{
-  display:flex;
-  gap:12px;
-  overflow-x:auto;
-  padding-bottom:8px;
-}
-.history-scroll::-webkit-scrollbar{ display:none; }
-
-.track-card{
-  min-width:240px;
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:10px;
-  display:flex;
-  gap:10px;
-  align-items:center;
-}
-.track-card img{
-  width:44px;
-  height:44px;
-  border-radius:10px;
-  object-fit:cover;
-  background:#000;
-}
-.track-meta{ flex:1; min-width:0; }
-.track-title{
-  font-size:13px;
-  color:var(--text);
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-.track-artist{
-  font-size:12px;
-  color:var(--muted);
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-.track-ago{
-  font-size:11px;
-  color:var(--muted);
-  opacity:.75;
-  white-space:nowrap;
-  margin-left:6px;
+function pushHistory(track){
+  const h = getHistory();
+  if(h[0]?.id === track.id) return;
+  h.unshift({ ...track, playedAt: Date.now() });
+  setHistory(h.slice(0, 20));
 }
 
-.hint{
-  margin-top:8px;
-  text-align:center;
-  font-size:12px;
-  color:var(--muted);
+function renderHistory(){
+  const h = getHistory();
+  historyWrap.innerHTML = "";
+
+  if(h.length === 0){
+    return;
+  }
+
+  for(const t of h){
+    const card = document.createElement("div");
+    card.className = "track-card";
+
+    const img = document.createElement("img");
+    img.src = t.cover || "";
+    img.alt = "cover";
+
+    const meta = document.createElement("div");
+    meta.className = "track-meta";
+
+    const title = document.createElement("div");
+    title.className = "track-title";
+    title.textContent = t.title || "Unknown";
+
+    const artist = document.createElement("div");
+    artist.className = "track-artist";
+    artist.textContent = t.artist || "";
+
+    meta.appendChild(title);
+    meta.appendChild(artist);
+
+    const ago = document.createElement("div");
+    ago.className = "track-ago";
+    ago.textContent = timeAgo(t.playedAt);
+
+    card.appendChild(img);
+    card.appendChild(meta);
+    card.appendChild(ago);
+
+    // optional: open spotify link on click
+    if(t.url){
+      card.style.cursor = "pointer";
+      card.onclick = () => window.open(t.url, "_blank", "noopener,noreferrer");
+    }
+
+    historyWrap.appendChild(card);
+  }
 }
 
-/* ===== letterbox (like screenshots, but in your dark style) ===== */
-.letterbox{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:14px;
-  overflow:hidden;
+async function updateSpotify(){
+  try{
+    const r = await fetch("/api/now-playing", { cache:"no-store" });
+    const data = await r.json();
+
+    if(!data.ok || !data.playing){
+      npCard.classList.add("hidden");
+      npEmpty.classList.remove("hidden");
+      return;
+    }
+
+    npEmpty.classList.add("hidden");
+    npCard.classList.remove("hidden");
+
+    npCover.src = data.cover || "";
+    npTitle.textContent = data.title || "Unknown";
+    npTitle.href = data.track_url || "#";
+    npArtist.textContent = data.artists || "";
+
+    const p = Number(data.progress_ms || 0);
+    const d = Number(data.duration_ms || 0);
+
+    npCur.textContent = msToTime(p);
+    npTot.textContent = msToTime(d);
+    npFill.style.width = d > 0 ? `${Math.min(100, Math.max(0, (p/d)*100))}%` : "0%";
+
+    if(data.track_id){
+      pushHistory({
+        id: data.track_id,
+        title: data.title,
+        artist: data.artists,
+        cover: data.cover,
+        url: data.track_url
+      });
+      renderHistory();
+    }
+  }catch{
+    npCard.classList.add("hidden");
+    npEmpty.classList.remove("hidden");
+  }
 }
 
-.lb-text{
-  width:100%;
-  min-height:120px;
-  background:transparent;
-  border:none;
-  color:var(--text);
-  padding:14px;
-  font:inherit;
-  resize:none;
-  outline:none;
-}
-.lb-text::placeholder{ color:var(--muted); }
+/* ===== Letterbox ===== */
+const letterText = document.getElementById("letterText");
+const sendLetter = document.getElementById("sendLetter");
+const letterStatus = document.getElementById("letterStatus");
+const hp = document.getElementById("lb_hp");
 
-.letterbox-bar{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  border-top:1px solid var(--border);
-  padding:6px 10px;
+document.querySelectorAll(".emojis span").forEach(e=>{
+  e.onclick = ()=> {
+    letterText.value = (letterText.value + " " + e.textContent).trimStart();
+    letterText.focus();
+  };
+});
+
+sendLetter.onclick = async ()=>{
+  letterStatus.textContent = "";
+
+  // honeypot
+  if(hp && hp.value.trim().length > 0){
+    letterStatus.textContent = "sent.";
+    letterText.value = "";
+    return;
+  }
+
+  const msg = (letterText.value || "").trim();
+  if(msg.length < 2){
+    letterStatus.textContent = "too short.";
+    return;
+  }
+
+  try{
+    const r = await fetch("/api/letters/submit", {
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({ message: msg })
+    });
+    const j = await r.json();
+    if(j.ok){
+      letterStatus.textContent = "sent for moderation.";
+      letterText.value = "";
+    }else{
+      letterStatus.textContent = j.error || "error.";
+    }
+  }catch{
+    letterStatus.textContent = "error.";
+  }
+};
+
+/* ===== Approved letters list ===== */
+const lettersList = document.getElementById("lettersList");
+
+function clearNode(n){ while(n.firstChild) n.removeChild(n.firstChild); }
+
+async function loadApprovedLetters(){
+  try{
+    const r = await fetch("/api/letters/list", { cache:"no-store" });
+    const j = await r.json();
+
+    if(!j.ok){
+      lettersList.textContent = "failed to load.";
+      return;
+    }
+
+    const items = j.items || [];
+    if(items.length === 0){
+      lettersList.textContent = "no approved messages yet.";
+      return;
+    }
+
+    clearNode(lettersList);
+
+    for(const it of items){
+      const row = document.createElement("div");
+      row.className = "letter-item";
+
+      const msg = document.createElement("div");
+      msg.className = "letter-msg";
+      msg.textContent = it.message; // safe
+
+      const tm = document.createElement("div");
+      tm.className = "letter-time";
+      tm.textContent = timeAgo(it.createdAt);
+
+      row.appendChild(msg);
+      row.appendChild(tm);
+      lettersList.appendChild(row);
+    }
+  }catch{
+    lettersList.textContent = "failed to load.";
+  }
 }
 
-.emojis span{
-  cursor:pointer;
-  opacity:.6;
-  margin-right:6px;
-  user-select:none;
-}
-.emojis span:hover{ opacity:1; }
+/* ===== init loops ===== */
+setInterval(updateAlive, 1000);
+setInterval(updateLocalTime, 1000);
+setInterval(updateSpotify, 15000);
 
-.send-btn{
-  background:none;
-  border:none;
-  color:var(--muted);
-  font:inherit;
-  cursor:pointer;
-}
-.send-btn:hover{ color:#fff; }
+updateAlive();
+updateLocalTime();
+renderHistory();
+updateSpotify();
 
-.lb-hp{
-  position:absolute !important;
-  left:-9999px !important;
-  width:1px !important;
-  height:1px !important;
-  opacity:0 !important;
-}
-
-/* approved letters */
-.letters-list{ padding: 10px 12px; }
-.letter-item{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  padding:10px 0;
-  border-top:1px solid rgba(255,255,255,.08);
-}
-.letter-item:first-child{ border-top:none; }
-.letter-msg{
-  color:var(--text);
-  font-size:13px;
-  line-height:1.45;
-  white-space:pre-wrap;
-  word-break:break-word;
-}
-.letter-time{
-  font-size:11px;
-  color:var(--muted);
-  white-space:nowrap;
-  opacity:.75;
-}
-
-.footer{
-  margin-top:40px;
-  text-align:center;
-  font-size:13px;
-}
-.footer a{
-  color:var(--muted);
-  text-decoration:none;
-}
-.footer a:hover{ color:#fff; }
+loadApprovedLetters();
+setInterval(loadApprovedLetters, 60000);
