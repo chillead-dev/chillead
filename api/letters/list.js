@@ -1,9 +1,10 @@
-import { redis, setSecHeaders } from "./_redis.js";
+import { redis, setHeaders } from "./_redis.js";
 
 export default async function handler(req, res){
-  setSecHeaders(res);
+  setHeaders(res);
 
-  if(req.method !== "GET") return res.status(405).json({ ok:false, error:"method_not_allowed" });
+  if(req.method !== "GET")
+    return res.status(405).json({ ok:false });
 
   try{
     const raw = (await redis("LRANGE", "letters:approved", 0, 30)) || [];
@@ -13,13 +14,20 @@ export default async function handler(req, res){
       try{
         const o = JSON.parse(s);
         if(o?.message && o?.createdAt){
-          items.push({ message: String(o.message).slice(0,500), createdAt: Number(o.createdAt) });
+          items.push({
+            id: o.id,
+            message: o.message,
+            createdAt: o.createdAt,
+            answered: !!o.answered,
+            answer: o.answer || null,
+            answeredAt: o.answeredAt || null
+          });
         }
       }catch{}
     }
 
-    return res.status(200).json({ ok:true, items });
+    return res.json({ ok:true, items });
   }catch{
-    return res.status(200).json({ ok:false, error:"server_error" });
+    return res.json({ ok:false });
   }
 }
