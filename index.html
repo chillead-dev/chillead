@@ -1,143 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8" />
   <title>chillead</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" href="/favicon.ico">
-  <link rel="stylesheet" href="/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div class="wrap">
 
-<div class="wrap">
+    <header class="header">
+      <h1># chillead</h1>
+      <div class="sub">
+        alive: <span id="alive"></span> · local: <span id="localTime"></span>
+      </div>
+    </header>
 
-  <!-- HEADER -->
-  <div class="header">
-    <h1># chillead</h1>
-    <div class="sub">
-      alive: <span id="alive"></span> · local: <span id="localTime"></span>
-    </div>
-  </div>
+    <!-- PROFILE -->
+    <section class="section">
+      <h2># profile</h2>
 
-  <!-- PROFILE -->
-  <div class="panel">
-    <div class="about-panel">
-      <div class="about-text">
-profile:
-
-  name — alex
-  nickname — chillead
-
-location:
-
-  ekaterinburg, ru
-
-languages:
-
-  en / ru
+      <div class="panel about-panel">
+        <pre class="about-text">
+name: alex
+nickname: chillead
+location: ekaterinburg, ru
+languages: en / ru
 
 occupation:
-
-  creating websites
-  creating telegram bots
-  parsers / checkers
+- creating websites
+- creating telegram bots
+- parsers / checkers
 
 skills:
-
-  c++
-  javascript
-  telegram bots
-  web & backend
-  parsers / checkers
+- c++
+- javascript
+- telegram bots
+- web & backend
+- parsers / checkers
 
 about:
+i like building small tools, websites and telegram bots
+that save time.
+        </pre>
 
-  i like building small tools,
-  websites and telegram bots
-  that save time.
-      </div>
-
-      <div class="about-media">
-        <img
-          class="about-gif"
-          src="https://media1.tenor.com/m/znG4Dcmyv_AAAAAC/1.gif"
-          alt="">
-      </div>
-    </div>
-  </div>
-
-  <!-- SPOTIFY -->
-  <div class="section">
-    <h2>spotify</h2>
-
-    <div id="nowPlaying" class="panel np-card hidden">
-      <img id="npCover" class="np-cover">
-      <div class="np-info">
-        <a id="npTitle" class="np-title" target="_blank"></a>
-        <div id="npArtist" class="np-artist muted"></div>
-
-        <div class="np-progress">
-          <span id="npTime">0:00</span>
-          <div class="np-bar"><div id="npFill"></div></div>
-          <span id="npDuration">0:00</span>
+        <div class="about-media">
+          <img
+            class="about-gif"
+            src="https://media1.tenor.com/m/znG4Dcmyv_AAAAAC/1.gif"
+            alt="gif"
+          />
         </div>
       </div>
-    </div>
+    </section>
 
-    <div id="npEmpty" class="muted small">not listening right now</div>
-  </div>
+    <!-- SPOTIFY -->
+    <section class="section">
+      <h2>## currently playing</h2>
 
-  <!-- HISTORY -->
-  <div class="section">
-    <h2>history</h2>
-
-    <div id="history" class="history-scroll"></div>
-    <div class="hint">← drag to scroll →</div>
-  </div>
-
-  <!-- LETTERBOX -->
-  <div class="section">
-    <h2>anonymous letterbox</h2>
-    <p class="dev-hint">
-      for devs: <a href="/api" target="_blank">api</a>
-    </p>
-
-    <div class="panel letterbox">
-      <textarea id="letterText" class="lb-text"
-        placeholder="write your message here..."></textarea>
-
-      <input class="lb-hp" autocomplete="off">
-
-      <div class="letterbox-bar">
-        <div class="emojis">
-          <span>:3</span><span>^_^</span><span>uwu</span>
-          <span>owo</span><span>x3</span>
-        </div>
-        <button id="sendLetter" class="send-btn">[ send ]</button>
+      <div class="panel">
+        <pre id="spotifyText" class="spotify-pre">
+loading...
+        </pre>
       </div>
-    </div>
+
+      <p class="muted">
+        this data is approximate and may be delayed by a few seconds.
+      </p>
+    </section>
+
+    <!-- HISTORY -->
+    <section class="section">
+      <h2>## history</h2>
+
+      <div class="panel">
+        <pre id="historyText" class="spotify-pre">
+loading...
+        </pre>
+      </div>
+    </section>
+
+    <!-- LETTERBOX -->
+    <section class="section">
+      <h2>## anonymous letterbox</h2>
+
+      <p class="muted">
+        write anything you want here. some messages may appear below.
+      </p>
+
+      <div class="panel letterbox">
+        <textarea
+          id="letterInput"
+          class="lb-text"
+          placeholder="write your message here..."
+        ></textarea>
+
+        <div class="letterbox-bar">
+          <div class="emojis">
+            <span>:3</span>
+            <span>^_^</span>
+            <span>owo</span>
+            <span>uwu</span>
+          </div>
+          <button id="sendLetter" class="send-btn">[ send ]</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SHOUTBOX -->
+    <section class="section">
+      <h2>## shoutbox</h2>
+      <div id="lettersList" class="letters-list"></div>
+      <div id="pagination" class="pagination"></div>
+    </section>
+
+    <footer class="footer">
+      <a href="https://github.com/chillead-dev">github</a>
+      <span class="sep">·</span>
+      <a href="https://t.me/rizzdev">telegram</a>
+    </footer>
+
   </div>
 
-  <!-- SHOUTBOX -->
-  <div class="section">
-    <h2>shoutbox</h2>
-    <p class="muted small">
-      messages are moderated
-    </p>
-
-    <div id="letters" class="letters-list"></div>
-    <div id="pagination" class="pagination"></div>
-  </div>
-
-  <!-- FOOTER -->
-  <div class="footer">
-    <a href="https://github.com/chillead-dev" target="_blank">github</a>
-    <span class="sep">·</span>
-    <a href="https://t.me/rizzdev" target="_blank">telegram</a>
-  </div>
-
-</div>
-
-<script src="/script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
