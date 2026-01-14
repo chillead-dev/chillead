@@ -10,103 +10,32 @@
   <div class="wrap">
     <header class="header">
       <h1># api</h1>
-      <div class="sub">letterbox docs · status: <span id="apiStatus">checking…</span></div>
+      <div class="sub">letterbox & spotify api</div>
     </header>
 
     <section class="section">
-      <h2>## overview</h2>
       <div class="panel">
-        <pre class="about-text">base url:
-- https://hatesocial.lol
-
-public endpoints:
+        <pre class="about-text">
+public:
 - GET  /api/health
 - GET  /api/letters/list
 - POST /api/letters/submit
 - GET  /api/now-playing
 
-admin endpoints (owner only):
+private:
 - GET  /api/letters/pending
 - POST /api/letters/approve
 - POST /api/letters/answer
 
-security:
-- admin token must NEVER be on client-side
-- only public endpoints are documented for 3rd-party use</pre>
-      </div>
-    </section>
-
-    <section class="section">
-      <h2>## public usage</h2>
-      <div class="panel">
-        <pre class="about-text">submit message:
-POST /api/letters/submit
-Content-Type: application/json
-
-{
-  "message": "hello!"
-}
-
-get approved messages:
-GET /api/letters/list
-
-response:
-{
-  "ok": true,
-  "items": [
-    {
-      "id": "...",
-      "message": "...",
-      "createdAt": 1730000000000,
-      "answered": true,
-      "answer": "..."
-    }
-  ]
-}</pre>
-      </div>
-    </section>
-
-    <section class="section">
-      <h2>## live status</h2>
-      <div class="panel">
-        <pre id="checks" class="about-text">checking…</pre>
+note:
+admin token must NEVER be used in browser.
+        </pre>
       </div>
     </section>
 
     <footer class="footer">
-      <a href="/">home</a><span class="sep">·</span><a href="/404.html">404</a>
+      <a href="/">home</a>
     </footer>
   </div>
-
-  <script>
-    async function check(url){
-      try{
-        const r = await fetch(url, { cache:"no-store" });
-        const j = await r.json().catch(()=>null);
-        return { status:r.status, json:j };
-      }catch{
-        return { status:0, json:null };
-      }
-    }
-
-    (async()=>{
-      const h = await check("/api/health");
-      const l = await check("/api/letters/list");
-      const s = await check("/api/now-playing");
-
-      const ok = h.json && h.json.ok;
-      document.getElementById("apiStatus").textContent = ok ? "online" : "offline";
-
-      const out =
-`/api/health        -> ${h.status}
- /api/letters/list  -> ${l.status}
- /api/now-playing   -> ${s.status}
-
-note:
-- pending/approve/answer are private (admin only)
-- public users can only submit + view approved`;
-      document.getElementById("checks").textContent = out;
-    })();
-  </script>
 </body>
 </html>
