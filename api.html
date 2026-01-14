@@ -2,93 +2,109 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>API</title>
+  <title>api</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
   <div class="wrap">
-    <div class="header">
+    <header class="header">
       <h1># api</h1>
-      <div class="sub">letterbox api docs · status: <span id="apiStatus">checking…</span></div>
-    </div>
+      <div class="sub">letterbox docs · status: <span id="apiStatus">checking…</span></div>
+    </header>
 
-    <div class="panel">
-      <pre class="spotify-pre">
-base url:
-  https://hatesocial.lol
+    <section class="section">
+      <h2>## overview</h2>
+      <div class="panel">
+        <pre class="about-text">base url:
+- https://hatesocial.lol
 
 public endpoints:
-  GET  /api/letters/list
-  POST /api/letters/submit
+- GET  /api/health
+- GET  /api/letters/list
+- POST /api/letters/submit
+- GET  /api/now-playing
 
-admin endpoints (require Authorization: Bearer ADMIN_TOKEN):
-  GET  /api/letters/pending
-  POST /api/letters/approve
-  POST /api/letters/answer
+admin endpoints (owner only):
+- GET  /api/letters/pending
+- POST /api/letters/approve
+- POST /api/letters/answer
 
-health:
-  GET /api/health
-      </pre>
-    </div>
-
-    <div class="section">
-      <h2>## examples</h2>
-      <div class="panel">
-        <pre class="spotify-pre">
-# submit
-fetch("/api/letters/submit",{
-  method:"POST",
-  headers:{ "Content-Type":"application/json" },
-  body: JSON.stringify({ message:"hello" })
-})
-
-# list
-fetch("/api/letters/list").then(r=>r.json()).then(console.log)
-        </pre>
+security:
+- admin token must NEVER be on client-side
+- only public endpoints are documented for 3rd-party use</pre>
       </div>
-    </div>
+    </section>
 
-    <div class="section">
-      <h2>## live checks</h2>
+    <section class="section">
+      <h2>## public usage</h2>
       <div class="panel">
-        <pre id="checks" class="spotify-pre">checking…</pre>
-      </div>
-    </div>
+        <pre class="about-text">submit message:
+POST /api/letters/submit
+Content-Type: application/json
 
-    <div class="footer">
-      <a href="/">home</a>
-    </div>
+{
+  "message": "hello!"
+}
+
+get approved messages:
+GET /api/letters/list
+
+response:
+{
+  "ok": true,
+  "items": [
+    {
+      "id": "...",
+      "message": "...",
+      "createdAt": 1730000000000,
+      "answered": true,
+      "answer": "..."
+    }
+  ]
+}</pre>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>## live status</h2>
+      <div class="panel">
+        <pre id="checks" class="about-text">checking…</pre>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <a href="/">home</a><span class="sep">·</span><a href="/404.html">404</a>
+    </footer>
   </div>
 
   <script>
-    async function check(url, opts){
+    async function check(url){
       try{
-        const r = await fetch(url, { cache:"no-store", ...(opts||{}) });
+        const r = await fetch(url, { cache:"no-store" });
         const j = await r.json().catch(()=>null);
-        return { ok: r.ok, status: r.status, json: j };
-      }catch(e){
-        return { ok:false, status:0, json:null };
+        return { status:r.status, json:j };
+      }catch{
+        return { status:0, json:null };
       }
     }
 
-    (async ()=>{
-      const health = await check("/api/health");
-      document.getElementById("apiStatus").textContent =
-        (health.ok && health.json && health.json.ok) ? "online" : "offline";
+    (async()=>{
+      const h = await check("/api/health");
+      const l = await check("/api/letters/list");
+      const s = await check("/api/now-playing");
 
-      const list = await check("/api/letters/list");
-      const nowp = await check("/api/now-playing");
+      const ok = h.json && h.json.ok;
+      document.getElementById("apiStatus").textContent = ok ? "online" : "offline";
 
       const out =
-`/api/health: ${health.status}
- /api/letters/list: ${list.status}
- /api/now-playing: ${nowp.status}
+`/api/health        -> ${h.status}
+ /api/letters/list  -> ${l.status}
+ /api/now-playing   -> ${s.status}
 
-notes:
-- admin endpoints require Authorization header
-- submit is moderated (pending -> approve -> public)
-`;
+note:
+- pending/approve/answer are private (admin only)
+- public users can only submit + view approved`;
       document.getElementById("checks").textContent = out;
     })();
   </script>
