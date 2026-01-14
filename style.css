@@ -1,27 +1,79 @@
+/* =========================
+   ROOT / RESET
+========================= */
 :root{
   --bg:#000;
+  --bg-soft:#050506;
   --panel:#0b0b0c;
+  --panel-soft:rgba(255,255,255,.035);
+
   --border:rgba(255,255,255,.12);
+  --border-soft:rgba(255,255,255,.08);
+
   --text:#e6e6eb;
   --muted:#8b8b91;
+  --accent:#ffffff;
+
+  --answer-bg:rgba(90,160,255,.18);
+  --answer-fg:#9ec5ff;
+
+  --radius-xs:8px;
+  --radius-s:12px;
   --radius:16px;
+  --radius-l:22px;
 
-  --answer-bg: rgba(90,160,255,.18);
-  --answer-fg: #9ec5ff;
+  --shadow-soft:0 0 0 1px rgba(255,255,255,.06);
+  --shadow-panel:0 10px 30px rgba(0,0,0,.45);
 
-  --cute:"Comic Sans MS","Comic Neue","Trebuchet MS","Segoe UI",ui-monospace,Menlo,monospace;
-  --mono: ui-monospace,SFMono-Regular,Menlo,monospace;
+  --cute:
+    "Comic Sans MS",
+    "Comic Neue",
+    "Segoe UI",
+    "Trebuchet MS",
+    ui-monospace,
+    Menlo,
+    monospace;
+
+  --mono:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
 }
 
-*{ box-sizing:border-box }
-html,body{ margin:0; padding:0 }
-img{ display:block; max-width:100%; height:auto }
-a{ color:inherit; text-decoration:none }
-a:hover{ text-decoration:underline }
+*,
+*::before,
+*::after{
+  box-sizing:border-box;
+}
 
+html,body{
+  margin:0;
+  padding:0;
+}
+
+img{
+  display:block;
+  max-width:100%;
+  height:auto;
+}
+
+a{
+  color:inherit;
+  text-decoration:none;
+}
+a:hover{
+  text-decoration:underline;
+}
+
+/* =========================
+   BODY / LAYOUT
+========================= */
 body{
   background:
-    radial-gradient(1200px 700px at 50% -300px, rgba(255,255,255,.08), transparent 60%),
+    radial-gradient(1200px 700px at 50% -300px,
+      rgba(255,255,255,.08),
+      transparent 60%),
     linear-gradient(#000,#070707);
   color:var(--text);
   font-family:var(--mono);
@@ -32,213 +84,377 @@ body{
 .wrap{
   max-width:900px;
   margin:0 auto;
-  padding:20px 14px 80px;
+  padding:20px 14px 96px;
   overflow-x:hidden;
 }
 
-.cute-h1,.cute-h2{ font-family:var(--cute) }
-.section{ margin-top:28px }
-.section h2{ margin:0 0 10px; font-size:22px }
+/* =========================
+   TYPOGRAPHY
+========================= */
+.cute-h1,
+.cute-h2{
+  font-family:var(--cute);
+  letter-spacing:.25px;
+}
 
+.cute-h1{
+  font-size:clamp(28px,4vw,38px);
+  margin:0;
+}
+
+.cute-h2{
+  font-size:22px;
+  margin:0 0 10px;
+}
+
+.sub{
+  margin-top:6px;
+  font-size:13px;
+  color:var(--muted);
+}
+
+.small{font-size:13px}
+.muted{color:var(--muted)}
+.hidden{display:none!important}
+
+/* =========================
+   PANELS
+========================= */
 .panel{
-  background:rgba(11,11,12,.75);
+  background:
+    linear-gradient(180deg,
+      rgba(255,255,255,.04),
+      rgba(255,255,255,.02));
   border:1px solid var(--border);
   border-radius:var(--radius);
+  box-shadow:var(--shadow-panel);
   overflow:hidden;
 }
 
-.hidden{ display:none !important }
-.muted{ color:var(--muted) }
-.small{ font-size:13px }
-
-/* HEADER */
+/* =========================
+   HEADER
+========================= */
 .header-with-corner{
   position:relative;
-  padding-right:clamp(140px,28vw,260px);
-}
-.corner-gif{
-  position:absolute;
-  top:0; right:0;
-  width:clamp(140px,26vw,240px);
-  border-radius:22px;
-  pointer-events:none;
-  opacity:.92;
+  padding-right:clamp(160px,28vw,280px);
 }
 
-/* PROFILE (без гифки) */
+.corner-gif{
+  position:absolute;
+  top:0;
+  right:0;
+  width:clamp(150px,26vw,260px);
+  border-radius:var(--radius-l);
+  opacity:.95;
+  pointer-events:none;
+  user-select:none;
+}
+
+/* =========================
+   PROFILE
+========================= */
 .about-text{
-  padding:14px;
   margin:0;
+  padding:16px;
   white-space:pre-wrap;
   word-break:break-word;
   font-family:var(--mono);
+  background:transparent;
 }
 
-/* SPOTIFY */
+/* =========================
+   SPOTIFY CARD
+========================= */
 .spotify-card{
   position:relative;
-  height:140px;
-  border-radius:18px;
+  height:150px;
+  border-radius:var(--radius-l);
+  border:1px solid var(--border);
   overflow:hidden;
-  border:1px solid rgba(255,255,255,.12);
+  background:var(--panel);
 }
+
 .spotify-bg{
   position:absolute;
   inset:0;
   background-size:cover;
   background-position:center;
-  filter:blur(22px) brightness(.55);
-  transform:scale(1.2);
+  filter:blur(26px) brightness(.55);
+  transform:scale(1.25);
 }
+
 .spotify-content{
   position:relative;
+  z-index:2;
   display:flex;
-  gap:14px;
-  padding:14px;
   align-items:center;
+  gap:16px;
+  padding:16px;
 }
+
 .spotify-cover{
-  width:64px; height:64px;
-  border-radius:12px;
+  width:68px;
+  height:68px;
+  flex-shrink:0;
+  border-radius:var(--radius-s);
   object-fit:cover;
-  border:1px solid rgba(255,255,255,.18);
+  border:1px solid var(--border-soft);
 }
-.spotify-meta{ flex:1; min-width:0 }
+
+.spotify-meta{
+  flex:1;
+  min-width:0;
+}
+
 .spotify-title{
   font-weight:900;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
 }
+
 .spotify-artist{
+  margin-top:2px;
   font-size:13px;
   color:var(--muted);
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
 }
+
 .spotify-progress{
+  margin-top:12px;
   display:flex;
-  gap:8px;
   align-items:center;
-  margin-top:10px;
+  gap:8px;
   font-size:12px;
+  color:var(--muted);
 }
+
 .spotify-bar{
   flex:1;
   height:5px;
-  background:rgba(255,255,255,.25);
   border-radius:999px;
+  background:rgba(255,255,255,.25);
   overflow:hidden;
 }
-#spotifyFill{ height:100%; width:0; background:#fff }
 
-/* HISTORY */
+#spotifyFill{
+  height:100%;
+  width:0;
+  background:#fff;
+}
+
+/* =========================
+   HISTORY
+========================= */
 .history-row{
   display:flex;
-  gap:10px;
+  gap:12px;
   overflow-x:auto;
-  padding-bottom:8px;
+  padding-bottom:10px;
+  scroll-behavior:smooth;
 }
-.history-row::-webkit-scrollbar{ display:none }
+.history-row::-webkit-scrollbar{display:none}
+
 .history-tile{
-  width:92px;
-  min-width:92px;
-  height:92px;
-  border-radius:14px;
-  overflow:hidden;
-  border:1px solid rgba(255,255,255,.12);
+  width:94px;
+  min-width:94px;
+  height:94px;
   position:relative;
+  border-radius:var(--radius);
+  overflow:hidden;
+  border:1px solid var(--border-soft);
+  background:var(--panel-soft);
 }
+
 .history-tile img{
   width:100%;
   height:100%;
   object-fit:cover;
   filter:brightness(.75);
 }
+
 .history-overlay{
   position:absolute;
   inset:0;
-  padding:6px;
+  padding:7px;
   display:flex;
   flex-direction:column;
   justify-content:flex-end;
-  background:linear-gradient(to top, rgba(0,0,0,.78), transparent 70%);
+  background:
+    linear-gradient(to top,
+      rgba(0,0,0,.85),
+      transparent 70%);
 }
-.history-name{ font-size:10px; font-weight:900 }
-.history-artist{ font-size:10px; color:rgba(230,230,235,.8) }
-.history-when{ font-size:9px; color:rgba(230,230,235,.55) }
 
-/* LETTERBOX */
+.history-name{
+  font-size:10px;
+  font-weight:900;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.history-artist{
+  font-size:10px;
+  color:rgba(230,230,235,.75);
+}
+.history-when{
+  font-size:9px;
+  color:rgba(230,230,235,.5);
+}
+
+/* =========================
+   LETTERBOX
+========================= */
 .lb-text{
   width:100%;
   min-height:120px;
-  padding:14px;
+  padding:16px;
   background:transparent;
   border:none;
-  color:var(--text);
+  outline:none;
   resize:none;
+  color:var(--text);
+  font-family:var(--mono);
 }
+
 .letterbox-bar{
   display:flex;
-  justify-content:space-between;
   align-items:center;
-  gap:10px;
-  padding:8px 12px;
-  border-top:1px solid var(--border);
+  justify-content:space-between;
+  gap:12px;
+  padding:10px 12px;
+  border-top:1px solid var(--border-soft);
 }
 
+/* =========================
+   GIF PICKER
+========================= */
 .gif-picker{
   display:flex;
-  gap:8px;
+  gap:10px;
   flex-wrap:wrap;
 }
-.gif-btn img{
-  width:34px;
-  height:34px;
-  border-radius:10px;
-  border:1px solid rgba(255,255,255,.12);
-  object-fit:cover;
+
+.gif-btn{
+  padding:0;
+  border:none;
+  background:none;
+  cursor:pointer;
+  border-radius:var(--radius-xs);
 }
 
-/* SEND */
+.gif-btn img{
+  width:36px;
+  height:36px;
+  object-fit:cover;
+  border-radius:var(--radius-xs);
+}
+
+/* ONLY OUTLINE ON SELECT */
+.gif-btn.selected{
+  outline:2px solid #fff;
+  outline-offset:2px;
+}
+
+/* =========================
+   SEND BUTTON
+========================= */
 .send-plane{
-  width:44px;
-  height:44px;
-  border-radius:14px;
-  border:1px solid rgba(255,255,255,.1);
+  width:46px;
+  height:46px;
+  border-radius:var(--radius);
+  border:1px solid var(--border-soft);
   background:rgba(255,255,255,.04);
   display:flex;
   align-items:center;
   justify-content:center;
+  cursor:pointer;
 }
-.send-plane svg{ width:18px; height:18px; fill:#fff }
 
-/* SHOUTBOX */
+.send-plane:hover{
+  background:rgba(255,255,255,.08);
+}
+
+.send-plane svg{
+  width:18px;
+  height:18px;
+  fill:#fff;
+}
+
+/* =========================
+   SHOUTBOX
+========================= */
+.letters-list{
+  margin-top:12px;
+}
+
 .letter-item{
-  background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.1);
-  border-radius:14px;
-  padding:16px;
-  margin-bottom:14px;
   display:flex;
   justify-content:space-between;
-  gap:16px;
+  gap:18px;
+  padding:16px 18px;
+  margin-bottom:14px;
+  border-radius:var(--radius);
+  border:1px solid var(--border-soft);
+  background:var(--panel-soft);
 }
-.letter-msg{ white-space:pre-wrap }
 
-/* GIFS */
+.letter-msg{
+  white-space:pre-wrap;
+  word-break:break-word;
+  line-height:1.55;
+}
+
+.letter-time{
+  font-size:12px;
+  color:var(--muted);
+  white-space:nowrap;
+}
+
+/* ANSWER */
+.letter-answer-label{
+  display:inline-block;
+  margin-top:10px;
+  margin-right:6px;
+  padding:3px 8px;
+  border-radius:6px;
+  background:var(--answer-bg);
+  color:var(--answer-fg);
+  font-size:12px;
+  font-weight:900;
+}
+
+/* =========================
+   GIFS IN MESSAGES
+========================= */
 .msg-gif-inline{
   display:inline-block;
   height:22px;
-  vertical-align:-4px;
   margin-left:8px;
+  vertical-align:-4px;
   border-radius:6px;
 }
+
 .msg-gif-big{
   display:block;
-  width:180px;
+  width:190px;
   max-width:100%;
-  margin-top:10px;
-  border-radius:14px;
+  margin-top:12px;
+  border-radius:var(--radius);
 }
+
+/* =========================
+   FOOTER
+========================= */
+.footer-split{
+  margin-top:48px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  font-size:13px;
+  color:var(--muted);
+}
+.footer-right a:hover{color:#fff}
