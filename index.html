@@ -4,22 +4,47 @@
   <meta charset="utf-8" />
   <title>chillead</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- basic safety (frontend only) -->
+  <meta name="referrer" content="no-referrer" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self';
+                 img-src 'self' https: data:;
+                 style-src 'self' 'unsafe-inline';
+                 script-src 'self';
+                 connect-src 'self';
+                 base-uri 'none';
+                 form-action 'self';
+                 frame-ancestors 'none';">
+
   <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
   <div class="wrap">
 
-    <header class="header">
-      <h1># chillead</h1>
-      <div class="sub">
-        alive: <span id="alive"></span> · local: <span id="localTime"></span>
+    <header class="header header-with-corner">
+      <div>
+        <h1># chillead</h1>
+        <div class="sub">
+          alive: <span id="alive"></span> · local: <span id="localTime"></span>
+        </div>
       </div>
+
+      <!-- corner gif -->
+      <img
+        class="corner-gif"
+        src="https://media1.tenor.com/m/bu3mmlzOePoAAAAC/mahiro-oyama-put-snow.gif"
+        alt=""
+        loading="lazy"
+        decoding="async"
+      />
     </header>
 
     <!-- PROFILE -->
     <section class="section">
       <h2># profile</h2>
-
       <div class="panel about-panel">
         <pre class="about-text">
 name: alex
@@ -43,15 +68,6 @@ about:
 i like building small tools, websites and telegram bots
 that save time.
         </pre>
-
-        <div class="about-media">
-          <img
-            class="about-gif"
-            src="https://media1.tenor.com/m/znG4Dcmyv_AAAAAC/1.gif"
-            alt="gif"
-            loading="lazy"
-          />
-        </div>
       </div>
     </section>
 
@@ -80,13 +96,8 @@ that save time.
         </div>
       </div>
 
-      <p id="spotifyEmpty" class="muted">
-        not listening right now
-      </p>
-
-      <p class="muted small" style="margin-top:8px">
-        this data is approximate and may be delayed by a few seconds.
-      </p>
+      <p id="spotifyEmpty" class="muted">not listening right now</p>
+      <p class="muted small">this data is approximate and may be delayed.</p>
     </section>
 
     <!-- HISTORY -->
@@ -124,7 +135,7 @@ that save time.
         </div>
       </div>
 
-      <div id="letterStatus" class="muted small" style="margin-top:8px"></div>
+      <div id="letterStatus" class="muted small"></div>
     </section>
 
     <!-- SHOUTBOX -->
@@ -144,6 +155,6 @@ that save time.
 
   </div>
 
-  <script src="/script.js"></script>
+  <script src="/script.js" defer></script>
 </body>
 </html>
