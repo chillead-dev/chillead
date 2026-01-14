@@ -9,7 +9,6 @@
 <body>
   <div class="wrap">
 
-    <!-- HEADER -->
     <header class="header header-with-corner">
       <div class="header-left">
         <h1 class="cute-h1"># chillead</h1>
@@ -27,11 +26,10 @@
       />
     </header>
 
-    <!-- PROFILE -->
+    <!-- PROFILE (NO GIF HERE) -->
     <section class="section">
       <h2 class="cute-h2"># profile</h2>
-
-      <div class="panel profile-panel">
+      <div class="panel">
         <pre class="about-text">
 name: alex
 nickname: chillead
@@ -55,16 +53,6 @@ i like building small tools,
 websites and telegram bots
 that save time.
         </pre>
-
-        <div class="profile-gif-box">
-          <img
-            class="profile-gif"
-            src="https://media.tenor.com/EBQrxbcjeJEAAAAi/anime-girl.gif"
-            alt=""
-            loading="lazy"
-            decoding="async"
-          />
-        </div>
       </div>
     </section>
 
@@ -74,14 +62,11 @@ that save time.
 
       <div id="spotifyCard" class="spotify-card hidden" aria-live="polite">
         <div class="spotify-bg" id="spotifyBg"></div>
-
         <div class="spotify-content">
           <img id="spotifyCover" class="spotify-cover" alt="cover" />
-
           <div class="spotify-meta">
             <div id="spotifyTitle" class="spotify-title"></div>
             <div id="spotifyArtist" class="spotify-artist"></div>
-
             <div class="spotify-progress">
               <span id="spotifyTimeCur">0:00</span>
               <div class="spotify-bar"><div id="spotifyFill"></div></div>
@@ -104,17 +89,11 @@ that save time.
     <!-- LETTERBOX -->
     <section class="section">
       <h2 class="cute-h2">## anonymous letterbox</h2>
-      <p class="muted small">
-        write anything. messages are moderated.
-      </p>
+      <p class="muted small">write anything. messages are moderated.</p>
 
       <div class="panel letterbox">
-        <textarea
-          id="letterInput"
-          class="lb-text"
-          maxlength="500"
-          placeholder="write your message here..."
-        ></textarea>
+        <textarea id="letterInput" class="lb-text" maxlength="500"
+                  placeholder="write your message here..."></textarea>
 
         <div class="letterbox-bar">
           <div class="gif-picker" aria-label="gif picker">
@@ -132,17 +111,11 @@ that save time.
             </button>
           </div>
 
-          <div class="send-area">
-            <div id="gifPreview" class="gif-preview hidden" title="selected gif">
-              <img id="gifPreviewImg" alt="">
-            </div>
-
-            <button id="sendBtn" class="send-plane" type="button" aria-label="send">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M2 21l21-9L2 3v7l15 2-15 2z"/>
-              </svg>
-            </button>
-          </div>
+          <button id="sendBtn" class="send-plane" type="button" aria-label="send">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M2 21l21-9L2 3v7l15 2-15 2z"/>
+            </svg>
+          </button>
         </div>
       </div>
 
@@ -156,15 +129,6 @@ that save time.
       <div id="pagination" class="pagination"></div>
     </section>
 
-    <!-- API STATUS (restored, not removed) -->
-    <section class="section">
-      <h2 class="cute-h2">## api status</h2>
-      <div class="panel">
-        <pre id="apiStatusText" class="about-text">checking…</pre>
-      </div>
-    </section>
-
-    <!-- FOOTER -->
     <footer class="footer footer-split">
       <a class="api-left" href="/api.html">← API</a>
       <div class="footer-right">
