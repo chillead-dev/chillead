@@ -12,30 +12,33 @@
   <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
-<div class="wrap">
+  <div class="wrap">
 
-<header class="header header-with-corner">
-  <div>
-    <h1 class="cute-h1"># chillead</h1>
-    <div class="sub">
-      alive: <span id="alive"></span> · local: <span id="localTime"></span>
-    </div>
-  </div>
+    <header class="header header-with-corner">
+      <div class="header-left">
+        <h1 class="cute-h1"># chillead</h1>
+        <div class="sub">
+          alive: <span id="alive"></span> · local: <span id="localTime"></span>
+        </div>
+      </div>
 
-  <!-- BIG MAIN GIF -->
-  <img
-    class="corner-gif"
-    src="https://media1.tenor.com/m/bu3mmlzOePoAAAAC/mahiro-oyama-put-snow.gif"
-    alt=""
-  />
-</header>
+      <!-- main corner gif (bigger) -->
+      <img
+        class="corner-gif"
+        src="https://media1.tenor.com/m/bu3mmlzOePoAAAAC/mahiro-oyama-put-snow.gif"
+        alt=""
+        loading="lazy"
+        decoding="async"
+      />
+    </header>
 
-<section class="section">
-  <h2 class="cute-h2"># profile</h2>
+    <!-- PROFILE -->
+    <section class="section">
+      <h2 class="cute-h2"># profile</h2>
 
-  <div class="profile-grid">
-    <div class="panel">
-<pre class="about-text">
+      <div class="profile-grid">
+        <div class="panel">
+          <pre class="about-text">
 name: alex
 nickname: chillead
 location: ekaterinburg, ru
@@ -57,56 +60,135 @@ about:
 i like building small tools,
 websites and telegram bots
 that save time.
-</pre>
-    </div>
+          </pre>
+        </div>
 
-    <!-- SECOND GIF (PROFILE SIDE) -->
-    <img
-      class="profile-gif"
-      src="https://media1.tenor.com/m/obO4Phs6lLMAAAAC/6555.gif"
-      alt=""
-    />
-  </div>
-</section>
+        <!-- second gif in profile -->
+        <img
+          class="profile-gif"
+          src="https://media1.tenor.com/m/obO4Phs6lLMAAAAC/6555.gif"
+          alt=""
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+    </section>
 
-<section class="section">
-  <h2 class="cute-h2">## anonymous letterbox</h2>
-  <p class="muted">messages are moderated</p>
+    <!-- SPOTIFY -->
+    <section class="section">
+      <h2 class="cute-h2">## currently playing</h2>
 
-  <div class="panel letterbox">
-    <textarea id="letterInput"
-      class="lb-text"
-      maxlength="500"
-      placeholder="write your message here..."></textarea>
+      <div id="spotifyCard" class="spotify-card hidden" aria-live="polite">
+        <div class="spotify-bg" id="spotifyBg"></div>
 
-    <!-- GIF PICKER -->
-    <div class="letterbox-bar">
-      <div class="gif-picker">
-        <img data-gif="https://media.tenor.com/nVWK_eK2DUAAAAAi/hiiragi-kagami-kagami-hiiragi.gif" src="https://media.tenor.com/nVWK_eK2DUAAAAAi/hiiragi-kagami-kagami-hiiragi.gif">
-        <img data-gif="https://media1.tenor.com/m/j-_mdt1JfEIAAAAd/anime-wow.gif" src="https://media1.tenor.com/m/j-_mdt1JfEIAAAAd/anime-wow.gif">
-        <img data-gif="https://media.tenor.com/119A2x7NLDIAAAAi/anime.gif" src="https://media.tenor.com/119A2x7NLDIAAAAi/anime.gif">
-        <img data-gif="https://media.tenor.com/uEF6PGuX_p8AAAA1/nyaa-cat.webp" src="https://media.tenor.com/uEF6PGuX_p8AAAA1/nyaa-cat.webp">
+        <div class="spotify-content">
+          <img id="spotifyCover" class="spotify-cover" alt="cover" />
+
+          <div class="spotify-meta">
+            <div id="spotifyTitle" class="spotify-title"></div>
+            <div id="spotifyArtist" class="spotify-artist"></div>
+
+            <div class="spotify-progress">
+              <span id="spotifyTimeCur">0:00</span>
+              <div class="spotify-bar"><div id="spotifyFill"></div></div>
+              <span id="spotifyTimeDur">0:00</span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <button id="sendLetter" class="send-btn">[ send ]</button>
-    </div>
+      <p id="spotifyEmpty" class="muted small">not listening right now</p>
+    </section>
+
+    <!-- HISTORY -->
+    <section class="section">
+      <h2 class="cute-h2">## history</h2>
+      <div id="historyRow" class="history-row" aria-label="history"></div>
+      <div class="hint muted">← scroll →</div>
+    </section>
+
+    <!-- LETTERBOX -->
+    <section class="section">
+      <h2 class="cute-h2">## anonymous letterbox</h2>
+
+      <p class="muted small">
+        write anything you want here. messages are moderated.
+        <span class="dev-hint">for devs: <a href="/api.html">api</a></span>
+      </p>
+
+      <div class="panel letterbox">
+        <textarea
+          id="letterInput"
+          class="lb-text"
+          placeholder="write your message here..."
+          maxlength="500"
+        ></textarea>
+
+        <div class="letterbox-bar">
+          <!-- gif picker -->
+          <div class="gif-picker" aria-label="gif picker">
+            <button class="gif-btn" type="button"
+                    data-gif="https://media.tenor.com/nVWK_eK2DUAAAAAi/hiiragi-kagami-kagami-hiiragi.gif"
+                    title="gif 1">
+              <img src="https://media.tenor.com/nVWK_eK2DUAAAAAi/hiiragi-kagami-kagami-hiiragi.gif" alt="">
+            </button>
+
+            <button class="gif-btn" type="button"
+                    data-gif="https://media1.tenor.com/m/j-_mdt1JfEIAAAAd/anime-wow.gif"
+                    title="gif 2">
+              <img src="https://media1.tenor.com/m/j-_mdt1JfEIAAAAd/anime-wow.gif" alt="">
+            </button>
+
+            <button class="gif-btn" type="button"
+                    data-gif="https://media.tenor.com/119A2x7NLDIAAAAi/anime.gif"
+                    title="gif 3">
+              <img src="https://media.tenor.com/119A2x7NLDIAAAAi/anime.gif" alt="">
+            </button>
+
+            <button class="gif-btn" type="button"
+                    data-gif="https://media.tenor.com/uEF6PGuX_p8AAAA1/nyaa-cat.webp"
+                    title="gif 4">
+              <img src="https://media.tenor.com/uEF6PGuX_p8AAAA1/nyaa-cat.webp" alt="">
+            </button>
+          </div>
+
+          <!-- send airplane -->
+          <button id="sendLetter" class="send-plane" type="button" aria-label="send">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div id="letterStatus" class="muted small status-line" aria-live="polite"></div>
+    </section>
+
+    <!-- SHOUTBOX -->
+    <section class="section">
+      <h2 class="cute-h2">## shoutbox</h2>
+      <div id="lettersList" class="letters-list">loading…</div>
+      <div id="pagination" class="pagination"></div>
+    </section>
+
+    <!-- API STATUS -->
+    <section class="section">
+      <h2 class="cute-h2">## api status</h2>
+      <div class="panel">
+        <pre id="apiStatusText" class="about-text">checking…</pre>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <a href="https://github.com/chillead-dev" rel="noopener noreferrer">github</a>
+      <span class="sep">·</span>
+      <a href="https://t.me/rizzdev" rel="noopener noreferrer">telegram</a>
+      <span class="sep">·</span>
+      <a href="/api.html">api</a>
+    </footer>
+
   </div>
 
-  <div id="letterStatus" class="muted small"></div>
-</section>
-
-<section class="section">
-  <h2 class="cute-h2">## shoutbox</h2>
-  <div id="lettersList" class="letters-list">loading…</div>
-</section>
-
-<footer class="footer">
-  <a href="https://github.com/chillead-dev">github</a>
-  <span class="sep">·</span>
-  <a href="https://t.me/rizzdev">telegram</a>
-</footer>
-
-</div>
-<script src="/script.js"></script>
+  <script src="/script.js" defer></script>
 </body>
 </html>
