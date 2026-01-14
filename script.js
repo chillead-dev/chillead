@@ -7,8 +7,8 @@
   const SPOTIFY_POLL_MS = 15000;
   const LETTERS_POLL_MS = 30000;
 
-  const HISTORY_KEY = "spotify_history_visual_v2";
-  const HISTORY_LIMIT = 36;
+  const HISTORY_KEY = "spotify_history_tiles_v1";
+  const HISTORY_LIMIT = 60;
   const PAGE_SIZE = 8;
 
   const $ = (id) => document.getElementById(id);
@@ -19,13 +19,31 @@
     try {
       const r = await fetch(url, { ...opts, cache:"no-store", signal: ctrl.signal });
       let data = null;
-      try { data = await r.json(); } catch {}
+      try { data = await r.json(); } catch { data = null; }
       return { ok: r.ok, status: r.status, data };
     } catch {
       return { ok:false, status:0, data:null };
     } finally {
       clearTimeout(t);
     }
+  }
+
+  function fmtClock(ms){
+    const s = Math.max(0, Math.floor(Number(ms||0)/1000));
+    const m = Math.floor(s/60);
+    const r = s%60;
+    return `${m}:${String(r).padStart(2,"0")}`;
+  }
+
+  function fmtAgo(ts){
+    const diff = Math.floor((Date.now()-ts)/1000);
+    if(diff < 60) return `${diff}s`;
+    const m = Math.floor(diff/60);
+    if(m < 60) return `${m}m`;
+    const h = Math.floor(m/60);
+    if(h < 24) return `${h}h`;
+    const d = Math.floor(h/24);
+    return `${d}d`;
   }
 
   function tickTime() {
@@ -41,6 +59,7 @@
     const s = diff % 60;
 
     if (aliveEl) aliveEl.textContent = `${d}d ${h}h ${m}m ${s}s`;
+
     if (localEl) {
       localEl.textContent = new Intl.DateTimeFormat("en-GB", {
         timeZone: TZ, hour:"2-digit", minute:"2-digit", second:"2-digit"
@@ -48,9 +67,15 @@
     }
   }
 
+  // ---------- history persistent ----------
   function getHistory() {
-    try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]"); }
-    catch { return []; }
+    try {
+      const raw = localStorage.getItem(HISTORY_KEY);
+      const arr = JSON.parse(raw || "[]");
+      return Array.isArray(arr) ? arr : [];
+    } catch {
+      return [];
+    }
   }
 
   function setHistory(arr) {
@@ -60,29 +85,82 @@
   function pushHistory(track) {
     const h = getHistory();
     if (!track?.id) return;
+
+    // dedupe by id (top)
     if (h[0]?.id === track.id) return;
 
-    h.unshift(track);
+    h.unshift({
+      id: String(track.id),
+      cover: String(track.cover || ""),
+      title: String(track.title || ""),
+      artist: String(track.artist || ""),
+      url: String(track.url || ""),
+      ts: Date.now()
+    });
+
     setHistory(h.slice(0, HISTORY_LIMIT));
   }
 
-  function renderHistoryGrid() {
-    const grid = $("historyGrid");
-    if (!grid) return;
-    grid.innerHTML = "";
-    getHistory().forEach(t => {
-      const d = document.createElement("div");
-      d.className = "history-item";
+  function renderHistoryRow() {
+    const row = $("historyRow");
+    if (!row) return;
+
+    const h = getHistory();
+    row.innerHTML = "";
+    if (!h.length) return;
+
+    const frag = document.createDocumentFragment();
+
+    h.slice(0, HISTORY_LIMIT).forEach(t => {
+      const tile = document.createElement("div");
+      tile.className = "history-tile";
+
       const img = document.createElement("img");
-      img.src = t.cover;
-      d.appendChild(img);
-      grid.appendChild(d);
+      img.loading = "lazy";
+      img.decoding = "async";
+      img.src = t.cover || "";
+      img.alt = t.title || "track";
+
+      const overlay = document.createElement("div");
+      overlay.className = "history-overlay";
+
+      const name = document.createElement("div");
+      name.className = "history-name";
+      name.textContent = t.title || "Unknown";
+
+      const artist = document.createElement("div");
+      artist.className = "history-artist";
+      artist.textContent = t.artist || "";
+
+      const when = document.createElement("div");
+      when.className = "history-when";
+      when.textContent = `${fmtAgo(t.ts)} ago`;
+
+      overlay.appendChild(name);
+      overlay.appendChild(artist);
+      overlay.appendChild(when);
+
+      tile.appendChild(img);
+      tile.appendChild(overlay);
+
+      if (t.url) {
+        tile.style.cursor = "pointer";
+        tile.addEventListener("click", () => {
+          window.open(t.url, "_blank", "noopener,noreferrer");
+        });
+      }
+
+      frag.appendChild(tile);
     });
+
+    row.appendChild(frag);
   }
 
+  // ---------- spotify ----------
   async function renderSpotify() {
     const card = $("spotifyCard");
     const empty = $("spotifyEmpty");
+
     const bg = $("spotifyBg");
     const cover = $("spotifyCover");
     const title = $("spotifyTitle");
@@ -91,9 +169,20 @@
     const tCur = $("spotifyTimeCur");
     const tDur = $("spotifyTimeDur");
 
+    if (!card || !empty) return;
+
     const { ok, data } = await fetchJson("/api/now-playing");
-    if (!ok || !data || !data.playing) {
+
+    if (!ok || !data || data.ok === false) {
       card.classList.add("hidden");
+      empty.textContent = "error loading spotify";
+      empty.classList.remove("hidden");
+      return;
+    }
+
+    if (!data.playing) {
+      card.classList.add("hidden");
+      empty.textContent = "not listening right now";
       empty.classList.remove("hidden");
       return;
     }
@@ -101,80 +190,235 @@
     card.classList.remove("hidden");
     empty.classList.add("hidden");
 
-    bg.style.backgroundImage = `url(${data.cover})`;
-    cover.src = data.cover;
-    title.textContent = data.title;
-    artist.textContent = data.artists;
+    const coverUrl = data.cover || "";
+    if (bg) bg.style.backgroundImage = `url(${coverUrl})`;
+    if (cover) cover.src = coverUrl;
 
-    const cur = Math.floor(data.progress_ms / 1000);
-    const dur = Math.floor(data.duration_ms / 1000);
-    const pct = (cur / dur) * 100;
+    if (title) title.textContent = data.title || "Unknown";
+    if (artist) artist.textContent = data.artists || "";
 
-    const fmt = s => `${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`;
-    tCur.textContent = fmt(cur);
-    tDur.textContent = fmt(dur);
-    fill.style.width = `${pct}%`;
+    const curMs = Number(data.progress_ms || 0);
+    const durMs = Number(data.duration_ms || 0);
+    const pct = durMs > 0 ? Math.min(100, Math.max(0, (curMs / durMs) * 100)) : 0;
 
-    pushHistory({
-      id: data.track_id,
-      cover: data.cover,
-      title: data.title
-    });
-    renderHistoryGrid();
+    if (tCur) tCur.textContent = fmtClock(curMs);
+    if (tDur) tDur.textContent = fmtClock(durMs);
+    if (fill) fill.style.width = `${pct}%`;
+
+    if (data.track_id) {
+      pushHistory({
+        id: data.track_id,
+        cover: coverUrl,
+        title: data.title,
+        artist: data.artists,
+        url: data.track_url || ""
+      });
+      renderHistoryRow();
+    }
   }
 
+  // ---------- letterbox ----------
   async function submitLetter() {
     const ta = $("letterInput");
     const btn = $("sendLetter");
     const st = $("letterStatus");
 
+    if (!ta || !btn) return;
     const msg = ta.value.trim();
     if (msg.length < 2) return;
 
     btn.disabled = true;
-    const { ok } = await fetchJson("/api/letters/submit", {
+    btn.textContent = "[ sending… ]";
+    if (st) st.textContent = "";
+
+    const { ok, data } = await fetchJson("/api/letters/submit", {
       method:"POST",
       headers:{ "Content-Type":"application/json" },
       body: JSON.stringify({ message: msg })
     });
 
-    if (ok) {
+    if (ok && data && data.ok) {
       ta.value = "";
-      st.textContent = "sent for moderation.";
+      if (st) st.textContent = "sent for moderation.";
+      btn.textContent = "[ sent ]";
     } else {
-      st.textContent = "error sending message.";
+      if (st) st.textContent = "error sending message.";
+      btn.textContent = "[ error ]";
     }
 
-    btn.disabled = false;
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.textContent = "[ send ]";
+    }, 900);
+  }
+
+  function initEmojis() {
+    const ta = $("letterInput");
+    if (!ta) return;
+    document.querySelectorAll(".emojis span").forEach(sp => {
+      sp.addEventListener("click", () => {
+        ta.value = (ta.value + " " + (sp.textContent || "")).trimStart();
+        ta.focus();
+      });
+    });
+  }
+
+  // ---------- shoutbox ----------
+  let approvedCache = [];
+  let currentPage = 1;
+
+  function clearNode(n){ while(n && n.firstChild) n.removeChild(n.firstChild); }
+
+  function makeLetterRow(it){
+    const row = document.createElement("div");
+    row.className = "letter-item";
+
+    const msgWrap = document.createElement("div");
+    msgWrap.className = "letter-msg";
+
+    const userMsg = document.createElement("div");
+    userMsg.textContent = String(it.message || "");
+    msgWrap.appendChild(userMsg);
+
+    // IMPORTANT: show answers (this was the “disappeared” bug)
+    if (it.answered && it.answer) {
+      const ans = document.createElement("div");
+
+      const label = document.createElement("span");
+      label.className = "letter-answer-label";
+      label.textContent = "answer";
+
+      const txt = document.createElement("span");
+      txt.textContent = String(it.answer);
+
+      ans.appendChild(label);
+      ans.appendChild(txt);
+      msgWrap.appendChild(ans);
+    }
+
+    const tm = document.createElement("div");
+    tm.className = "letter-time";
+    tm.textContent = new Date(Number(it.createdAt)).toLocaleString();
+
+    row.appendChild(msgWrap);
+    row.appendChild(tm);
+    return row;
+  }
+
+  function renderApproved(){
+    const list = $("lettersList");
+    if (!list) return;
+
+    clearNode(list);
+
+    if (!approvedCache.length) {
+      list.textContent = "no messages yet.";
+      return;
+    }
+
+    const pages = Math.max(1, Math.ceil(approvedCache.length / PAGE_SIZE));
+    currentPage = Math.max(1, Math.min(currentPage, pages));
+
+    const start = (currentPage - 1) * PAGE_SIZE;
+    const end = start + PAGE_SIZE;
+    const slice = approvedCache.slice(start, end);
+
+    const frag = document.createDocumentFragment();
+    for (const it of slice) frag.appendChild(makeLetterRow(it));
+    list.appendChild(frag);
+  }
+
+  function renderPagination() {
+    const pag = $("pagination");
+    if (!pag) return;
+
+    const pages = Math.max(1, Math.ceil(approvedCache.length / PAGE_SIZE));
+    clearNode(pag);
+
+    if (pages <= 1) return;
+
+    const mk = (label, onClick, active=false) => {
+      const b = document.createElement("div");
+      b.className = "page-btn" + (active ? " active" : "");
+      b.textContent = label;
+      b.addEventListener("click", onClick);
+      return b;
+    };
+
+    pag.appendChild(mk("<", () => {
+      currentPage = Math.max(1, currentPage - 1);
+      renderApproved();
+      renderPagination();
+    }));
+
+    pag.appendChild(mk(String(currentPage), () => {}, true));
+
+    pag.appendChild(mk(">", () => {
+      currentPage = Math.min(pages, currentPage + 1);
+      renderApproved();
+      renderPagination();
+    }));
   }
 
   async function loadApproved() {
     const list = $("lettersList");
+    if (!list) return;
+
     const { ok, data } = await fetchJson("/api/letters/list");
-    if (!ok) { list.textContent = "failed to load"; return; }
-    list.innerHTML = "";
-    data.items.forEach(it => {
-      const d = document.createElement("div");
-      d.className = "letter-item";
-      d.innerHTML = `<div class="letter-msg">${it.message}</div>
-                     <div class="letter-time">${new Date(it.createdAt).toLocaleString()}</div>`;
-      list.appendChild(d);
-    });
+    if (!ok || !data || data.ok === false) {
+      list.textContent = "failed to load.";
+      return;
+    }
+
+    approvedCache = Array.isArray(data.items) ? data.items : [];
+    renderApproved();
+    renderPagination();
   }
 
+  // ---------- API status (public only) ----------
+  async function renderApiStatus(){
+    const box = $("apiStatusText");
+    if (!box) return;
+
+    const h = await fetchJson("/api/health");
+    const l = await fetchJson("/api/letters/list");
+    const s = await fetchJson("/api/now-playing");
+
+    const online = h.ok && h.data && h.data.ok;
+
+    box.textContent =
+`health: ${online ? "online" : "offline"} (${h.status})
+letters/list: ${l.status}
+now-playing: ${s.status}
+
+note:
+- private admin endpoints are not checked here`;
+  }
+
+  // ---------- init ----------
   function init() {
     tickTime();
     setInterval(tickTime,1000);
 
+    renderHistoryRow();
     renderSpotify();
-    setInterval(renderSpotify,SPOTIFY_POLL_MS);
+    setInterval(() => {
+      if (document.visibilityState === "visible") renderSpotify();
+    }, SPOTIFY_POLL_MS);
 
-    renderHistoryGrid();
+    initEmojis();
+    $("sendLetter")?.addEventListener("click", submitLetter);
 
-    $("sendLetter")?.addEventListener("click",submitLetter);
     loadApproved();
-    setInterval(loadApproved,LETTERS_POLL_MS);
+    setInterval(() => {
+      if (document.visibilityState === "visible") loadApproved();
+    }, LETTERS_POLL_MS);
+
+    renderApiStatus();
+    setInterval(() => {
+      if (document.visibilityState === "visible") renderApiStatus();
+    }, 60000);
   }
 
-  document.addEventListener("DOMContentLoaded",init,{once:true});
+  document.addEventListener("DOMContentLoaded", init, { once:true });
 })();
