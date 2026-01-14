@@ -5,7 +5,6 @@
   <title>chillead</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- basic safety (frontend only) -->
   <meta name="referrer" content="no-referrer" />
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />
   <meta http-equiv="X-Frame-Options" content="DENY" />
@@ -26,13 +25,13 @@
 
     <header class="header header-with-corner">
       <div>
-        <h1># chillead</h1>
+        <h1 class="cute-h1"># chillead</h1>
         <div class="sub">
           alive: <span id="alive"></span> · local: <span id="localTime"></span>
         </div>
       </div>
 
-      <!-- corner gif -->
+      <!-- bigger corner gif -->
       <img
         class="corner-gif"
         src="https://media1.tenor.com/m/bu3mmlzOePoAAAAC/mahiro-oyama-put-snow.gif"
@@ -44,8 +43,8 @@
 
     <!-- PROFILE -->
     <section class="section">
-      <h2># profile</h2>
-      <div class="panel about-panel">
+      <h2 class="cute-h2"># profile</h2>
+      <div class="panel">
         <pre class="about-text">
 name: alex
 nickname: chillead
@@ -73,7 +72,7 @@ that save time.
 
     <!-- SPOTIFY -->
     <section class="section">
-      <h2>## currently playing</h2>
+      <h2 class="cute-h2">## currently playing</h2>
 
       <div id="spotifyCard" class="spotify-card hidden">
         <div class="spotify-bg" id="spotifyBg"></div>
@@ -102,13 +101,14 @@ that save time.
 
     <!-- HISTORY -->
     <section class="section">
-      <h2>## history</h2>
-      <div id="historyGrid" class="history-grid"></div>
+      <h2 class="cute-h2">## history</h2>
+      <div id="historyRow" class="history-row"></div>
+      <div class="hint muted">← drag / scroll →</div>
     </section>
 
     <!-- LETTERBOX -->
     <section class="section">
-      <h2>## anonymous letterbox</h2>
+      <h2 class="cute-h2">## anonymous letterbox</h2>
 
       <p class="muted">
         write anything you want here. messages are moderated.
@@ -140,9 +140,17 @@ that save time.
 
     <!-- SHOUTBOX -->
     <section class="section">
-      <h2>## shoutbox</h2>
+      <h2 class="cute-h2">## shoutbox</h2>
       <div id="lettersList" class="letters-list">loading…</div>
       <div id="pagination" class="pagination"></div>
+    </section>
+
+    <!-- API STATUS (public only) -->
+    <section class="section">
+      <h2 class="cute-h2">## api status</h2>
+      <div class="panel">
+        <pre id="apiStatusText" class="about-text">checking…</pre>
+      </div>
     </section>
 
     <footer class="footer">
