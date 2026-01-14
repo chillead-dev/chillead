@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <title>chillead</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
   <div class="wrap">
@@ -49,6 +49,7 @@ that save time.
             class="about-gif"
             src="https://media1.tenor.com/m/znG4Dcmyv_AAAAAC/1.gif"
             alt="gif"
+            loading="lazy"
           />
         </div>
       </div>
@@ -58,13 +59,32 @@ that save time.
     <section class="section">
       <h2>## currently playing</h2>
 
-      <div class="panel">
-        <pre id="spotifyText" class="spotify-pre">
-loading...
-        </pre>
+      <div id="spotifyCard" class="spotify-card hidden">
+        <div class="spotify-bg" id="spotifyBg"></div>
+
+        <div class="spotify-content">
+          <img id="spotifyCover" class="spotify-cover" alt="cover" />
+
+          <div class="spotify-meta">
+            <div id="spotifyTitle" class="spotify-title"></div>
+            <div id="spotifyArtist" class="spotify-artist"></div>
+
+            <div class="spotify-progress">
+              <span id="spotifyTimeCur">0:00</span>
+              <div class="spotify-bar">
+                <div id="spotifyFill"></div>
+              </div>
+              <span id="spotifyTimeDur">0:00</span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <p class="muted">
+      <p id="spotifyEmpty" class="muted">
+        not listening right now
+      </p>
+
+      <p class="muted small" style="margin-top:8px">
         this data is approximate and may be delayed by a few seconds.
       </p>
     </section>
@@ -72,12 +92,7 @@ loading...
     <!-- HISTORY -->
     <section class="section">
       <h2>## history</h2>
-
-      <div class="panel">
-        <pre id="historyText" class="spotify-pre">
-loading...
-        </pre>
-      </div>
+      <div id="historyGrid" class="history-grid"></div>
     </section>
 
     <!-- LETTERBOX -->
@@ -85,7 +100,8 @@ loading...
       <h2>## anonymous letterbox</h2>
 
       <p class="muted">
-        write anything you want here. some messages may appear below.
+        write anything you want here. messages are moderated.
+        <span class="dev-hint">for devs: <a href="/api.html">api</a></span>
       </p>
 
       <div class="panel letterbox">
@@ -93,6 +109,7 @@ loading...
           id="letterInput"
           class="lb-text"
           placeholder="write your message here..."
+          maxlength="500"
         ></textarea>
 
         <div class="letterbox-bar">
@@ -101,16 +118,19 @@ loading...
             <span>^_^</span>
             <span>owo</span>
             <span>uwu</span>
+            <span>x3</span>
           </div>
           <button id="sendLetter" class="send-btn">[ send ]</button>
         </div>
       </div>
+
+      <div id="letterStatus" class="muted small" style="margin-top:8px"></div>
     </section>
 
     <!-- SHOUTBOX -->
     <section class="section">
       <h2>## shoutbox</h2>
-      <div id="lettersList" class="letters-list"></div>
+      <div id="lettersList" class="letters-list">loading…</div>
       <div id="pagination" class="pagination"></div>
     </section>
 
@@ -118,10 +138,12 @@ loading...
       <a href="https://github.com/chillead-dev">github</a>
       <span class="sep">·</span>
       <a href="https://t.me/rizzdev">telegram</a>
+      <span class="sep">·</span>
+      <a href="/api.html">api</a>
     </footer>
 
   </div>
 
-  <script src="script.js"></script>
+  <script src="/script.js"></script>
 </body>
 </html>
