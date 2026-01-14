@@ -1,23 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>404</title>
-  <link rel="stylesheet" href="/style.css">
+  <meta charset="utf-8" />
+  <title>404 — not found</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="referrer" content="no-referrer" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+
+  <link rel="stylesheet" href="/style.css" />
+
+  <style>
+    /* 404 specific styling */
+    .nf-wrap{
+      min-height: calc(100vh - 40px);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+    }
+
+    .nf-card{
+      max-width:520px;
+      padding:32px 26px;
+      border-radius:22px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.14);
+      backdrop-filter: blur(8px);
+    }
+
+    .nf-code{
+      font-family: var(--cute);
+      font-size:64px;
+      letter-spacing:2px;
+      margin:0;
+    }
+
+    .nf-text{
+      margin-top:6px;
+      font-size:15px;
+      color:var(--muted);
+    }
+
+    .nf-gif{
+      margin:22px auto 10px;
+      width:240px;
+      max-width:100%;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.14);
+    }
+
+    .nf-actions{
+      margin-top:22px;
+      display:flex;
+      justify-content:center;
+      gap:18px;
+      flex-wrap:wrap;
+      font-size:14px;
+    }
+
+    .nf-actions a{
+      color:var(--muted);
+      padding:8px 14px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.03);
+      text-decoration:none;
+    }
+
+    .nf-actions a:hover{
+      color:#fff;
+      background:rgba(255,255,255,.08);
+    }
+  </style>
 </head>
 <body>
-<div class="wrap">
-  <h1 class="cute-h1">404</h1>
-  <p class="muted">page not found</p>
 
-  <img
-    src="https://media.tenor.com/hR312hTG5T0AAAAm/mythikore-anime-girl.webp"
-    style="max-width:260px;margin-top:24px;border-radius:18px"
-  >
+<div class="wrap nf-wrap">
+  <div class="nf-card">
+    <h1 class="nf-code">404</h1>
+    <div class="nf-text">
+      this page does not exist or was moved<br>
+      maybe you followed an old or broken link
+    </div>
 
-  <p style="margin-top:20px">
-    <a href="/">← go home</a>
-  </p>
+    <img
+      class="nf-gif"
+      src="https://media.tenor.com/hR312hTG5T0AAAAm/mythikore-anime-girl.webp"
+      alt="not found"
+      loading="lazy"
+      decoding="async"
+    />
+
+    <div class="nf-actions">
+      <a href="/">← home</a>
+      <a href="/api.html">api →</a>
+    </div>
+  </div>
 </div>
+
 </body>
 </html>
