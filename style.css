@@ -1,303 +1,421 @@
-/* ================================
-   GLOBAL RESET
-================================ */
-* {
-  box-sizing: border-box;
+/* =========================
+   RESET + THEME
+========================= */
+*{ box-sizing:border-box; }
+html,body{ margin:0; padding:0; }
+img, video{ max-width:100%; height:auto; display:block; }
+a{ color:inherit; text-decoration:none; }
+
+:root{
+  --bg:#000;
+  --panel:#0b0b0c;
+  --soft:rgba(255,255,255,.045);
+  --border:rgba(255,255,255,.10);
+
+  --text:#e6e6eb;
+  --muted:#8b8b91;
+
+  --radius:14px;
+
+  /* sizes */
+  --wrap: 920px;
 }
 
-html, body {
-  margin: 0;
-  padding: 0;
-}
-
-/* ================================
-   THEME
-================================ */
-:root {
-  --bg-1: #070707;
-  --bg-2: #0b0b0c;
-
-  --text: #e6e6eb;
-  --muted: #8b8b91;
-  --soft: rgba(255,255,255,0.06);
-
-  --accent: #ffffff;
-  --radius: 14px;
-}
-
-/* ================================
-   BODY
-================================ */
-body {
+/* =========================
+   BASE LAYOUT (MOBILE FIRST)
+========================= */
+body{
   background:
-    radial-gradient(1200px 600px at 50% -200px, #111 0%, transparent 60%),
-    linear-gradient(var(--bg-1), var(--bg-2));
-  color: var(--text);
+    radial-gradient(1200px 700px at 50% -250px, rgba(255,255,255,.08) 0%, transparent 60%),
+    linear-gradient(#000, #070707);
+  color:var(--text);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 15px;
+  font-size: clamp(14px, 1.6vw, 16px);
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
 }
 
-.wrap {
-  max-width: 880px;
+.wrap{
+  max-width: var(--wrap);
   margin: 0 auto;
-  padding: 24px 16px 80px;
+  padding: 18px 14px 64px;
 }
 
-/* ================================
-   TEXT STYLE (MARKDOWN-LIKE)
-================================ */
-h1, h2 {
-  font-weight: 700;
+.header{
+  margin-bottom: 12px;
+}
+.header h1{
+  margin:0;
+  font-size: clamp(26px, 4.6vw, 40px);
+  line-height: 1.15;
   letter-spacing: .3px;
 }
-
-h1 {
-  font-size: 28px;
-  margin: 0 0 8px;
-}
-
-h2 {
-  font-size: 22px;
-  margin: 36px 0 10px;
-}
-
-p {
-  margin: 6px 0;
-}
-
-.muted {
+.sub{
+  margin-top: 6px;
   color: var(--muted);
-}
-
-/* list like "- item" */
-ul {
-  list-style: none;
-  padding-left: 0;
-  margin: 8px 0;
-}
-
-ul li {
-  padding-left: 18px;
-  position: relative;
-}
-
-ul li::before {
-  content: "-";
-  position: absolute;
-  left: 0;
-  color: var(--muted);
-}
-
-/* ================================
-   LINKS
-================================ */
-a {
-  color: var(--accent);
-  text-decoration: none;
-  border-bottom: 1px solid rgba(255,255,255,0.2);
-}
-
-a:hover {
-  border-bottom-color: #fff;
-}
-
-/* ================================
-   HEADER INFO
-================================ */
-.sub {
   font-size: 13px;
-  color: var(--muted);
-  margin-bottom: 24px;
 }
 
-/* ================================
-   SPOTIFY CARD
-================================ */
-#nowPlaying {
-  margin-top: 12px;
+/* headings inside page */
+.section{ margin-top: 22px; }
+.section h2{
+  margin: 0 0 10px;
+  font-size: clamp(18px, 3.1vw, 26px);
+  font-weight: 700;
+  letter-spacing: .2px;
 }
 
-.np-card {
-  position: relative;
-  overflow: hidden;
-  border-radius: 18px;
-  padding: 14px 16px;
-  background: rgba(0,0,0,0.35);
-  backdrop-filter: blur(18px);
-  border: 1px solid rgba(255,255,255,0.08);
-  display: flex;
-  align-items: center;
+/* panel (card) */
+.panel{
+  background: rgba(11,11,12,.72);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  backdrop-filter: blur(14px);
+}
+
+/* =========================
+   ABOUT / PROFILE (FIX “ONE LINE”)
+========================= */
+.about-panel{
+  display: grid;
+  grid-template-columns: 1fr;
   gap: 14px;
+  padding: 14px;
 }
 
-.np-cover {
-  width: 64px;
-  height: 64px;
+/* IMPORTANT: make text wrap nicely */
+.about-text{
+  margin:0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.55;
+}
+
+/* gif block aligned right on desktop, below on mobile */
+.about-media{
+  display:flex;
+  justify-content:flex-end;
+}
+
+.about-gif{
+  width: 112px;
+  height: 112px;
   border-radius: 12px;
   object-fit: cover;
+  opacity:.92;
+  border: 1px solid rgba(255,255,255,.10);
 }
 
-.np-info {
-  flex: 1;
-  min-width: 0;
+/* Desktop layout: text + media side-by-side */
+@media (min-width: 780px){
+  .about-panel{
+    grid-template-columns: 1fr 140px;
+    align-items: start;
+  }
+  .about-media{
+    justify-content: flex-end;
+    align-items: start;
+  }
 }
 
-.np-title {
-  font-size: 16px;
-  font-weight: 600;
+/* =========================
+   SPOTIFY NOW PLAYING
+========================= */
+.hidden{ display:none !important; }
+
+.np-card{
+  margin-top: 10px;
+  padding: 12px;
+  display:flex;
+  gap: 12px;
+  align-items:center;
+}
+
+.np-cover{
+  width: 60px;
+  height: 60px;
+  min-width: 60px;
+  border-radius: 12px;
+  object-fit: cover;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.10);
+}
+
+.np-info{
+  flex:1;
+  min-width:0;
+}
+
+.np-title{
+  display:block;
+  font-size: 15px;
+  font-weight: 700;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  border-bottom: 1px solid rgba(255,255,255,.18);
 }
+.np-title:hover{ border-bottom-color:#fff; }
 
-.np-artist {
+.np-artist{
+  margin-top: 3px;
   font-size: 13px;
   color: var(--muted);
-  margin-top: 2px;
+  white-space: nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 
-.np-progress {
-  display: flex;
-  align-items: center;
+.np-progress{
+  margin-top: 10px;
+  display:flex;
+  align-items:center;
   gap: 8px;
   font-size: 12px;
   color: var(--muted);
-  margin-top: 8px;
 }
 
-.np-bar {
-  flex: 1;
-  height: 4px;
-  background: rgba(255,255,255,0.15);
+.np-bar{
+  flex:1;
+  height: 6px;
   border-radius: 999px;
+  overflow:hidden;
+  background: rgba(255,255,255,.14);
+  border: 1px solid rgba(255,255,255,.10);
+}
+#npFill{
+  height:100%;
+  width:0%;
+  background:#fff;
+}
+
+#npEmpty{
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* =========================
+   HISTORY (CARDS, RESPONSIVE)
+========================= */
+.history-scroll{
+  display:flex;
+  gap: 12px;
+  overflow-x:auto;
+  padding-bottom: 8px;
+  scroll-snap-type: x mandatory;
+}
+.history-scroll::-webkit-scrollbar{ display:none; }
+
+.track-card{
+  scroll-snap-align: start;
+  min-width: 220px;
+  max-width: 320px;
+  background: rgba(11,11,12,.72);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px;
+  display:flex;
+  gap: 10px;
+  align-items:center;
+}
+
+.track-card img{
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.05);
+}
+
+.track-meta{ flex:1; min-width:0; }
+.track-title{
+  font-weight: 700;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.track-artist{
+  margin-top:2px;
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.track-ago{
+  margin-top:2px;
+  font-size: 11px;
+  color: var(--muted);
+  opacity:.85;
+}
+
+.hint{
+  margin-top: 8px;
+  text-align:center;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* =========================
+   LETTERBOX INPUT (CLEAN UX)
+========================= */
+.dev-hint{
+  margin: 0 0 10px;
+  font-size: 12px;
+  color: var(--muted);
+  opacity:.8;
+}
+.dev-hint a{
+  border-bottom: 1px dotted rgba(255,255,255,.25);
+}
+.dev-hint a:hover{ border-bottom-color:#fff; }
+
+.letterbox{
+  padding: 0;
   overflow: hidden;
 }
 
-#npFill {
-  height: 100%;
-  width: 0%;
-  background: #fff;
-}
-
-/* ================================
-   LETTERBOX
-================================ */
-.letterbox {
-  margin-top: 12px;
-}
-
-.lb-text {
-  width: 100%;
+.lb-text{
+  width:100%;
   min-height: 120px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 14px;
-  padding: 14px;
+  background: rgba(255,255,255,.03);
+  border: none;
+  outline: none;
   color: var(--text);
+  padding: 14px;
   font: inherit;
   resize: vertical;
+  line-height: 1.45;
 }
+.lb-text::placeholder{ color: var(--muted); }
 
-.lb-text::placeholder {
-  color: var(--muted);
-}
-
-.letterbox-bar {
-  display: flex;
+.letterbox-bar{
+  display:flex;
+  align-items:center;
   justify-content: space-between;
-  align-items: center;
-  margin-top: 8px;
+  gap: 10px;
+  padding: 8px 10px;
+  border-top: 1px solid rgba(255,255,255,.10);
 }
 
-.emojis span {
-  margin-right: 6px;
-  cursor: pointer;
-  opacity: .6;
+.emojis{
+  display:flex;
+  flex-wrap:wrap;
+  gap: 6px;
 }
-
-.emojis span:hover {
-  opacity: 1;
+.emojis span{
+  cursor:pointer;
+  opacity:.6;
+  user-select:none;
 }
+.emojis span:hover{ opacity:1; }
 
-.send-btn {
-  background: none;
-  border: none;
+.send-btn{
+  background:none;
+  border:none;
+  font:inherit;
   color: var(--muted);
-  font: inherit;
-  cursor: pointer;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.send-btn:hover{ color:#fff; }
+
+/* =========================
+   SHOUTBOX (ANSWER STYLE LIKE SCREEN)
+========================= */
+.letters-list{
+  margin-top: 12px;
+  padding: 10px 12px;
 }
 
-.send-btn:hover {
-  color: #fff;
+.letter-item{
+  background: var(--soft);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 14px;
+  padding: 16px 18px;
+  margin-bottom: 14px;
+  display:flex;
+  justify-content: space-between;
+  gap: 16px;
 }
 
-/* ================================
-   SHOUTBOX
-================================ */
-.letters-list {
+.letter-msg{
+  flex: 1;
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.55;
+  font-size: 15px;
+}
+
+/* answer box (second div inside letter-msg, from your JS) */
+.letter-msg > div + div{
+  margin-top: 12px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 14px;
+}
+
+.letter-answer-label{
+  display:inline-block;
+  background: var(--answer-bg);
+  color: var(--answer-fg);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 6px;
+  margin-right: 8px;
+}
+
+.letter-time{
+  font-size: 12px;
+  opacity: .35;
+  white-space: nowrap;
+  align-self: flex-end;
+}
+
+/* =========================
+   PAGINATION (LIKE YOUR SCREEN)
+========================= */
+.pagination{
+  display:flex;
+  justify-content:center;
+  gap: 10px;
   margin-top: 14px;
 }
 
-.letter-item {
-  margin-bottom: 18px;
-}
-
-.letter-msg {
-  white-space: pre-wrap;
-}
-
-.letter-msg > div + div {
-  margin-top: 10px;
-  padding-left: 12px;
-  border-left: 2px solid rgba(255,255,255,0.15);
-}
-
-.letter-answer-label {
-  font-size: 12px;
-  color: var(--muted);
-  margin-right: 6px;
-}
-
-.letter-time {
-  font-size: 12px;
-  color: var(--muted);
-  margin-top: 4px;
-}
-
-/* ================================
-   PAGINATION
-================================ */
-.pagination {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 18px;
-}
-
-.page-btn {
-  width: 42px;
-  height: 42px;
+.page-btn{
+  width: 44px;
+  height: 44px;
   border-radius: 14px;
-  background: rgba(255,255,255,0.05);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.10);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  user-select:none;
 }
 
-.page-btn.active {
-  background: rgba(255,255,255,0.18);
-  font-weight: 600;
+.page-btn.active{
+  background: rgba(255,255,255,.16);
+  font-weight: 700;
 }
 
-/* ================================
+/* =========================
    FOOTER
-================================ */
-.footer {
-  margin-top: 48px;
-  text-align: center;
+========================= */
+.footer{
+  margin-top: 40px;
+  text-align:center;
   font-size: 13px;
   color: var(--muted);
 }
+.footer a{ color: var(--muted); }
+.footer a:hover{ color:#fff; }
+.sep{ padding:0 6px; opacity:.8; }
