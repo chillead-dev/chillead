@@ -17,7 +17,7 @@
     </div>
   </div>
 
-  <!-- BIGGER MAIN GIF -->
+  <!-- MAIN BIG GIF -->
   <img
     class="corner-gif"
     src="https://media1.tenor.com/m/bu3mmlzOePoAAAAC/mahiro-oyama-put-snow.gif"
@@ -29,7 +29,7 @@
   <h2 class="cute-h2"># profile</h2>
 
   <div class="panel profile-panel">
-    <pre class="about-text">
+<pre class="about-text">
 name: alex
 nickname: chillead
 location: ekaterinburg, ru
@@ -51,9 +51,9 @@ about:
 i like building small tools,
 websites and telegram bots
 that save time.
-    </pre>
+</pre>
 
-    <!-- PROFILE GIF INSIDE PANEL -->
+    <!-- PROFILE GIF INSIDE -->
     <img
       class="profile-inner-gif"
       src="https://media.tenor.com/EBQrxbcjeJEAAAAi/anime-girl.gif"
@@ -62,7 +62,6 @@ that save time.
   </div>
 </section>
 
-<!-- LETTERBOX -->
 <section class="section">
   <h2 class="cute-h2">## anonymous letterbox</h2>
 
@@ -77,8 +76,10 @@ that save time.
         <button data-gif="4"><img src="https://media.tenor.com/uEF6PGuX_p8AAAA1/nyaa-cat.webp"></button>
       </div>
 
-      <button id="sendBtn" class="send-plane">
-        <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+      <button id="sendBtn" class="send-plane" aria-label="send">
+        <svg viewBox="0 0 24 24">
+          <path d="M2 21l21-9L2 3v7l15 2-15 2z"/>
+        </svg>
       </button>
     </div>
   </div>
@@ -86,10 +87,9 @@ that save time.
   <div id="letterStatus" class="muted small"></div>
 </section>
 
-<!-- SHOUTBOX -->
 <section class="section">
   <h2 class="cute-h2">## shoutbox</h2>
-  <div id="lettersList"></div>
+  <div id="lettersList" class="letters-list">loading…</div>
 </section>
 
 <footer class="footer">
