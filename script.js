@@ -6,6 +6,7 @@
 
   const SPOTIFY_POLL = 15000;
   const LETTERS_POLL = 30000;
+  const LETTERS_PER_PAGE = 6;
 
   const HISTORY_KEY = "spotify_history_v3";
   const HISTORY_LIMIT = 80;
@@ -18,6 +19,10 @@
   };
 
   const $ = id => document.getElementById(id);
+
+  let lettersPage = 1;
+  let spotifyState = { playing:false, progressMs:0, durationMs:0, startedAt:0 };
+  let spotifyUpdating = false;
 
   async function fetchJson(url, opts = {}, timeout = 12000){
     const ctrl = new AbortController();
@@ -68,7 +73,11 @@
     catch{ return []; }
   }
   function saveHistory(h){
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(h.slice(0,HISTORY_LIMIT)));
+    try{
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(h.slice(0,HISTORY_LIMIT)));
+    }catch{
+      // ignore storage issues (private mode / quota)
+    }
   }
   function pushHistory(track){
     const h=loadHistory();
@@ -111,37 +120,68 @@
 
   /* ===== spotify ===== */
   async function updateSpotify(){
-    const {ok,data}=await fetchJson("/api/now-playing");
-    const card=$("spotifyCard");
-    const empty=$("spotifyEmpty");
+    if(spotifyUpdating) return;
+    spotifyUpdating = true;
+    try{
+      const {ok,data}=await fetchJson("/api/now-playing");
+      const card=$("spotifyCard");
+      const empty=$("spotifyEmpty");
 
-    if(!ok||!data||!data.playing){
-      card.classList.add("hidden");
-      empty.classList.remove("hidden");
-      return;
+      if(!ok||!data||!data.playing){
+        card.classList.add("hidden");
+        empty.classList.remove("hidden");
+        spotifyState.playing = false;
+        return;
+      }
+
+      card.classList.remove("hidden");
+      empty.classList.add("hidden");
+
+      $("spotifyBg").style.backgroundImage=`url(${data.cover})`;
+      $("spotifyCover").src=data.cover;
+      $("spotifyTitle").textContent=data.title;
+      $("spotifyArtist").textContent=data.artists;
+
+      const progressMs = Math.max(0, Number(data.progress_ms) || 0);
+      const durationMs = Math.max(0, Number(data.duration_ms) || 0);
+
+      spotifyState = {
+        playing: true,
+        progressMs,
+        durationMs,
+        startedAt: Date.now()
+      };
+
+      $("spotifyTimeCur").textContent=fmtClock(progressMs);
+      $("spotifyTimeDur").textContent=fmtClock(durationMs);
+
+      const pct = durationMs > 0 ? Math.min(100, (progressMs / durationMs) * 100) : 0;
+      $("spotifyFill").style.width=`${pct}%`;
+
+      pushHistory({
+        id:data.track_id,
+        cover:data.cover,
+        title:data.title,
+        artist:data.artists
+      });
+      renderHistory();
+    }finally{
+      spotifyUpdating = false;
     }
+  }
 
-    card.classList.remove("hidden");
-    empty.classList.add("hidden");
+  function tickSpotifyProgress(){
+    if(!spotifyState.playing) return;
 
-    $("spotifyBg").style.backgroundImage=`url(${data.cover})`;
-    $("spotifyCover").src=data.cover;
-    $("spotifyTitle").textContent=data.title;
-    $("spotifyArtist").textContent=data.artists;
+    const durationMs = Math.max(0, spotifyState.durationMs || 0);
+    const elapsed = Math.max(0, Date.now() - (spotifyState.startedAt || Date.now()));
+    const cur = Math.min(durationMs || 0, (spotifyState.progressMs || 0) + elapsed);
 
-    $("spotifyTimeCur").textContent=fmtClock(data.progress_ms);
-    $("spotifyTimeDur").textContent=fmtClock(data.duration_ms);
+    $("spotifyTimeCur").textContent=fmtClock(cur);
+    $("spotifyTimeDur").textContent=fmtClock(durationMs);
 
-    const pct=(data.progress_ms/data.duration_ms)*100;
+    const pct = durationMs > 0 ? Math.min(100, (cur / durationMs) * 100) : 0;
     $("spotifyFill").style.width=`${pct}%`;
-
-    pushHistory({
-      id:data.track_id,
-      cover:data.cover,
-      title:data.title,
-      artist:data.artists
-    });
-    renderHistory();
   }
 
   /* ===== gif picker ===== */
@@ -220,6 +260,31 @@
   }
 
   /* ===== shoutbox ===== */
+  function renderPagination(total){
+    const box = $("pagination");
+    if(!box) return;
+
+    const pages = Math.max(1, Math.ceil(total / LETTERS_PER_PAGE));
+    if(lettersPage > pages) lettersPage = pages;
+
+    box.innerHTML = "";
+    if(pages <= 1) return;
+
+    const frag = document.createDocumentFragment();
+    for(let p = 1; p <= pages; p++){
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = `page-btn${p === lettersPage ? " is-active" : ""}`;
+      btn.textContent = String(p);
+      btn.addEventListener("click", ()=>{
+        lettersPage = p;
+        loadLetters();
+      });
+      frag.appendChild(btn);
+    }
+    box.appendChild(frag);
+  }
+
   async function loadLetters(){
     const list=$("lettersList");
     if(!list) return;
@@ -229,18 +294,23 @@
 
     if(!ok||!data||!data.ok){
       list.textContent="failed to load";
+      renderPagination(0);
       return;
     }
 
     const items = Array.isArray(data.items) ? data.items : [];
     if(!items.length){
       list.textContent="no messages yet.";
+      renderPagination(0);
       return;
     }
 
+    const offset = (lettersPage - 1) * LETTERS_PER_PAGE;
+    const pageItems = items.slice(offset, offset + LETTERS_PER_PAGE);
+
     const frag=document.createDocumentFragment();
 
-    for(const it of items){
+    for(const it of pageItems){
       const row=document.createElement("div");
       row.className="letter-item";
 
@@ -262,7 +332,8 @@
 
       const tm=document.createElement("div");
       tm.className="letter-time";
-      tm.textContent=new Date(Number(it.createdAt)).toLocaleString();
+      const dt = Number(it.createdAt);
+      tm.textContent=Number.isFinite(dt) ? new Date(dt).toLocaleString() : "unknown time";
 
       row.appendChild(msg);
       row.appendChild(tm);
@@ -270,6 +341,7 @@
     }
 
     list.appendChild(frag);
+    renderPagination(items.length);
   }
 
   /* ===== submit ===== */
@@ -297,7 +369,7 @@
       selectedGif=null;
       document.querySelectorAll(".gif-btn").forEach(b=>b.classList.remove("selected"));
       if(st) st.textContent="sent for moderation.";
-      loadLetters();
+      await loadLetters();
     }else{
       if(st) st.textContent="error sending message.";
     }
@@ -312,6 +384,7 @@
     renderHistory();
     updateSpotify();
     setInterval(updateSpotify,SPOTIFY_POLL);
+    setInterval(tickSpotifyProgress,1000);
 
     initGifPicker();
     $("sendBtn")?.addEventListener("click", submitLetter);
