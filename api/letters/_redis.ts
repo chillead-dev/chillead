@@ -3,7 +3,7 @@
 // ============================================================
 
 import type { IncomingMessage, ServerResponse } from "node:http";
-import type { RateLimitEntry } from "../../types.js";
+import type { RateLimitEntry } from "../../src/types";
 
 // ─── Upstash / Redis ────────────────────────────────────────
 
@@ -42,39 +42,27 @@ export async function redis(cmd: string, ...args: (string | number)[]): Promise<
 export function setSecurityHeaders(res: ServerResponse): void {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.setHeader("Cache-Control", "no-store, max-age=0");
-  // Prevent MIME-type sniffing
   res.setHeader("X-Content-Type-Options", "nosniff");
-  // Don't leak referrer
   res.setHeader("Referrer-Policy", "no-referrer");
-  // Deny framing (clickjacking)
   res.setHeader("X-Frame-Options", "DENY");
-  // Strict CSP for API responses
   res.setHeader("Content-Security-Policy", "default-src 'none'");
-  // Limit browser features
   res.setHeader("Permissions-Policy", "geolocation=(), microphone=(), camera=()");
-  // HSTS (1 year)
   res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
-  // CORS: only same-origin
   res.setHeader("Access-Control-Allow-Origin", process.env["SITE_ORIGIN"] ?? "https://hatesocial.lol");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  // Vary so caches respect CORS
   res.setHeader("Vary", "Origin");
 }
 
 // ─── Input sanitisation ─────────────────────────────────────
 
-// Strips control characters and Unicode direction overrides,
-// then trims to a safe max length.
 export function sanitizeMessage(raw: unknown, maxLen = 500): string {
   const s = String(raw ?? "").replace(/\r/g, "").trim();
-  // Remove zero-width / direction-override chars
   return s
     .replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200F\u202A-\u202E\uFEFF]/g, "")
     .slice(0, maxLen);
 }
 
-// Validate that a string is a non-empty, reasonable length
 export function isValidMessage(msg: string): boolean {
   return msg.length >= 2 && msg.length <= 500;
 }
@@ -89,7 +77,6 @@ export function makeId(): string {
 
 // ─── Admin auth ─────────────────────────────────────────────
 
-// Constant-time comparison to prevent timing attacks
 function safeCompare(a: string, b: string): boolean {
   if (a.length !== b.length) return false;
   const aBytes = new TextEncoder().encode(a);
@@ -103,17 +90,15 @@ function safeCompare(a: string, b: string): boolean {
 
 export function requireAdmin(req: IncomingMessage): boolean {
   const expected = process.env["ADMIN_TOKEN"];
-  if (!expected || expected.length < 32) return false; // enforce strong token
+  if (!expected || expected.length < 32) return false;
   const auth = (req.headers["authorization"] as string | undefined) ?? "";
   return safeCompare(auth, `Bearer ${expected}`);
 }
 
 // ─── In-memory rate limiter ──────────────────────────────────
-// For serverless environments a Redis-backed approach is better,
-// but this provides a baseline layer even in cold starts.
 
-const RL_WINDOW_MS  = 60_000; // 1 minute
-const RL_MAX_HITS   = 10;     // max submissions per window per IP
+const RL_WINDOW_MS  = 60_000;
+const RL_MAX_HITS   = 10;
 
 const rateLimitStore = new Map<string, RateLimitEntry>();
 
@@ -132,7 +117,6 @@ export function isRateLimited(ip: string): boolean {
   return false;
 }
 
-// Clean stale entries periodically to avoid memory leaks
 setInterval(() => {
   const now = Date.now();
   for (const [key, entry] of rateLimitStore) {
@@ -178,5 +162,5 @@ export async function parseJsonBody<T = Record<string, unknown>>(
 export function getClientIp(req: IncomingMessage): string {
   const xff = req.headers["x-forwarded-for"];
   if (typeof xff === "string") return xff.split(",")[0]?.trim() ?? "unknown";
-  return (req.socket.remoteAddress) ?? "unknown";
+  return req.socket.remoteAddress ?? "unknown";
 }
