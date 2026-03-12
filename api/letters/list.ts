@@ -4,7 +4,7 @@
 
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { redis, setSecurityHeaders } from "./_redis.js";
-import type { Letter, RawLetter } from "../../types.js";
+import type { Letter, RawLetter } from "../../src/types";
 
 function parseRawLetter(s: string): Letter | null {
   try {
