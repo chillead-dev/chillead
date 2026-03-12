@@ -10,7 +10,7 @@ import {
   parseJsonBody,
   sanitizeMessage,
 } from "./_redis.js";
-import type { RawLetter } from "../../types.js";
+import type { RawLetter } from "../../src/types";
 
 interface ApproveBody { id?: string }
 
@@ -46,7 +46,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
       try {
         const o: RawLetter = JSON.parse(raw) as RawLetter;
         if (o.id === id) { foundRaw = raw; foundObj = o; break; }
-      } catch { /* skip corrupt */ }
+      } catch {}
     }
 
     if (!foundRaw || !foundObj) {
@@ -58,8 +58,8 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
     await redis("LREM", "letters:pending", 1, foundRaw);
 
     const approved: RawLetter = {
-      id:         foundObj.id,
-      message:    foundObj.message,
+      id:         foundObj.id ?? id,
+      message:    foundObj.message ?? "",
       createdAt:  Number(foundObj.createdAt) || Date.now(),
       answered:   !!foundObj.answered,
       answer:     foundObj.answer ?? null,
