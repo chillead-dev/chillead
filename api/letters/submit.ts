@@ -13,12 +13,11 @@ import {
   getClientIp,
   parseJsonBody,
 } from "./_redis.js";
-import type { SubmitBody, RawLetter } from "../../types.js";
+import type { SubmitBody, RawLetter } from "../../src/types";
 
 export default async function handler(req: IncomingMessage, res: ServerResponse): Promise<void> {
   setSecurityHeaders(res);
 
-  // Handle preflight
   if (req.method === "OPTIONS") {
     res.writeHead(204);
     res.end();
@@ -31,7 +30,6 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
     return;
   }
 
-  // Rate limit by IP
   const ip = getClientIp(req);
   if (isRateLimited(ip)) {
     res.writeHead(429);
